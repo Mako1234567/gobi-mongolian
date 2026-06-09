@@ -3,18 +3,27 @@
   "short_name": "Gobi",
   "description": "Learn Mongolian with Gobi the bear",
   "start_url": "/gobi-mongolian/mongolian_quiz.html",
+  "scope": "/gobi-mongolian/",
   "display": "standalone",
   "background_color": "#0c0c10",
-  "theme_color": "#0c0c10",
+  "theme_color": "#7c6af7",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230c0c10'/><text y='320' x='256' text-anchor='middle' font-size='300'>🐻</text></svg>",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "games"],
+  "categories": [
+    "education"
+  ],
   "lang": "en"
 }
