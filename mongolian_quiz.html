@@ -419,6 +419,31 @@
   .phrase-action-btn.play { background:#1a1830;border:1px solid #3a2a50;color:#7c6af7; }
   .phrase-action-btn.copy { background:#1e1e2a;border:1px solid #2a2a38;color:#888; }
 
+
+  /* Conversation Practice */
+  .convo-screen-header { display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem; }
+  .convo-messages { display:flex;flex-direction:column;gap:10px;width:100%;min-height:300px;max-height:55vh;overflow-y:auto;padding:4px 2px;margin-bottom:1rem; }
+  .convo-msg { max-width:85%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.6; }
+  .convo-msg.user { align-self:flex-end;background:#7c6af7;color:white;border-bottom-right-radius:4px; }
+  .convo-msg.ai { align-self:flex-start;background:#16161e;border:1px solid #2a2a38;color:#e8e8f0;border-bottom-left-radius:4px; }
+  .convo-msg.ai .msg-mn { font-size:16px;font-weight:600;color:#e8e8f0;margin-bottom:4px; }
+  .convo-msg.ai .msg-en { font-size:12px;color:#666;margin-bottom:4px; }
+  .convo-msg.ai .msg-tip { font-size:11px;color:#7c6af7;margin-top:4px;padding-top:4px;border-top:1px solid #2a2a38; }
+  .convo-msg.typing { opacity:0.6; }
+  .convo-input-wrap { display:flex;gap:8px;width:100%;align-items:flex-end; }
+  .convo-input { flex:1;padding:12px 14px;font-size:14px;font-family:inherit;background:#16161e;border:1.5px solid #2a2a38;border-radius:12px;color:#e8e8f0;outline:none;resize:none;min-height:46px;max-height:120px; }
+  .convo-input:focus { border-color:#7c6af7; }
+  .convo-send-btn { width:46px;height:46px;background:#7c6af7;border:none;border-radius:12px;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center; }
+  .convo-send-btn:disabled { opacity:0.5;cursor:default; }
+  .convo-hear-btn { background:none;border:1px solid #2a2a38;border-radius:8px;padding:3px 10px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;margin-top:4px; }
+  .convo-hear-btn:hover { border-color:#7c6af7;color:#7c6af7; }
+  .convo-scenario { display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem; }
+  .convo-scenario-btn { padding:6px 12px;border-radius:99px;border:1px solid #2a2a38;background:none;font-size:12px;color:#888;cursor:pointer;font-family:inherit; }
+  .convo-scenario-btn:hover { border-color:#7c6af7;color:#7c6af7; }
+  .convo-scenario-btn.active { border-color:#7c6af7;color:#7c6af7;background:#1a1830; }
+  .convo-clear-btn { background:none;border:none;font-size:12px;color:#555;cursor:pointer;font-family:inherit;padding:4px; }
+  .convo-clear-btn:hover { color:#f87171; }
+
 </style>
 </head>
 <body>
@@ -483,6 +508,11 @@
         <div class="learn-card" onclick="openConvPhrases()">
           <span class="learn-card-icon">🗣️</span>
           <div><div class="learn-card-title">Real Phrases</div><div class="learn-card-sub">Things to actually say to your friends</div></div>
+          <span class="learn-card-arrow">›</span>
+        </div>
+        <div class="learn-card" onclick="openConvoPractice()">
+          <span class="learn-card-icon">🤖</span>
+          <div><div class="learn-card-title">Practice with Gobi</div><div class="learn-card-sub">Chat in Mongolian — AI corrects you</div></div>
           <span class="learn-card-arrow">›</span>
         </div>
       </div>
@@ -3756,6 +3786,152 @@ function showIntroIfNeeded() {
   renderStep();
 }
 
+
+// ─── Conversation Practice ────────────────────────────────────────────────
+let convoMessages = [];
+let convoScenario = 'free';
+let convoTyping = false;
+
+const SCENARIO_PROMPTS = {
+  free: `You are Gobi, a friendly Mongolian language tutor bear. The user is a beginner learning Mongolian. Have a natural conversation in Mongolian. For each reply:
+1. Write your response in Mongolian (Cyrillic)
+2. Add an English translation in parentheses
+3. If the user made a mistake, gently correct it
+4. Add a short grammar tip if relevant
+Keep replies short — 1-3 sentences max. Be encouraging and fun.`,
+
+  greet: `You are Gobi, a Mongolian tutor. Practice greetings with the user. Guide them through: saying hello, asking how they are, introducing themselves, saying goodbye. Reply in Mongolian with English translation. Correct mistakes gently. Keep it short and encouraging.`,
+
+  food: `You are Gobi, a Mongolian tutor. Roleplay ordering food at a Mongolian restaurant. You are the waiter. Guide the user to order food and drinks in Mongolian. Reply in Mongolian with English translation. Correct mistakes gently.`,
+
+  directions: `You are Gobi, a Mongolian tutor. Practice asking and giving directions in Mongolian. You are a local in Ulaanbaatar. Guide the user to ask where things are and understand directions. Reply in Mongolian with English translation. Correct mistakes gently.`,
+
+  friends: `You are Gobi, a Mongolian friend having a casual conversation. Talk about what you did today, weekend plans, hobbies. Use casual everyday Mongolian like friends would speak. Reply in Mongolian with English translation. Correct mistakes gently.`,
+};
+
+const SCENARIO_STARTERS = {
+  free: { mn: 'Сайн уу! Би Гоби. Монгол хэл сурч байна уу? 🐻', en: 'Hello! I am Gobi. Are you learning Mongolian?' },
+  greet: { mn: 'Сайн уу! Мэндчилгээ дадлага хийцгаая. Эхлэе — надад мэндлээрэй! 👋', en: 'Hello! Let us practice greetings. Start — say hello to me!' },
+  food: { mn: 'Тавтай морилно уу! Юу захиалах вэ? 🍖', en: 'Welcome! What would you like to order?' },
+  directions: { mn: 'Сайн уу! Та хаашаа явж байна вэ? Би туслъя! 📍', en: 'Hello! Where are you going? I can help!' },
+  friends: { mn: 'Эй! Яаж байна? Өнөөдөр юу хийсэн бэ? 😊', en: 'Hey! How are you? What did you do today?' },
+};
+
+function setScenario(scenario, btn) {
+  convoScenario = scenario;
+  document.querySelectorAll('.convo-scenario-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  clearConvo();
+}
+
+function clearConvo() {
+  convoMessages = [];
+  const el = document.getElementById('convo-messages');
+  if (el) el.innerHTML = '';
+  // Add starter message
+  const starter = SCENARIO_STARTERS[convoScenario];
+  if (starter) {
+    addConvoMessage('ai', starter.mn, starter.en, null);
+    doTTS(starter.mn);
+  }
+}
+
+function addConvoMessage(role, mn, en, tip) {
+  const el = document.getElementById('convo-messages');
+  if (!el) return;
+  const div = document.createElement('div');
+  div.className = 'convo-msg ' + role;
+  if (role === 'ai') {
+    div.innerHTML = `
+      <div class="msg-mn">${mn}</div>
+      ${en ? `<div class="msg-en">${en}</div>` : ''}
+      ${tip ? `<div class="msg-tip">💡 ${tip}</div>` : ''}
+      <button class="convo-hear-btn" onclick="doTTS('${mn.replace(/'/g,"\\'")}')">🔊 Hear</button>`;
+  } else {
+    div.textContent = mn;
+  }
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+
+  // Store in history for API context
+  convoMessages.push({ role: role === 'user' ? 'user' : 'assistant', content: mn + (en ? ' (' + en + ')' : '') });
+}
+
+async function sendConvoMessage() {
+  if (convoTyping) return;
+  const input = document.getElementById('convo-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  addConvoMessage('user', text, null, null);
+
+  // Show typing indicator
+  convoTyping = true;
+  const sendBtn = document.getElementById('convo-send-btn');
+  if (sendBtn) sendBtn.disabled = true;
+  const el = document.getElementById('convo-messages');
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'convo-msg ai typing';
+  typingDiv.id = 'convo-typing';
+  typingDiv.textContent = 'Gobi is thinking...';
+  if (el) { el.appendChild(typingDiv); el.scrollTop = el.scrollHeight; }
+
+  try {
+    const messages = [
+      { role: 'user', content: SCENARIO_PROMPTS[convoScenario] },
+      { role: 'assistant', content: 'Ойлголоо! Би тусална. (Understood! I will help.)' },
+      ...convoMessages.slice(-10), // last 10 messages for context
+      { role: 'user', content: text }
+    ];
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        system: SCENARIO_PROMPTS[convoScenario],
+        messages: convoMessages.slice(-10).concat([{ role: 'user', content: text }])
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.content?.map(c => c.text || '').join('') || '';
+
+    // Parse reply — expect format: "Mongolian text (English translation) 💡 tip"
+    typingDiv.remove();
+
+    // Extract parts with regex
+    const mnMatch = reply.match(/^([^(]+)/);
+    const enMatch = reply.match(/\(([^)]+)\)/);
+    const tipMatch = reply.match(/💡\s*(.+)$/m);
+
+    const mn = mnMatch ? mnMatch[1].trim() : reply;
+    const en = enMatch ? enMatch[1].trim() : null;
+    const tip = tipMatch ? tipMatch[1].trim() : null;
+
+    addConvoMessage('ai', mn, en, tip);
+    doTTS(mn);
+    playCorrect();
+
+  } catch(e) {
+    typingDiv.remove();
+    addConvoMessage('ai', 'Уучлаарай, алдаа гарлаа.', 'Sorry, an error occurred.', null);
+    console.error('Convo error:', e);
+  }
+
+  convoTyping = false;
+  if (sendBtn) sendBtn.disabled = false;
+  input.focus();
+}
+
+function openConvoPractice() {
+  showScreen('screen-convo');
+  if (convoMessages.length === 0) clearConvo();
+}
+
 // ─── Tab Navigation ────────────────────────────────────────────────────────
 let activeTab = 'home';
 
@@ -3848,6 +4024,13 @@ function renderSettingsPanel() {
       <div class="settings-row">
         <div><div class="settings-label" style="color:#f87171;">Clear personal words</div></div>
         <button class="settings-btn danger" onclick="clearPersonalWords()">Clear</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <h3>Help</h3>
+      <div class="settings-row">
+        <div><div class="settings-label">Tutorial</div><div class="settings-sub">Replay the intro with Gobi</div></div>
+        <button class="settings-btn neutral" onclick="localStorage.removeItem('mn_intro_done');showIntroIfNeeded();">Watch</button>
       </div>
     </div>
   `;
@@ -4097,6 +4280,30 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<!-- CONVERSATION PRACTICE SCREEN -->
+<div class="screen" id="screen-convo">
+  <div class="convo-screen-header">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Practice with Gobi</h2>
+    <button class="convo-clear-btn" onclick="clearConvo()">Clear</button>
+  </div>
+  <p style="font-size:12px;color:#555;margin-bottom:8px;">Pick a scenario or just start talking. Gobi will reply in Mongolian with corrections and tips.</p>
+  <div class="convo-scenario" id="convo-scenarios">
+    <button class="convo-scenario-btn active" onclick="setScenario('free',this)">💬 Free chat</button>
+    <button class="convo-scenario-btn" onclick="setScenario('greet',this)">👋 Greetings</button>
+    <button class="convo-scenario-btn" onclick="setScenario('food',this)">🍖 Ordering food</button>
+    <button class="convo-scenario-btn" onclick="setScenario('directions',this)">📍 Directions</button>
+    <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 With friends</button>
+  </div>
+  <div class="convo-messages" id="convo-messages"></div>
+  <div class="convo-input-wrap">
+    <textarea class="convo-input" id="convo-input" placeholder="Type in Mongolian or English..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvoMessage();}"></textarea>
+    <button class="convo-send-btn" id="convo-send-btn" onclick="sendConvoMessage()">→</button>
+  </div>
+</div>
+
+
 </body>
 </html>  <div style="width:100%;display:flex;align-items:center;gap:10px;margin-bottom:10px;">
     <div class="quiz-progress-wrap" style="flex:1;"><div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -4402,5 +4609,29 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<!-- CONVERSATION PRACTICE SCREEN -->
+<div class="screen" id="screen-convo">
+  <div class="convo-screen-header">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Practice with Gobi</h2>
+    <button class="convo-clear-btn" onclick="clearConvo()">Clear</button>
+  </div>
+  <p style="font-size:12px;color:#555;margin-bottom:8px;">Pick a scenario or just start talking. Gobi will reply in Mongolian with corrections and tips.</p>
+  <div class="convo-scenario" id="convo-scenarios">
+    <button class="convo-scenario-btn active" onclick="setScenario('free',this)">💬 Free chat</button>
+    <button class="convo-scenario-btn" onclick="setScenario('greet',this)">👋 Greetings</button>
+    <button class="convo-scenario-btn" onclick="setScenario('food',this)">🍖 Ordering food</button>
+    <button class="convo-scenario-btn" onclick="setScenario('directions',this)">📍 Directions</button>
+    <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 With friends</button>
+  </div>
+  <div class="convo-messages" id="convo-messages"></div>
+  <div class="convo-input-wrap">
+    <textarea class="convo-input" id="convo-input" placeholder="Type in Mongolian or English..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvoMessage();}"></textarea>
+    <button class="convo-send-btn" id="convo-send-btn" onclick="sendConvoMessage()">→</button>
+  </div>
+</div>
+
+
 </body>
 </html>
