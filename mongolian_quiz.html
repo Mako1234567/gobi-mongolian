@@ -3886,9 +3886,20 @@ async function sendConvoMessage() {
       { role: 'user', content: text }
     ];
 
+    const apiKey = localStorage.getItem('mn_api_key') || '';
+    if (!apiKey) {
+      const key = prompt('Enter your Anthropic API key to chat with Gobi:\n(Get one free at console.anthropic.com)');
+      if (!key) { typingDiv.remove(); convoTyping = false; if(sendBtn) sendBtn.disabled=false; return; }
+      localStorage.setItem('mn_api_key', key.trim());
+    }
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': localStorage.getItem('mn_api_key'),
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true',
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 300,
@@ -4031,6 +4042,10 @@ function renderSettingsPanel() {
       <div class="settings-row">
         <div><div class="settings-label">Tutorial</div><div class="settings-sub">Replay the intro with Gobi</div></div>
         <button class="settings-btn neutral" onclick="localStorage.removeItem('mn_intro_done');showIntroIfNeeded();">Watch</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Anthropic API key</div><div class="settings-sub">Required for Gobi chat practice</div></div>
+        <button class="settings-btn neutral" onclick="const k=prompt('Enter your Anthropic API key:',localStorage.getItem('mn_api_key')||'');if(k)localStorage.setItem('mn_api_key',k.trim());">Set key</button>
       </div>
     </div>
   `;
