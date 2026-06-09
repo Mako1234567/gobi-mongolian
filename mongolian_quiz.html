@@ -3904,7 +3904,10 @@ async function sendConvoMessage() {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 300,
         system: SCENARIO_PROMPTS[convoScenario],
-        messages: convoMessages.slice(-10).concat([{ role: 'user', content: text }])
+        messages: convoMessages.filter(m => m.role === 'user' || m.role === 'assistant')
+          .slice(-10)
+          .filter((m, i, arr) => i === 0 ? m.role === 'user' : true)
+          .concat([{ role: 'user', content: text }])
       })
     });
 
