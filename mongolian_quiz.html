@@ -3892,13 +3892,17 @@ async function sendConvoMessage() {
       if (!key) { typingDiv.remove(); convoTyping = false; if(sendBtn) sendBtn.disabled=false; return; }
       localStorage.setItem('mn_api_key', key.trim());
     }
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    // Use local proxy if TTS server is running, otherwise try direct
+    const useProxy = serverAvailable === true;
+    const endpoint = useProxy ? 'http://localhost:5050/claude' : 'https://api.anthropic.com/v1/messages';
+    const extraHeaders = useProxy ? {} : { 'anthropic-dangerous-allow-browser': 'true' };
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': localStorage.getItem('mn_api_key'),
         'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-allow-browser': 'true',
+        ...extraHeaders,
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
