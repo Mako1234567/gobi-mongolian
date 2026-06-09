@@ -3912,10 +3912,12 @@ async function sendConvoMessage() {
     });
 
     const data = await res.json();
+    console.log('API response:', JSON.stringify(data));
     if (!res.ok) {
       throw new Error('API error ' + res.status + ': ' + (data.error?.message || JSON.stringify(data)));
     }
     const reply = data.content?.map(c => c.text || '').join('') || '';
+    console.log('Reply:', reply);
 
     typingDiv.remove();
     if (!reply) { addConvoMessage('ai', '...', 'No response received', null); return; }
