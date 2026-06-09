@@ -3913,6 +3913,9 @@ async function sendConvoMessage() {
     });
 
     const data = await res.json();
+    if (!res.ok) {
+      throw new Error('API error ' + res.status + ': ' + (data.error?.message || JSON.stringify(data)));
+    }
     const reply = data.content?.map(c => c.text || '').join('') || '';
 
     // Parse reply — expect format: "Mongolian text (English translation) 💡 tip"
@@ -3933,7 +3936,8 @@ async function sendConvoMessage() {
 
   } catch(e) {
     typingDiv.remove();
-    addConvoMessage('ai', 'Уучлаарай, алдаа гарлаа.', 'Sorry, an error occurred.', null);
+    const errMsg = e.message || String(e);
+    addConvoMessage('ai', 'Error: ' + errMsg, 'Check console for details. Make sure tts_server.py is running and your API key is set correctly in Settings.', null);
     console.error('Convo error:', e);
   }
 
