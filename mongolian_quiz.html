@@ -3893,7 +3893,7 @@ async function sendConvoMessage() {
       localStorage.setItem('mn_api_key', key.trim());
     }
     // Route through Cloudflare Worker proxy to avoid CORS
-    const res = await fetch('https://gobi-mongolian.sawyervanrooyen.workers.dev', {
+    const res = await fetch('https://gobi-chat.sawyervanrooyen.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
