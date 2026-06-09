@@ -3892,14 +3892,13 @@ async function sendConvoMessage() {
       if (!key) { typingDiv.remove(); convoTyping = false; if(sendBtn) sendBtn.disabled=false; return; }
       localStorage.setItem('mn_api_key', key.trim());
     }
-    // Call Claude API directly — requires anthropic-dangerous-allow-browser header
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    // Route through Cloudflare Worker proxy to avoid CORS
+    const res = await fetch('https://gobi-mongolian.sawyervanrooyen.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': localStorage.getItem('mn_api_key'),
         'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-allow-browser': 'true',
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
