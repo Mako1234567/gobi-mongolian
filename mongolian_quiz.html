@@ -3914,19 +3914,19 @@ async function sendConvoMessage() {
     }
     const reply = data.content?.map(c => c.text || '').join('') || '';
 
-    // Parse reply — expect format: "Mongolian text (English translation) 💡 tip"
     typingDiv.remove();
+    if (!reply) { addConvoMessage('ai', '...', 'No response received', null); return; }
 
-    // Extract parts with regex
-    const mnMatch = reply.match(/^([^(]+)/);
+    // Try to parse Mongolian (English) 💡 tip format, fall back to showing full reply
+    const mnMatch = reply.match(/^([^(\n]+)/);
     const enMatch = reply.match(/\(([^)]+)\)/);
-    const tipMatch = reply.match(/💡\s*(.+)$/m);
+    const tipMatch = reply.match(/💡\s*(.+?)(?:\n|$)/);
 
     const mn = mnMatch ? mnMatch[1].trim() : reply;
     const en = enMatch ? enMatch[1].trim() : null;
     const tip = tipMatch ? tipMatch[1].trim() : null;
 
-    addConvoMessage('ai', mn, en, tip);
+    addConvoMessage('ai', mn || reply, en, tip);
     doTTS(mn);
     playCorrect();
 
