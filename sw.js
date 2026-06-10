@@ -21,13 +21,20 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Only cache GET requests — never POST (fixes TypeError in console)
+  if (e.request.method !== 'GET') return;
+  // Skip chrome-extension and non-http requests
+  if (!e.request.url.startsWith('http')) return;
+
   e.respondWith(
     caches.match(e.request).then(cached => {
-      // Network first, fall back to cache for offline
       return fetch(e.request)
         .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE).then(cache => cache.put(e.request, clone));
+          // Only cache successful same-origin responses
+          if (res && res.status === 200 && res.type === 'basic') {
+            const clone = res.clone();
+            caches.open(CACHE).then(cache => cache.put(e.request, clone));
+          }
           return res;
         })
         .catch(() => cached);

@@ -2971,6 +2971,12 @@ nextQuestion = function() {
   kbValue = '';
   kbAnswered = false;
   updateKbDisplay();
+  // Clear grammar injection
+  const gi = document.getElementById('grammar-injection');
+  if (gi) gi.remove();
+  // Re-enable type input
+  const inp = document.getElementById('type-input');
+  if (inp) { inp.disabled = false; inp.value = ''; }
   _origNextQ();
 };
 
