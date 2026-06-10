@@ -3952,6 +3952,83 @@ function openConvoPractice() {
   if (convoMessages.length === 0) clearConvo();
 }
 
+
+// ─── Convo Cyrillic Keyboard ───────────────────────────────────────────────
+let convoKbVisible = false;
+
+function buildConvoKeyboard() {
+  const KB_ROWS = [
+    ['й','ц','у','к','е','н','г','ш','щ','з','х'],
+    ['ф','ы','в','а','п','р','о','л','д','ж','э'],
+    ['я','ч','с','м','и','т','ь','б','ю','ө','ү'],
+  ];
+  KB_ROWS.forEach((row, i) => {
+    const el = document.getElementById('convo-kb-row-' + (i+1));
+    if (!el) return;
+    el.innerHTML = '';
+    row.forEach(letter => {
+      const btn = document.createElement('button');
+      btn.className = 'kb-key';
+      btn.textContent = letter.toUpperCase();
+      btn.addEventListener('click', () => { convoKbType(letter); playClick(); });
+      el.appendChild(btn);
+    });
+  });
+}
+
+function convoKbType(letter) {
+  const display = document.getElementById('convo-kb-text');
+  if (display) display.textContent = (display.textContent || '') + letter;
+}
+
+function convoKbDelete() {
+  const display = document.getElementById('convo-kb-text');
+  if (display) display.textContent = display.textContent.slice(0, -1);
+}
+
+function convoKbClear() {
+  const display = document.getElementById('convo-kb-text');
+  if (display) display.textContent = '';
+}
+
+function toggleConvoKb() {
+  convoKbVisible = !convoKbVisible;
+  const wrap = document.getElementById('convo-kb-wrap');
+  const btn = document.getElementById('convo-kb-btn');
+  const input = document.getElementById('convo-input');
+  if (wrap) wrap.style.display = convoKbVisible ? 'block' : 'none';
+  if (btn) btn.style.borderColor = convoKbVisible ? '#7c6af7' : '#2a2a38';
+  if (convoKbVisible) {
+    if (input) input.style.display = 'none';
+    buildConvoKeyboard();
+  } else {
+    if (input) input.style.display = '';
+    input && input.focus();
+  }
+}
+
+// Override sendConvoMessage to pick up keyboard text when active
+const _origSendConvo = sendConvoMessage;
+sendConvoMessage = async function() {
+  if (convoKbVisible) {
+    const display = document.getElementById('convo-kb-text');
+    const input = document.getElementById('convo-input');
+    if (display && display.textContent.trim()) {
+      // Temporarily put kb text into input for sending
+      const kbText = display.textContent.trim();
+      display.textContent = '';
+      // Manually trigger with kb text
+      const inp = document.getElementById('convo-input');
+      const realVal = inp.value;
+      inp.value = kbText;
+      await _origSendConvo();
+      inp.value = realVal;
+      return;
+    }
+  }
+  await _origSendConvo();
+};
+
 // ─── Tab Navigation ────────────────────────────────────────────────────────
 let activeTab = 'home';
 
@@ -4320,7 +4397,24 @@ if ('serviceWorker' in navigator) {
     <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 With friends</button>
   </div>
   <div class="convo-messages" id="convo-messages"></div>
+  <!-- Cyrillic keyboard for chat -->
+  <div id="convo-kb-wrap" style="display:none;width:100%;margin-bottom:8px;">
+    <div class="kb-display" style="margin-bottom:6px;">
+      <span id="convo-kb-text" style="font-size:16px;color:#e8e8f0;"></span>
+      <button onclick="convoKbDelete()" style="background:none;border:none;color:#666;font-size:18px;cursor:pointer;padding:4px 8px;">⌫</button>
+    </div>
+    <div id="convo-kb-row-1" class="kb-row"></div>
+    <div id="convo-kb-row-2" class="kb-row"></div>
+    <div id="convo-kb-row-3" class="kb-row"></div>
+    <div class="kb-row" style="margin-top:2px;">
+      <button class="kb-key special" onclick="convoKbClear()">Clear</button>
+      <button class="kb-key" onclick="convoKbType(' ')" style="flex:3;max-width:none;">Space</button>
+      <button class="kb-key submit-key" onclick="sendConvoMessage()">Send ✓</button>
+    </div>
+  </div>
+
   <div class="convo-input-wrap">
+    <button onclick="toggleConvoKb()" id="convo-kb-btn" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:16px;cursor:pointer;flex-shrink:0;" title="Toggle Mongolian keyboard">🇲🇳</button>
     <textarea class="convo-input" id="convo-input" placeholder="Type in Mongolian or English..." rows="1"
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvoMessage();}"></textarea>
     <button class="convo-send-btn" id="convo-send-btn" onclick="sendConvoMessage()">→</button>
@@ -4649,7 +4743,24 @@ if ('serviceWorker' in navigator) {
     <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 With friends</button>
   </div>
   <div class="convo-messages" id="convo-messages"></div>
+  <!-- Cyrillic keyboard for chat -->
+  <div id="convo-kb-wrap" style="display:none;width:100%;margin-bottom:8px;">
+    <div class="kb-display" style="margin-bottom:6px;">
+      <span id="convo-kb-text" style="font-size:16px;color:#e8e8f0;"></span>
+      <button onclick="convoKbDelete()" style="background:none;border:none;color:#666;font-size:18px;cursor:pointer;padding:4px 8px;">⌫</button>
+    </div>
+    <div id="convo-kb-row-1" class="kb-row"></div>
+    <div id="convo-kb-row-2" class="kb-row"></div>
+    <div id="convo-kb-row-3" class="kb-row"></div>
+    <div class="kb-row" style="margin-top:2px;">
+      <button class="kb-key special" onclick="convoKbClear()">Clear</button>
+      <button class="kb-key" onclick="convoKbType(' ')" style="flex:3;max-width:none;">Space</button>
+      <button class="kb-key submit-key" onclick="sendConvoMessage()">Send ✓</button>
+    </div>
+  </div>
+
   <div class="convo-input-wrap">
+    <button onclick="toggleConvoKb()" id="convo-kb-btn" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:16px;cursor:pointer;flex-shrink:0;" title="Toggle Mongolian keyboard">🇲🇳</button>
     <textarea class="convo-input" id="convo-input" placeholder="Type in Mongolian or English..." rows="1"
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvoMessage();}"></textarea>
     <button class="convo-send-btn" id="convo-send-btn" onclick="sendConvoMessage()">→</button>
