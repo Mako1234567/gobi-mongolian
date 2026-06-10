@@ -432,6 +432,18 @@
   .convo-scenario-btn.active { border-color:#7c6af7;color:#7c6af7;background:#1a1830; }
   .convo-clear-btn { background:none;border:none;font-size:12px;color:#555;cursor:pointer;font-family:inherit; }
 
+
+  /* Speech Recognition */
+  .mic-btn { width:46px;height:46px;border-radius:50%;border:2px solid #2a2a38;background:#16161e;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0; }
+  .mic-btn:hover { border-color:#7c6af7; }
+  .mic-btn.listening { background:#f87171;border-color:#f87171;animation:bearPulse 0.8s infinite; }
+  .mic-btn.success { background:#4ade80;border-color:#4ade80; }
+  .speech-result { font-size:13px;color:#888;text-align:center;margin-top:6px;min-height:20px; }
+  .speech-score { display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700; }
+  .speech-score.good { background:#0f2a1a;color:#4ade80;border:1px solid #2a4a2a; }
+  .speech-score.ok { background:#1e1808;color:#facc15;border:1px solid #4a3810; }
+  .speech-score.bad { background:#2a0f0f;color:#f87171;border:1px solid #4a1a1a; }
+
 </style>
 </head>
 <body>
@@ -2160,6 +2172,7 @@ const _origLoadHard = loadHard;
 const _origCheckTyped = checkTyped;
 
 loadType = function(q) {
+  setTimeout(addMicToTypeArea, 100);
   document.getElementById('answers-grid').style.display = 'none';
   document.getElementById('type-area').style.display = 'block';
   document.getElementById('type-input') && (document.getElementById('type-input').value = '');
@@ -3926,7 +3939,7 @@ async function sendConvoMessage() {
   if(sendBtn) sendBtn.disabled=false;
 }
 
-function openConvoPractice() { showScreen('screen-convo'); if(convoMessages.length===0) clearConvo(); }
+function openConvoPractice() { showScreen('screen-convo'); if(convoMessages.length===0) clearConvo(); setTimeout(addMicToConvo, 100); }
 
 // Convo keyboard
 let convoKbBuilt = false;
@@ -3952,6 +3965,218 @@ function toggleConvoKb() {
   if(btn) btn.style.borderColor=convoKbVisible?'#7c6af7':'#2a2a38';
   if(inp) inp.style.display=convoKbVisible?'none':'';
   if(convoKbVisible) buildConvoKeyboard();
+}
+
+
+// ─── Speech Recognition ────────────────────────────────────────────────────
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+
+function initSpeechRecognition() {
+  if (!SpeechRecognition) return null;
+  const r = new SpeechRecognition();
+  r.lang = 'mn-MN';
+  r.continuous = false;
+  r.interimResults = false;
+  r.maxAlternatives = 3;
+  return r;
+}
+
+function startSpeech(onResult, onEnd, lang) {
+  if (!SpeechRecognition) {
+    alert('Speech recognition is not supported in this browser. Try Chrome or Samsung Internet.');
+    return;
+  }
+  if (isListening) { stopSpeech(); return; }
+
+  recognition = initSpeechRecognition();
+  recognition.lang = lang || 'mn-MN';
+  isListening = true;
+
+  recognition.onresult = (e) => {
+    const results = Array.from(e.results[0]).map(r => r.transcript.trim().toLowerCase());
+    onResult(results);
+  };
+  recognition.onerror = (e) => {
+    console.warn('Speech error:', e.error);
+    isListening = false;
+    if (onEnd) onEnd(null);
+  };
+  recognition.onend = () => {
+    isListening = false;
+    if (onEnd) onEnd();
+  };
+  recognition.start();
+}
+
+function stopSpeech() {
+  if (recognition) { recognition.stop(); recognition = null; }
+  isListening = false;
+}
+
+// Compare spoken text to target - returns 0-100 score
+function speechScore(spoken, target) {
+  const s = spoken.toLowerCase().replace(/[^а-яёөүa-z\s]/gi,'').trim();
+  const t = target.toLowerCase().replace(/[^а-яёөүa-z\s]/gi,'').trim();
+  if (s === t) return 100;
+  // Character-level similarity
+  const longer = s.length > t.length ? s : t;
+  const shorter = s.length > t.length ? t : s;
+  if (longer.length === 0) return 100;
+  let matches = 0;
+  for (let i = 0; i < shorter.length; i++) {
+    if (longer.includes(shorter[i])) matches++;
+  }
+  return Math.round((matches / longer.length) * 100);
+}
+
+// ─── Mic button in quiz typing mode ───────────────────────────────────────
+function addMicToTypeArea() {
+  const typeArea = document.getElementById('type-area');
+  if (!typeArea || document.getElementById('quiz-mic-btn')) return;
+  if (!SpeechRecognition) return;
+  const btn = document.createElement('button');
+  btn.id = 'quiz-mic-btn';
+  btn.className = 'mic-btn';
+  btn.title = 'Speak your answer';
+  btn.innerHTML = '🎤';
+  btn.onclick = startQuizSpeech;
+  // Insert before kb-mode-toggle
+  const kbWrap = typeArea.querySelector('.kb-mode-toggle');
+  if (kbWrap) typeArea.insertBefore(btn, kbWrap);
+  else typeArea.insertBefore(btn, typeArea.firstChild);
+
+  const resultEl = document.createElement('p');
+  resultEl.id = 'quiz-speech-result';
+  resultEl.className = 'speech-result';
+  typeArea.insertBefore(resultEl, kbWrap || typeArea.firstChild);
+}
+
+function startQuizSpeech() {
+  const btn = document.getElementById('quiz-mic-btn');
+  const resultEl = document.getElementById('quiz-speech-result');
+  if (!btn) return;
+
+  if (isListening) {
+    stopSpeech();
+    btn.classList.remove('listening');
+    btn.innerHTML = '🎤';
+    return;
+  }
+
+  btn.classList.add('listening');
+  btn.innerHTML = '⏹';
+  if (resultEl) resultEl.textContent = 'Listening...';
+  playClick();
+
+  const q = questions[current];
+  startSpeech(
+    (results) => {
+      btn.classList.remove('listening');
+      btn.classList.add('success');
+      btn.innerHTML = '🎤';
+      setTimeout(() => btn.classList.remove('success'), 1000);
+
+      // Try each result against target
+      const target = q.letter;
+      const best = results.reduce((best, r) => {
+        const score = speechScore(r, target);
+        return score > best.score ? { text: r, score } : best;
+      }, { text: results[0], score: 0 });
+
+      if (resultEl) {
+        const cls = best.score >= 80 ? 'good' : best.score >= 50 ? 'ok' : 'bad';
+        const label = best.score >= 80 ? 'Great!' : best.score >= 50 ? 'Close!' : 'Try again';
+        resultEl.innerHTML = `"${best.text}" <span class="speech-score ${cls}">${label} ${best.score}%</span>`;
+      }
+
+      // If good enough, auto-fill and submit
+      if (best.score >= 70) {
+        const display = document.getElementById('kb-text');
+        if (display) display.textContent = best.text;
+        setTimeout(() => checkTyped(), 600);
+      }
+    },
+    () => {
+      btn.classList.remove('listening');
+      btn.innerHTML = '🎤';
+    },
+    'mn-MN'
+  );
+}
+
+// ─── Mic button in conversation ────────────────────────────────────────────
+function addMicToConvo() {
+  const wrap = document.getElementById('convo-input-wrap') ||
+    document.querySelector('.convo-input-wrap');
+  if (!wrap || document.getElementById('convo-mic-btn')) return;
+  if (!SpeechRecognition) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'convo-mic-btn';
+  btn.className = 'mic-btn';
+  btn.title = 'Speak to Gobi';
+  btn.innerHTML = '🎤';
+  btn.onclick = startConvoSpeech;
+  // Insert after kb toggle btn
+  const kbBtn = document.getElementById('convo-kb-btn');
+  if (kbBtn) kbBtn.after(btn);
+  else wrap.insertBefore(btn, wrap.firstChild);
+}
+
+function startConvoSpeech() {
+  const btn = document.getElementById('convo-mic-btn');
+  if (!btn) return;
+  if (isListening) { stopSpeech(); btn.classList.remove('listening'); btn.innerHTML='🎤'; return; }
+
+  btn.classList.add('listening');
+  btn.innerHTML = '⏹';
+  playClick();
+
+  startSpeech(
+    (results) => {
+      btn.classList.remove('listening');
+      btn.innerHTML = '🎤';
+      const text = results[0];
+      // Put in convo input and send
+      const inp = document.getElementById('convo-input');
+      if (inp) {
+        inp.value = text;
+        inp.style.display = '';
+        // Hide kb if open
+        if (convoKbVisible) toggleConvoKb();
+      }
+      setTimeout(() => sendConvoMessage(), 200);
+    },
+    () => { btn.classList.remove('listening'); btn.innerHTML='🎤'; },
+    'mn-MN'
+  );
+}
+
+// ─── Pronunciation practice mode ───────────────────────────────────────────
+function startPronunciationPractice(word, targetEl) {
+  if (!SpeechRecognition) { alert('Speech recognition not supported. Use Chrome.'); return; }
+  const btn = targetEl;
+  btn.classList.add('listening');
+  btn.innerHTML = '⏹ Stop';
+  doTTS(word);
+
+  setTimeout(() => {
+    startSpeech(
+      (results) => {
+        btn.classList.remove('listening');
+        btn.innerHTML = '🎤 Try saying it';
+        const score = Math.max(...results.map(r => speechScore(r, word)));
+        const cls = score >= 80 ? 'good' : score >= 50 ? 'ok' : 'bad';
+        const label = score >= 80 ? '🎉 Excellent!' : score >= 50 ? '👍 Close!' : '🔄 Try again';
+        btn.insertAdjacentHTML('afterend', `<span class="speech-score ${cls}" style="margin-left:8px;">${label} ${score}%</span>`);
+        setTimeout(() => { const sc = btn.nextSibling; if(sc&&sc.classList) sc.remove(); }, 2500);
+      },
+      () => { btn.classList.remove('listening'); btn.innerHTML = '🎤 Try saying it'; },
+      'mn-MN'
+    );
+  }, 1500); // Let TTS finish first
 }
 
 // ─── Tab Navigation ────────────────────────────────────────────────────────
