@@ -507,6 +507,8 @@
         </div>
       </div>
       <p id="tts-indicator" style="font-size:12px;color:#555;margin-bottom:0.5rem;"></p>
+      <div id="daily-lesson-wrap"></div>
+      <div id="daily-lesson-wrap"></div>
       <div id="mascot-wrap" style="display:flex;align-items:center;gap:14px;width:100%;background:#16161e;border:1px solid #2a2a38;border-radius:14px;padding:10px 16px;margin-bottom:1rem;">
         <div class="mascot-svg"></div>
         <div style="flex:1">
@@ -549,6 +551,13 @@
         <div class="learn-card" onclick="openPersonalWordBank()">
           <span class="learn-card-icon">📝</span>
           <div><div class="learn-card-title">My Words</div><div class="learn-card-sub">Words your friends taught you</div></div>
+          <span class="learn-card-arrow">›</span>
+        </div>
+                  <span class="learn-card-arrow">›</span>
+        </div>
+        <div class="learn-card" onclick="startReadingPractice()">
+          <span class="learn-card-icon">📖</span>
+          <div><div class="learn-card-title">Reading Practice</div><div class="learn-card-sub">5 Mongolian passages with comprehension</div></div>
           <span class="learn-card-arrow">›</span>
         </div>
         <div class="learn-card" onclick="openConvPhrases()">
@@ -2065,7 +2074,8 @@ function getMastery(id) {
 
 function getSRSSorted(pool) {
   const now = Date.now();
-  return [...pool].sort((a,b) => {
+  const safePool = pool.filter(x => x && x.id);
+  return [...safePool].sort((a,b) => {
     const da=getSRS(a.id), db=getSRS(b.id);
     const aDue=da.due<=now, bDue=db.due<=now;
     const aNew=da.seenCount===0, bNew=db.seenCount===0;
@@ -6000,6 +6010,8 @@ openProgressMap = function() { showScreen('screen-home'); switchTab('journey'); 
 function renderAll() {
   // Tab-based nav — just render current tab
   renderDailyWord();
+  try{renderDailyLesson();}catch(e){}
+  try { renderDailyLesson(); } catch(e) {}
   renderStreakBanner();
   renderStatsBar();
   const [mood, msg] = getMascotMoodForStreak();
@@ -6083,6 +6095,163 @@ if (window.speechSynthesis) {
 renderAll();
 const typeInputEl = document.getElementById('type-input');
 if (typeInputEl) typeInputEl.addEventListener('keydown', e => { if(e.key==='Enter') checkTyped(); });
+
+
+// ─── Daily Lesson ─────────────────────────────────────────────────────────
+var DAILY_LESSONS=[
+  {words:['wb_g1','wb_g2','wb_g3','wb_g4','wb_g5'],sentences:['s1','s2','s3'],theme:'Greetings basics'},
+  {words:['wb_p1','wb_p2','wb_p3','wb_p4','wb_p5'],sentences:['s4','s5','s6'],theme:'People & family'},
+  {words:['wb_n1','wb_n2','wb_n3','wb_n4','wb_n5'],sentences:['s7','s8','s9'],theme:'Nature & weather'},
+  {words:['wb_f1','wb_f2','wb_f3','wb_f4','wb_f5'],sentences:['s10','s11','s12'],theme:'Food & drink'},
+  {words:['wb_t1','wb_t2','wb_t3','wb_t4','wb_t5'],sentences:['s68','s69','s70'],theme:'Time & days'},
+  {words:['wb_b1','wb_b2','wb_b3','wb_b4','wb_b5'],sentences:['s99','s100','s101'],theme:'Body & health'},
+  {words:['wb_c1','wb_c2','wb_c3','wb_c4','wb_c5'],sentences:['s141','s142','s143'],theme:'Colors'},
+  {words:['wb_e1','wb_e2','wb_e3','wb_e4','wb_e5'],sentences:['s77','s78','s79'],theme:'Emotions'},
+  {words:['wb_pl1','wb_pl2','wb_pl3','wb_pl4','wb_pl5'],sentences:['s85','s86','s87'],theme:'Places'},
+  {words:['wb_adj1','wb_adj2','wb_adj3','wb_adj4','wb_adj5'],sentences:['s146','s147','s148'],theme:'Describing things'},
+  {words:['wb_cu1','wb_cu2','wb_cu3','wb_cu4','wb_cu5'],sentences:['s83','s84','s85'],theme:'Mongolian culture'},
+  {words:['wb_so1','wb_so2','wb_so3','wb_so4','wb_so5'],sentences:['s156','s157','s158'],theme:'Relationships'},
+  {words:['wb_h1','wb_h2','wb_h3','wb_h4','wb_h5'],sentences:['s151','s152','s153'],theme:'Home & daily routine'},
+  {words:['wb_sc1','wb_sc2','wb_sc3','wb_sc4','wb_sc5'],sentences:['s64','s65','s66'],theme:'School & work'},
+  {words:['wb_te1','wb_te2','wb_te3','wb_te4','wb_te5'],sentences:['s181','s182','s183'],theme:'Technology'},
+  {words:['wb_sp1','wb_sp2','wb_sp3','wb_sp4','wb_sp5'],sentences:['s186','s187','s188'],theme:'Sports'},
+  {words:['wb_f21','wb_f22','wb_f23','wb_f24','wb_f25'],sentences:['s118','s119','s120'],theme:'Mongolian food'},
+  {words:['wb_m1','wb_m2','wb_m3','wb_m4','wb_m5'],sentences:['s171','s172','s173'],theme:'Shopping'},
+  {words:['wb_di1','wb_di2','wb_di3','wb_di4','wb_di5'],sentences:['s196','s197','s198'],theme:'Directions'},
+  {words:['wb_tr1','wb_tr2','wb_tr3','wb_tr4','wb_tr5'],sentences:['s105','s106','s107'],theme:'Transport & weather'},
+];
+function getTodaysLesson(){if(!DAILY_LESSONS||!DAILY_LESSONS.length)return{words:[],sentences:[],theme:'Loading...'};return DAILY_LESSONS[Math.floor(Date.now()/86400000)%DAILY_LESSONS.length];}
+function getDailyProgress(){const t=new Date().toDateString();try{const s=JSON.parse(localStorage.getItem('mn_daily_progress')||'{}');if(s.date!==t)return{date:t,words:[],sentences:[],grammar:false};return s;}catch(e){return{date:t,words:[],sentences:[],grammar:false};}}
+function saveDailyProgress(p){try{localStorage.setItem('mn_daily_progress',JSON.stringify(p));}catch(e){}}
+function markDailyWord(id){const p=getDailyProgress();if(!p.words.includes(id)){p.words.push(id);saveDailyProgress(p);renderDailyLesson();}}
+function markDailySentence(id){const p=getDailyProgress();if(!p.sentences.includes(id)){p.sentences.push(id);saveDailyProgress(p);renderDailyLesson();}}
+function markDailyGrammar(){const p=getDailyProgress();p.grammar=true;saveDailyProgress(p);renderDailyLesson();}
+
+function renderDailyLesson(){
+  const el=document.getElementById('daily-lesson-wrap');
+  if(!el)return;
+  try{
+    const lesson=getTodaysLesson();
+    const progress=getDailyProgress();
+    const aw=Object.values(WORD_BANK).flatMap(g=>g.words||[]).filter(w=>w&&w.id);
+    const lw=(lesson.words||[]).map(id=>aw.find(x=>x.id===id)).filter(w=>w&&w.id&&w.mn);
+    const ls=(lesson.sentences||[]).map(id=>SENTENCES.find(x=>x.id===id)).filter(s=>s&&s.id);
+    const pw=progress.words||[],ps=progress.sentences||[];
+    const total=lw.length+ls.length+1;
+    const done2=pw.length+ps.length+(progress.grammar?1:0);
+    const pct=total>0?Math.round(done2/total*100):0;
+    const complete=done2>=total;
+    const wrap=document.createElement('div');
+    wrap.style.cssText='background:#16161e;border:1.5px solid '+(complete?'#7c6af7':'#2a2a38')+';border-radius:16px;padding:1.2rem;margin-bottom:1rem;';
+    const hdr=document.createElement('div');
+    hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;';
+    const hl=document.createElement('div');
+    hl.innerHTML='<p style="font-size:12px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Today\'s Lesson</p><p style="font-size:16px;font-weight:600;color:#e8e8f0;">'+lesson.theme+'</p>';
+    const hr2=document.createElement('span');
+    hr2.style.cssText='font-size:'+(complete?'20':'14')+'px;font-weight:700;color:'+(complete?'#7c6af7':'#888')+';';
+    hr2.textContent=complete?'Done':pct+'%';
+    hdr.appendChild(hl);hdr.appendChild(hr2);wrap.appendChild(hdr);
+    const pb=document.createElement('div');
+    pb.style.cssText='height:4px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:14px;';
+    pb.innerHTML='<div style="height:100%;background:#7c6af7;width:'+pct+'%;border-radius:99px;"></div>';
+    wrap.appendChild(pb);
+    const addL=t=>{const p2=document.createElement('p');p2.style.cssText='font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;margin-top:8px;';p2.textContent=t;wrap.appendChild(p2);};
+    addL('📖 5 Words to learn');
+    lw.forEach(w=>{
+      const d=pw.includes(w.id);
+      const r=document.createElement('div');
+      r.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0f0f14;border-radius:10px;border:1px solid '+(d?'#2a4a2a':'#1e1e2a')+';margin-bottom:6px;';
+      const t2=document.createElement('div');t2.style.flex='1';
+      t2.innerHTML='<span style="font-size:15px;font-weight:600;color:#e8e8f0;">'+w.mn+'</span> <span style="font-size:13px;color:#555;">'+w.en+'</span>';
+      const b=document.createElement('button');b.style.cssText='background:none;border:1px solid #2a2a38;border-radius:6px;padding:3px 8px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;margin-right:6px;';
+      b.textContent='🔊';b.onclick=()=>{doTTS(w.mn);markDailyWord(w.id);};
+      const c=document.createElement('span');c.textContent=d?'✅':'⬜';
+      r.appendChild(t2);r.appendChild(b);r.appendChild(c);wrap.appendChild(r);
+    });
+    addL('💬 3 Sentences to study');
+    ls.forEach(s=>{
+      const d=ps.includes(s.id);
+      const mt=Array.isArray(s.mn)?s.mn.join(' '):(s.mn||'');
+      const r=document.createElement('div');
+      r.style.cssText='padding:8px 12px;background:#0f0f14;border-radius:10px;border:1px solid '+(d?'#2a4a2a':'#1e1e2a')+';margin-bottom:6px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;';
+      const t2=document.createElement('div');t2.style.flex='1';
+      t2.innerHTML='<p style="font-size:14px;color:#e8e8f0;margin-bottom:2px;">'+mt+'</p><p style="font-size:12px;color:#555;">'+(s.en||'')+'</p>';
+      const b=document.createElement('button');b.style.cssText='background:none;border:1px solid #2a2a38;border-radius:6px;padding:3px 8px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;flex-shrink:0;';
+      b.textContent='🔊';b.onclick=()=>{doTTS(mt);markDailySentence(s.id);};
+      const c=document.createElement('span');c.style.flexShrink='0';c.textContent=d?'✅':'⬜';
+      r.appendChild(t2);r.appendChild(b);r.appendChild(c);wrap.appendChild(r);
+    });
+    addL('📚 1 Grammar point');
+    const gr=document.createElement('div');
+    gr.style.cssText='padding:8px 12px;background:#0f0f14;border-radius:10px;border:1px solid '+(progress.grammar?'#2a4a2a':'#1e1e2a')+';display:flex;align-items:center;justify-content:space-between;';
+    const gl=document.createElement('span');gl.style.cssText='font-size:13px;color:#7c6af7;font-weight:500;';gl.textContent='Review grammar notes';
+    const gd=document.createElement('div');gd.style.cssText='display:flex;gap:6px;align-items:center;';
+    const gb=document.createElement('button');gb.style.cssText='background:none;border:1px solid #2a2a38;border-radius:6px;padding:3px 8px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;';
+    gb.textContent='Open';gb.onclick=()=>{openGrammarNotes();markDailyGrammar();};
+    const gc=document.createElement('span');gc.textContent=progress.grammar?'✅':'⬜';
+    gd.appendChild(gb);gd.appendChild(gc);gr.appendChild(gl);gr.appendChild(gd);wrap.appendChild(gr);
+    if(complete){const comp=document.createElement('div');comp.style.cssText='text-align:center;margin-top:12px;padding:10px;background:#0f1a0f;border-radius:10px;border:1px solid #2a4a2a;';const cm=document.createElement('p');cm.style.cssText='font-size:14px;color:#4ade80;font-weight:600;';cm.textContent="Today's lesson complete! Come back tomorrow!";comp.appendChild(cm);wrap.appendChild(comp);}
+    el.innerHTML='';el.appendChild(wrap);
+  }catch(e){console.error('daily:',e);el.innerHTML='';}
+}
+
+// ─── Reading Practice ──────────────────────────────────────────────────────
+var READING_PASSAGES=[
+  {id:'r1',title:'Миний гэр бүл',titleEn:'My Family',level:'Beginner',
+   text:'Миний нэр Болд. Би арван найман настай. Манай гэр бүлд таван хүн байдаг. Миний ээж эмч юм. Миний аав багш юм. Надад нэг ах, нэг дүү бий. Бид Улаанбаатарт амьдардаг. Манай гэр том, дулаан байдаг.',
+   translation:'My name is Bold. I am eighteen years old. There are five people in my family. My mother is a doctor. My father is a teacher. I have one older brother and one younger sibling. We live in Ulaanbaatar. Our home is big and warm.',
+   vocab:{'арван найман':'eighteen','гэр бүл':'family','ах':'older brother','дүү':'younger sibling','дулаан':'warm'},
+   questions:[{q:'Болд хэдэн настай вэ?',en:'How old is Bold?',opts:['16','18','20','17'],answer:1},{q:'Болдын ээж юу хийдэг вэ?',en:"Mother job?",opts:['Багш','Тогооч','Эмч','Жолооч'],answer:2},{q:'Гэр бүлд хэдэн хүн байдаг вэ?',en:'How many in family?',opts:['3','4','5','6'],answer:2}]},
+  {id:'r2',title:'Өглөөний цай',titleEn:'Morning Tea',level:'Beginner',
+   text:'Монголчууд өглөө сүүтэй цай уудаг. Цай нь давслаг байдаг. Гадны хүмүүст хачин санагдаж болно. Гэхдээ монголчуудад маш амттай байдаг. Цайг сүү, давс, тараг нэмж хийдэг.',
+   translation:'Mongolians drink tea with milk in the morning. The tea is salty. It might seem strange to foreigners. But for Mongolians it is very delicious. Tea is made by adding milk, salt, and tarag.',
+   vocab:{'сүүтэй':'with milk','давслаг':'salty','гадны':'foreign','хачин':'strange','тараг':'tarag/yogurt'},
+   questions:[{q:'Монгол цай ямар амттай вэ?',en:'Taste?',opts:['Чихэрлэг','Гашуун','Давслаг','Хурц'],answer:2},{q:'Цайд юу нэмдэг вэ?',en:'Added to tea?',opts:['Сүү, давс, тараг','Чихэр, сүү','Давс, мах','Ус, сүү'],answer:0},{q:'Гадны хүмүүст цай хэрхэн санагддаг вэ?',en:'How to foreigners?',opts:['Амттай','Хачин','Сайхан','Дулаан'],answer:1}]},
+  {id:'r3',title:'Наадам',titleEn:'Naadam Festival',level:'Intermediate',
+   text:'Наадам бол монголчуудын хамгийн том баяр юм. Жил бүр долдугаар сарын арванэгэнд болдог. Наадамд гурван төрлийн тэмцээн байдаг: бөх, сур харвах, морины уралдаан. Бөх бол уламжлалт тэмцээн юм. Морины уралдаанд хүүхдүүд жокей болж уналдаг.',
+   translation:'Naadam is the biggest festival. It takes place July 11 every year. There are three competitions: wrestling, archery, horse racing. Wrestling is traditional. Children ride as jockeys in the horse race.',
+   vocab:{'хамгийн том':'biggest','баяр':'festival','уламжлалт':'traditional','жокей':'jockey'},
+   questions:[{q:'Наадам хэзээ болдог вэ?',en:'When?',opts:['6-р сарын 1','7-р сарын 11','8-р сарын 15','5-р сарын 20'],answer:1},{q:'Наадамд хэдэн тэмцээн байдаг вэ?',en:'How many?',opts:['2','3','4','5'],answer:1},{q:'Уралдаанд хэн унадаг вэ?',en:'Who rides?',opts:['Насанд хүрэгчид','Эмэгтэйчүүд','Хүүхдүүд','Жуулчид'],answer:2}]},
+  {id:'r4',title:'Говийн цөл',titleEn:'The Gobi Desert',level:'Intermediate',
+   text:'Говь цөл бол Монгол, Хятадад байдаг том цөл юм. Говьд зун маш халуун, өвөл маш хүйтэн байдаг. Говьд тэмээ, ирвэс амьдардаг. Говийн нутагт динозаврын яс олон дарагдсан байдаг.',
+   translation:'The Gobi Desert is in Mongolia and China. In summer very hot, in winter very cold. Camels and snow leopards live there. Many dinosaur bones are buried in the Gobi.',
+   vocab:{'ирвэс':'snow leopard','динозаврын яс':'dinosaur bones','дарагдсан':'buried'},
+   questions:[{q:'Говьд ямар амьтан амьдардаг вэ?',en:'Animals?',opts:['Нохой, муур','Тэмээ, ирвэс','Морь, үхэр','Чоно, баавгай'],answer:1},{q:'Говьд юу олдсон байдаг вэ?',en:'Found?',opts:['Алт','Динозаврын яс','Ус','Нефть'],answer:1},{q:'Говь аль улсуудад байдаг вэ?',en:'Countries?',opts:['Монгол, Орос','Хятад, Япон','Монгол, Хятад','Казахстан, Монгол'],answer:2}]},
+  {id:'r5',title:'Улаанбаатар хот',titleEn:'Ulaanbaatar',level:'Intermediate',
+   text:'Улаанбаатар бол Монгол улсын нийслэл хот юм. Монголын хамгийн том хот бөгөөд нийт хүн амын тал хувь нь тэнд амьдардаг. Улаанбаатарт их дээд сургуулиуд, музейнүүд, театрууд байдаг.',
+   translation:'Ulaanbaatar is the capital of Mongolia. It is the largest city and half the population lives there. Ulaanbaatar has universities, museums, and theatres.',
+   vocab:{'нийслэл':'capital','хүн ам':'population','тал хувь':'half'},
+   questions:[{q:'Хүн амын хэдэн хувь нь UB-д амьдардаг вэ?',en:'Population share?',opts:['1/4','1/3','1/2','All'],answer:2},{q:'UB-д юу байдаг вэ?',en:'What is in UB?',opts:['Зөвхөн гэрүүд','Их сургуулиуд, музейнүүд','Зөвхөн үйлдвэрүүд','Далай'],answer:1},{q:'UB ямар хот вэ?',en:'What kind of city?',opts:['Хамгийн жижиг','Хамгийн том','Хамгийн хуучин','Хамгийн шинэ'],answer:1}]},
+];
+
+let readingIdx=0,readingAnswers={};
+function startReadingPractice(i){readingIdx=i||0;readingAnswers={};showScreen('screen-reading');renderReading();}
+function renderReading(){
+  const p=READING_PASSAGES[readingIdx];if(!p)return;
+  document.getElementById('reading-title').textContent=p.title;
+  document.getElementById('reading-title-en').textContent=p.titleEn;
+  document.getElementById('reading-level').textContent=p.level;
+  document.getElementById('reading-counter').textContent=(readingIdx+1)+' / '+READING_PASSAGES.length;
+  document.getElementById('reading-translation').style.display='none';
+  document.getElementById('show-trans-btn').textContent='👁 Show translation';
+  document.getElementById('reading-translation').textContent=p.translation;
+  const pass=document.getElementById('reading-passage');
+  pass.innerHTML=p.text.split(' ').map(w=>{const cl=w.replace(/[.,?!]/g,''),pt=w.replace(cl,''),mn=p.vocab[cl];return '<span style="cursor:pointer;'+(mn?'color:#a78bfa;text-decoration:underline dotted;':'')+'" onclick="tapWord(\''+cl+'\',\''+( mn||'')+'\')">'+cl+'</span>'+pt+' ';}).join('');
+  document.getElementById('reading-vocab').innerHTML=Object.entries(p.vocab).map(([mn,en])=>'<div style="display:flex;gap:8px;align-items:center;padding:6px 10px;background:#0f0f14;border-radius:8px;margin-bottom:4px;"><span style="color:#a78bfa;font-weight:600;font-size:14px;min-width:120px;">'+mn+'</span><span style="color:#555;font-size:13px;flex:1;">'+en+'</span><button onclick="doTTS(\''+mn+'\')" style="background:none;border:none;color:#444;cursor:pointer;font-size:14px;">🔊</button></div>').join('');
+  document.getElementById('reading-qs').innerHTML=p.questions.map((q,qi)=>'<div style="background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px 14px;margin-bottom:8px;"><p style="font-size:14px;color:#e8e8f0;margin-bottom:4px;">'+q.q+'</p><p style="font-size:12px;color:#444;margin-bottom:8px;">'+q.en+'</p><div>'+q.opts.map((opt,oi)=>'<button onclick="answerQ('+qi+','+oi+','+q.answer+',this)" style="display:block;width:100%;text-align:left;padding:8px 12px;background:#0f0f14;border:1.5px solid #2a2a38;border-radius:8px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;margin-bottom:5px;">'+opt+'</button>').join('')+'</div></div>').join('');
+  document.getElementById('reading-fb').style.display='none';
+}
+function tapWord(w,m){doTTS(w);if(m)alert(w+' = '+m);}
+function answerQ(qi,oi,correct,btn){
+  const p=READING_PASSAGES[readingIdx];readingAnswers[qi]=oi;
+  const c=btn.parentElement;
+  Array.from(c.children).forEach((b,i)=>{b.disabled=true;if(i===correct)b.style.cssText='display:block;width:100%;text-align:left;padding:8px 12px;border:1.5px solid #4ade80;border-radius:8px;font-size:13px;color:#4ade80;background:#0f2a1a;cursor:default;font-family:inherit;margin-bottom:5px;';else if(i===oi&&oi!==correct)b.style.cssText='display:block;width:100%;text-align:left;padding:8px 12px;border:1.5px solid #f87171;border-radius:8px;font-size:13px;color:#f87171;background:#2a0f0f;cursor:default;font-family:inherit;margin-bottom:5px;';});
+  oi===correct?playCorrect():playWrong();
+  if(Object.keys(readingAnswers).length===p.questions.length){const sc=Object.entries(readingAnswers).filter(([qi2,oi2])=>parseInt(oi2)===p.questions[parseInt(qi2)].answer).length;const fb=document.getElementById('reading-fb');fb.style.display='block';fb.style.color=sc===p.questions.length?'#4ade80':'#facc15';fb.textContent=sc+'/'+p.questions.length+' correct'+(sc===p.questions.length?' 🎉':'');if(sc===p.questions.length)playFinish();}
+}
+function toggleTranslation(){const el=document.getElementById('reading-translation'),btn=document.getElementById('show-trans-btn');if(el.style.display==='none'){el.style.display='block';btn.textContent='🙈 Hide';}else{el.style.display='none';btn.textContent='👁 Show translation';}}
+function nextReading(){readingIdx=(readingIdx+1)%READING_PASSAGES.length;readingAnswers={};renderReading();}
+function prevReading(){readingIdx=(readingIdx-1+READING_PASSAGES.length)%READING_PASSAGES.length;readingAnswers={};renderReading();}
 </script>
 
 <!-- CONVERSATION PRACTICE SCREEN -->
@@ -6163,14 +6332,24 @@ function applyBundle(data) {
   window.location.reload();
 }
 
+let cloudPromptShown = false;
 async function fbLoad(user) {
   try {
     const snap = await getDoc(doc(db,'users',user.uid));
     if (snap.exists()) {
       const data = snap.data();
       const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (data.updatedAt && data.updatedAt > localTime) {
-        if (confirm('Cloud data is newer. Load from cloud?')) { localStorage.setItem('mn_last_sync', data.updatedAt); applyBundle(data); }
+      if (!cloudPromptShown && data.updatedAt && data.updatedAt > localTime + 60000) {
+        cloudPromptShown = true;
+        if (confirm('Cloud save is newer. Load from cloud?')) {
+          localStorage.setItem('mn_last_sync', data.updatedAt);
+          applyBundle(data);
+        } else {
+          localStorage.setItem('mn_last_sync', data.updatedAt);
+        }
+      } else if (!localTime) {
+        localStorage.setItem('mn_last_sync', data.updatedAt || Date.now());
+        applyBundle(data);
       }
     } else { await fbSaveNow(user); }
   } catch(e) { console.error('Load error:',e); }
@@ -6383,6 +6562,51 @@ window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
   <button class="next-btn" id="ld-next-btn" onclick="nextDictation()" style="display:none;">Next →</button>
 </div>
 
+
+<div class="screen" id="screen-reading">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <div style="flex:1;"><h2 id="reading-title" style="font-size:17px;font-weight:500;color:#e8e8f0;"></h2><p id="reading-title-en" style="font-size:12px;color:#555;"></p></div>
+    <span id="reading-counter" style="font-size:12px;color:#555;"></span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:1rem;">
+    <span id="reading-level" style="display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#111824;color:#60a5fa;border:1px solid #1e3055;"></span>
+    <span style="font-size:11px;color:#555;">Tap purple words for meaning</span>
+  </div>
+  <div id="reading-passage" style="background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.4rem;margin-bottom:1rem;line-height:2;font-size:16px;color:#e8e8f0;"></div>
+  <button id="show-trans-btn" onclick="toggleTranslation()" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 14px;font-size:13px;color:#666;cursor:pointer;font-family:inherit;margin-bottom:1rem;width:100%;">👁 Show translation</button>
+  <div id="reading-translation" style="display:none;background:#0f0f14;border-radius:10px;padding:12px;font-size:13px;color:#666;line-height:1.7;margin-bottom:1rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">📖 Key Vocabulary</p>
+  <div id="reading-vocab" style="margin-bottom:1.2rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">❓ Comprehension Questions</p>
+  <div id="reading-qs"></div>
+  <p id="reading-fb" style="display:none;font-size:14px;font-weight:600;text-align:center;margin:12px 0;"></p>
+  <div style="display:flex;gap:8px;margin-top:1rem;">
+    <button onclick="prevReading()" style="flex:1;padding:11px;background:#16161e;border:1px solid #2a2a38;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit;">← Prev</button>
+    <button onclick="nextReading()" style="flex:2;padding:11px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Next →</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-reading">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <div style="flex:1;"><h2 id="reading-title" style="font-size:17px;font-weight:500;color:#e8e8f0;"></h2><p id="reading-title-en" style="font-size:12px;color:#555;"></p></div>
+    <span id="reading-counter" style="font-size:12px;color:#555;"></span>
+  </div>
+  <div style="margin-bottom:1rem;"><span id="reading-level" style="display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#111824;color:#60a5fa;border:1px solid #1e3055;"></span> <span style="font-size:11px;color:#555;">Tap purple words for meaning</span></div>
+  <div id="reading-passage" style="background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.4rem;margin-bottom:1rem;line-height:2;font-size:16px;color:#e8e8f0;"></div>
+  <button id="show-trans-btn" onclick="toggleTranslation()" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 14px;font-size:13px;color:#666;cursor:pointer;font-family:inherit;margin-bottom:1rem;width:100%;">👁 Show translation</button>
+  <div id="reading-translation" style="display:none;background:#0f0f14;border-radius:10px;padding:12px;font-size:13px;color:#666;line-height:1.7;margin-bottom:1rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">📖 Key Vocabulary</p>
+  <div id="reading-vocab" style="margin-bottom:1.2rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">❓ Comprehension Questions</p>
+  <div id="reading-qs"></div>
+  <p id="reading-fb" style="display:none;font-size:14px;font-weight:600;text-align:center;margin:12px 0;"></p>
+  <div style="display:flex;gap:8px;margin-top:1rem;">
+    <button onclick="prevReading()" style="flex:1;padding:11px;background:#16161e;border:1px solid #2a2a38;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit;">← Prev</button>
+    <button onclick="nextReading()" style="flex:2;padding:11px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Next →</button>
+  </div>
+</div>
 
 </body>
 </html>  <div style="width:100%;display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -6642,14 +6866,24 @@ function applyBundle(data) {
   window.location.reload();
 }
 
+let cloudPromptShown = false;
 async function fbLoad(user) {
   try {
     const snap = await getDoc(doc(db,'users',user.uid));
     if (snap.exists()) {
       const data = snap.data();
       const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (data.updatedAt && data.updatedAt > localTime) {
-        if (confirm('Cloud data is newer. Load from cloud?')) { localStorage.setItem('mn_last_sync', data.updatedAt); applyBundle(data); }
+      if (!cloudPromptShown && data.updatedAt && data.updatedAt > localTime + 60000) {
+        cloudPromptShown = true;
+        if (confirm('Cloud save is newer. Load from cloud?')) {
+          localStorage.setItem('mn_last_sync', data.updatedAt);
+          applyBundle(data);
+        } else {
+          localStorage.setItem('mn_last_sync', data.updatedAt);
+        }
+      } else if (!localTime) {
+        localStorage.setItem('mn_last_sync', data.updatedAt || Date.now());
+        applyBundle(data);
       }
     } else { await fbSaveNow(user); }
   } catch(e) { console.error('Load error:',e); }
@@ -6862,6 +7096,51 @@ window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
   <button class="next-btn" id="ld-next-btn" onclick="nextDictation()" style="display:none;">Next →</button>
 </div>
 
+
+<div class="screen" id="screen-reading">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <div style="flex:1;"><h2 id="reading-title" style="font-size:17px;font-weight:500;color:#e8e8f0;"></h2><p id="reading-title-en" style="font-size:12px;color:#555;"></p></div>
+    <span id="reading-counter" style="font-size:12px;color:#555;"></span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:1rem;">
+    <span id="reading-level" style="display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#111824;color:#60a5fa;border:1px solid #1e3055;"></span>
+    <span style="font-size:11px;color:#555;">Tap purple words for meaning</span>
+  </div>
+  <div id="reading-passage" style="background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.4rem;margin-bottom:1rem;line-height:2;font-size:16px;color:#e8e8f0;"></div>
+  <button id="show-trans-btn" onclick="toggleTranslation()" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 14px;font-size:13px;color:#666;cursor:pointer;font-family:inherit;margin-bottom:1rem;width:100%;">👁 Show translation</button>
+  <div id="reading-translation" style="display:none;background:#0f0f14;border-radius:10px;padding:12px;font-size:13px;color:#666;line-height:1.7;margin-bottom:1rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">📖 Key Vocabulary</p>
+  <div id="reading-vocab" style="margin-bottom:1.2rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">❓ Comprehension Questions</p>
+  <div id="reading-qs"></div>
+  <p id="reading-fb" style="display:none;font-size:14px;font-weight:600;text-align:center;margin:12px 0;"></p>
+  <div style="display:flex;gap:8px;margin-top:1rem;">
+    <button onclick="prevReading()" style="flex:1;padding:11px;background:#16161e;border:1px solid #2a2a38;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit;">← Prev</button>
+    <button onclick="nextReading()" style="flex:2;padding:11px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Next →</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-reading">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <div style="flex:1;"><h2 id="reading-title" style="font-size:17px;font-weight:500;color:#e8e8f0;"></h2><p id="reading-title-en" style="font-size:12px;color:#555;"></p></div>
+    <span id="reading-counter" style="font-size:12px;color:#555;"></span>
+  </div>
+  <div style="margin-bottom:1rem;"><span id="reading-level" style="display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#111824;color:#60a5fa;border:1px solid #1e3055;"></span> <span style="font-size:11px;color:#555;">Tap purple words for meaning</span></div>
+  <div id="reading-passage" style="background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.4rem;margin-bottom:1rem;line-height:2;font-size:16px;color:#e8e8f0;"></div>
+  <button id="show-trans-btn" onclick="toggleTranslation()" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 14px;font-size:13px;color:#666;cursor:pointer;font-family:inherit;margin-bottom:1rem;width:100%;">👁 Show translation</button>
+  <div id="reading-translation" style="display:none;background:#0f0f14;border-radius:10px;padding:12px;font-size:13px;color:#666;line-height:1.7;margin-bottom:1rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">📖 Key Vocabulary</p>
+  <div id="reading-vocab" style="margin-bottom:1.2rem;"></div>
+  <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">❓ Comprehension Questions</p>
+  <div id="reading-qs"></div>
+  <p id="reading-fb" style="display:none;font-size:14px;font-weight:600;text-align:center;margin:12px 0;"></p>
+  <div style="display:flex;gap:8px;margin-top:1rem;">
+    <button onclick="prevReading()" style="flex:1;padding:11px;background:#16161e;border:1px solid #2a2a38;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit;">← Prev</button>
+    <button onclick="nextReading()" style="flex:2;padding:11px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Next →</button>
+  </div>
+</div>
 
 </body>
 </html>
