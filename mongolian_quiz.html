@@ -5025,15 +5025,20 @@ function startConvoSpeech() {
       btn.classList.remove('listening');
       btn.innerHTML = '🎤';
       const text = results[0];
-      // Put in convo input and send
-      const inp = document.getElementById('convo-input');
-      if (inp) {
-        inp.value = text;
-        inp.style.display = '';
-        // Hide kb if open
-        if (convoKbVisible) toggleConvoKb();
+      if (!text) return;
+      // Show kb text if keyboard is open, otherwise put in text input
+      if (convoKbVisible) {
+        const disp = document.getElementById('convo-kb-text');
+        if (disp) disp.textContent = text;
+      } else {
+        const inp = document.getElementById('convo-input');
+        if (inp) {
+          inp.value = text;
+          inp.style.display = '';
+          inp.focus();
+        }
       }
-      setTimeout(() => sendConvoMessage(), 200);
+      playClick();
     },
     () => { btn.classList.remove('listening'); btn.innerHTML='🎤'; },
     'mn-MN'
