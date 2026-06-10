@@ -456,6 +456,34 @@
   .prod-attempts { font-size:12px;color:#555;margin-top:4px; }
   .prod-mode-badge { display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#1e1008;color:#f97316;border:1px solid #4a2a10;margin-bottom:1rem; }
 
+
+  /* Sentence Production Mode */
+  .sp-sentence-en { font-size:20px;font-weight:600;color:#e8e8f0;text-align:center;line-height:1.5;margin-bottom:8px; }
+  .sp-word-bank { display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0; }
+  .sp-word-chip { padding:6px 14px;background:#1a1a2a;border:1.5px solid #2a2a38;border-radius:99px;font-size:15px;color:#e8e8f0;cursor:pointer;transition:all 0.15s;user-select:none; }
+  .sp-word-chip:hover { border-color:#7c6af7;background:#1a1830; }
+  .sp-word-chip.used { opacity:0.3;pointer-events:none; }
+  .sp-answer-area { min-height:52px;width:100%;background:#0f0f14;border:1.5px solid #2a2a38;border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;cursor:pointer; }
+  .sp-answer-chip { padding:5px 12px;background:#7c6af7;border-radius:99px;font-size:15px;color:white;cursor:pointer; }
+  .sp-answer-chip:hover { background:#9080ff; }
+  .sp-placeholder { font-size:13px;color:#333;font-style:italic; }
+  .sp-mode-badge { display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#0f1e14;color:#4ade80;border:1px solid #2a4a2a;margin-bottom:1rem; }
+  .sp-type-wrap { width:100%; }
+
+
+  /* Listening Dictation */
+  .dict-sentence-display { width:100%;background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.2rem;margin-bottom:1rem;text-align:center; }
+  .dict-play-btn { width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c6af7,#a78bfa);border:none;font-size:28px;cursor:pointer;margin:0.5rem auto;display:flex;align-items:center;justify-content:center;transition:transform 0.15s; }
+  .dict-play-btn:hover { transform:scale(1.05); }
+  .dict-play-btn.playing { animation:bearPulse 0.8s infinite; }
+  .dict-word-inputs { display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0;width:100%; }
+  .dict-word-input { padding:6px 12px;font-size:15px;font-family:inherit;background:#0f0f14;border:1.5px solid #2a2a38;border-radius:8px;color:#e8e8f0;text-align:center;min-width:60px;max-width:120px;outline:none; }
+  .dict-word-input:focus { border-color:#7c6af7; }
+  .dict-word-input.correct { border-color:#4ade80;background:#0f2a1a;color:#4ade80; }
+  .dict-word-input.wrong { border-color:#f87171;background:#2a0f0f;color:#f87171; }
+  .dict-word-input.punct { background:none;border:none;color:#555;font-size:18px;padding:6px 2px;min-width:20px; }
+  .dict-mode-badge { display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#111824;color:#60a5fa;border:1px solid #1e3055;margin-bottom:1rem; }
+
 </style>
 </head>
 <body>
@@ -505,6 +533,11 @@
         <div class="learn-card" onclick="startSentenceMode()">
           <span class="learn-card-icon">💬</span>
           <div><div class="learn-card-title">Sentence Mode</div><div class="learn-card-sub">Read, listen, fill the blank</div></div>
+          <span class="learn-card-arrow">›</span>
+        </div>
+        <div class="learn-card" onclick="startSentenceProduction()">
+          <span class="learn-card-icon">🧩</span>
+          <div><div class="learn-card-title">Sentence Production</div><div class="learn-card-sub">See English — build the Mongolian</div></div>
           <span class="learn-card-arrow">›</span>
         </div>
         <div class="learn-card" onclick="openGrammarNotes()">
@@ -578,6 +611,11 @@
           <div><div class="learn-card-title">Weak Spots</div><div class="learn-card-sub">Drill your most-missed cards</div></div>
           <span class="learn-card-arrow">›</span>
         </div>
+        <div class="learn-card" onclick="openWrongSentences()">
+          <span class="learn-card-icon">📝</span>
+          <div><div class="learn-card-title">Weak Sentences</div><div class="learn-card-sub">Sentences you keep missing</div></div>
+          <span class="learn-card-arrow">›</span>
+        </div>
         <div class="learn-card" onclick="selectedMode='weak';startQuiz()">
           <span class="learn-card-icon">🎯</span>
           <div><div class="learn-card-title">Weak letter drill</div><div class="learn-card-sub">Your worst letters only</div></div>
@@ -586,6 +624,11 @@
         <div class="learn-card" onclick="startListeningMode()">
           <span class="learn-card-icon">👂</span>
           <div><div class="learn-card-title">Listening mode</div><div class="learn-card-sub">Hear a word, type it in Cyrillic</div></div>
+          <span class="learn-card-arrow">›</span>
+        </div>
+        <div class="learn-card" onclick="startListeningDictation()">
+          <span class="learn-card-icon">✍️</span>
+          <div><div class="learn-card-title">Listening Dictation</div><div class="learn-card-sub">Hear a sentence, type every word</div></div>
           <span class="learn-card-arrow">›</span>
         </div>
       </div>
@@ -1305,6 +1348,498 @@ const WORD_BANK = {
       { id:'wb_cv10', mn:"Муу", en:"Bad", rom:"Muu", img:"bad" },
     ]
   }
+,
+  // ── Actions & Verbs Extended ────────────────────────────────────────────
+  verbs2: {
+    label: "More Verbs", unlockAfter: "actions", emoji: "⚡",
+    words: [
+      { id:'wb_v1', mn:"Авах", en:"To take / get", rom:"Avakh", img:"take" },
+      { id:'wb_v2', mn:"Өгөх", en:"To give", rom:"Ogokh", img:"give" },
+      { id:'wb_v3', mn:"Мэдэх", en:"To know", rom:"Medekh", img:"know" },
+      { id:'wb_v4', mn:"Хийх", en:"To do / make", rom:"Hiikh", img:"do" },
+      { id:'wb_v5', mn:"Олох", en:"To find", rom:"Olokh", img:"find" },
+      { id:'wb_v6', mn:"Тоглох", en:"To play", rom:"Toglokh", img:"play" },
+      { id:'wb_v7', mn:"Дуулах", en:"To sing", rom:"Duulakh", img:"sing" },
+      { id:'wb_v8', mn:"Нисэх", en:"To fly", rom:"Nisekh", img:"fly" },
+      { id:'wb_v9', mn:"Бодох", en:"To think", rom:"Bodokh", img:"think" },
+      { id:'wb_v10', mn:"Санах", en:"To remember / miss", rom:"Sanakh", img:"remember" },
+      { id:'wb_v11', mn:"Мартах", en:"To forget", rom:"Martakh", img:"forget" },
+      { id:'wb_v12', mn:"Хүсэх", en:"To want / wish", rom:"Khusekh", img:"want" },
+      { id:'wb_v13', mn:"Чадах", en:"To be able to / can", rom:"Chadakh", img:"can" },
+      { id:'wb_v14', mn:"Болох", en:"To become / be ok", rom:"Bolokh", img:"become" },
+      { id:'wb_v15', mn:"Буцах", en:"To return / go back", rom:"Butsakh", img:"return" },
+    ]
+  },
+
+  // ── Body Parts ───────────────────────────────────────────────────────────
+  body: {
+    label: "Body Parts", unlockAfter: "people", emoji: "🧍",
+    words: [
+      { id:'wb_b1', mn:"Толгой", en:"Head", rom:"Tolgoi", img:"head" },
+      { id:'wb_b2', mn:"Нүүр", en:"Face", rom:"Nuur", img:"face" },
+      { id:'wb_b3', mn:"Нүд", en:"Eye", rom:"Nud", img:"eye" },
+      { id:'wb_b4', mn:"Чих", en:"Ear", rom:"Chikh", img:"ear" },
+      { id:'wb_b5', mn:"Хамар", en:"Nose", rom:"Khamar", img:"nose" },
+      { id:'wb_b6', mn:"Ам", en:"Mouth", rom:"Am", img:"mouth" },
+      { id:'wb_b7', mn:"Гар", en:"Hand / arm", rom:"Gar", img:"hand" },
+      { id:'wb_b8', mn:"Хөл", en:"Foot / leg", rom:"Khol", img:"foot" },
+      { id:'wb_b9', mn:"Нуруу", en:"Back", rom:"Nuruu", img:"back" },
+      { id:'wb_b10', mn:"Зүрх", en:"Heart", rom:"Zurkh", img:"heart" },
+      { id:'wb_b11', mn:"Ходоод", en:"Stomach", rom:"Khodood", img:"stomach" },
+      { id:'wb_b12', mn:"Мөр", en:"Shoulder", rom:"Mor", img:"shoulder" },
+    ]
+  },
+
+  // ── Colors ───────────────────────────────────────────────────────────────
+  colors: {
+    label: "Colors", unlockAfter: "objects", emoji: "🎨",
+    words: [
+      { id:'wb_c1', mn:"Улаан", en:"Red", rom:"Ulaan", img:"red" },
+      { id:'wb_c2', mn:"Цэнхэр", en:"Blue", rom:"Tsenkher", img:"blue" },
+      { id:'wb_c3', mn:"Ногоон", en:"Green", rom:"Nogoon", img:"green" },
+      { id:'wb_c4', mn:"Шар", en:"Yellow", rom:"Shar", img:"yellow" },
+      { id:'wb_c5', mn:"Цагаан", en:"White", rom:"Tsagaan", img:"white" },
+      { id:'wb_c6', mn:"Хар", en:"Black", rom:"Khar", img:"black" },
+      { id:'wb_c7', mn:"Бор", en:"Brown", rom:"Bor", img:"brown" },
+      { id:'wb_c8', mn:"Ягаан", en:"Pink", rom:"Yagaan", img:"pink" },
+      { id:'wb_c9', mn:"Нил ягаан", en:"Purple", rom:"Nil yagaan", img:"purple" },
+      { id:'wb_c10', mn:"Саарал", en:"Grey", rom:"Saral", img:"grey" },
+      { id:'wb_c11', mn:"Улбар шар", en:"Orange", rom:"Ulbar shar", img:"orange" },
+    ]
+  },
+
+  // ── Time & Calendar ──────────────────────────────────────────────────────
+  time: {
+    label: "Time & Calendar", unlockAfter: "numbers", emoji: "🕐",
+    words: [
+      { id:'wb_t1', mn:"Өнөөдөр", en:"Today", rom:"Onoodor", img:"today" },
+      { id:'wb_t2', mn:"Маргааш", en:"Tomorrow", rom:"Margas", img:"tomorrow" },
+      { id:'wb_t3', mn:"Өчигдөр", en:"Yesterday", rom:"Ochigdor", img:"yesterday" },
+      { id:'wb_t4', mn:"Одоо", en:"Now", rom:"Odoo", img:"now" },
+      { id:'wb_t5', mn:"Дараа", en:"Later / after", rom:"Daraa", img:"later" },
+      { id:'wb_t6', mn:"Өглөө", en:"Morning", rom:"Ogloo", img:"morning" },
+      { id:'wb_t7', mn:"Үдэш", en:"Evening", rom:"Udesh", img:"evening" },
+      { id:'wb_t8', mn:"Шөнө", en:"Night", rom:"Shono", img:"night" },
+      { id:'wb_t9', mn:"Долоо хоног", en:"Week", rom:"Doloo khonog", img:"week" },
+      { id:'wb_t10', mn:"Сар", en:"Month / moon", rom:"Sar", img:"month" },
+      { id:'wb_t11', mn:"Жил", en:"Year", rom:"Jil", img:"year" },
+      { id:'wb_t12', mn:"Цаг", en:"Hour / time", rom:"Tsag", img:"hour" },
+      { id:'wb_t13', mn:"Минут", en:"Minute", rom:"Minut", img:"minute" },
+      { id:'wb_t14', mn:"Даваа", en:"Monday", rom:"Davaa", img:"monday" },
+      { id:'wb_t15', mn:"Бямба", en:"Saturday", rom:"Byamba", img:"saturday" },
+      { id:'wb_t16', mn:"Ням", en:"Sunday", rom:"Nyam", img:"sunday" },
+    ]
+  },
+
+  // ── Weather ──────────────────────────────────────────────────────────────
+  weather: {
+    label: "Weather", unlockAfter: "nature", emoji: "🌤️",
+    words: [
+      { id:'wb_w1', mn:"Цаг агаар", en:"Weather", rom:"Tsag agaar", img:"weather" },
+      { id:'wb_w2', mn:"Дулаан", en:"Warm", rom:"Dulaan", img:"warm" },
+      { id:'wb_w3', mn:"Хүйтэн", en:"Cold", rom:"Khuiten", img:"cold" },
+      { id:'wb_w4', mn:"Бороо", en:"Rain", rom:"Boroo", img:"rain" },
+      { id:'wb_w5', mn:"Цас", en:"Snow", rom:"Tsas", img:"snow" },
+      { id:'wb_w6', mn:"Салхи", en:"Wind", rom:"Salki", img:"wind" },
+      { id:'wb_w7', mn:"Нар", en:"Sun / sunshine", rom:"Nar", img:"sun" },
+      { id:'wb_w8', mn:"Үүл", en:"Cloud", rom:"Uul", img:"cloud" },
+      { id:'wb_w9', mn:"Манан", en:"Fog / mist", rom:"Manan", img:"fog" },
+      { id:'wb_w10', mn:"Халуун", en:"Hot", rom:"Khaluun", img:"hot" },
+      { id:'wb_w11', mn:"Аянга", en:"Thunder / lightning", rom:"Ayanga", img:"thunder" },
+    ]
+  },
+
+  // ── Places & Buildings ───────────────────────────────────────────────────
+  places: {
+    label: "Places", unlockAfter: "conversation", emoji: "📍",
+    words: [
+      { id:'wb_pl1', mn:"Сургууль", en:"School", rom:"Surguul", img:"school" },
+      { id:'wb_pl2', mn:"Эмнэлэг", en:"Hospital", rom:"Emnelig", img:"hospital" },
+      { id:'wb_pl3', mn:"Дэлгүүр", en:"Shop / store", rom:"Delguur", img:"shop" },
+      { id:'wb_pl4', mn:"Зах", en:"Market / bazaar", rom:"Zakh", img:"market" },
+      { id:'wb_pl5', mn:"Банк", en:"Bank", rom:"Bank", img:"bank" },
+      { id:'wb_pl6', mn:"Ресторан", en:"Restaurant", rom:"Restoran", img:"restaurant" },
+      { id:'wb_pl7', mn:"Номын сан", en:"Library", rom:"Nomyn san", img:"library" },
+      { id:'wb_pl8', mn:"Буудал", en:"Hotel", rom:"Buudal", img:"hotel" },
+      { id:'wb_pl9', mn:"Нисэх онгоц буудал", en:"Airport", rom:"Nisekh ongots buudal", img:"airport" },
+      { id:'wb_pl10', mn:"Цэцэрлэг", en:"Park / garden", rom:"Tsetserlug", img:"park" },
+      { id:'wb_pl11', mn:"Гудамж", en:"Street", rom:"Gudamj", img:"street" },
+      { id:'wb_pl12', mn:"Гүүр", en:"Bridge", rom:"Guur", img:"bridge" },
+      { id:'wb_pl13', mn:"Уулын орой", en:"Mountain top / summit", rom:"Uulyn oroi", img:"summit" },
+      { id:'wb_pl14', mn:"Гол", en:"River", rom:"Gol", img:"river" },
+      { id:'wb_pl15', mn:"Тал хээр", en:"Steppe / grassland", rom:"Tal kheer", img:"steppe" },
+    ]
+  },
+
+  // ── Transport ────────────────────────────────────────────────────────────
+  transport: {
+    label: "Transport", unlockAfter: "places", emoji: "🚗",
+    words: [
+      { id:'wb_tr1', mn:"Машин", en:"Car", rom:"Mashin", img:"car" },
+      { id:'wb_tr2', mn:"Автобус", en:"Bus", rom:"Avtobus", img:"bus" },
+      { id:'wb_tr3', mn:"Такси", en:"Taxi", rom:"Taksi", img:"taxi" },
+      { id:'wb_tr4', mn:"Галт тэрэг", en:"Train", rom:"Galt tereg", img:"train" },
+      { id:'wb_tr5', mn:"Нисэх онгоц", en:"Airplane", rom:"Nisekh ongots", img:"airplane" },
+      { id:'wb_tr6', mn:"Дугуй", en:"Bicycle", rom:"Dugui", img:"bicycle" },
+      { id:'wb_tr7', mn:"Морь", en:"Horse", rom:"Mori", img:"horse" },
+      { id:'wb_tr8', mn:"Замын тэмдэг", en:"Road sign", rom:"Zamyn temdeg", img:"sign" },
+      { id:'wb_tr9', mn:"Зам", en:"Road / way", rom:"Zam", img:"road" },
+      { id:'wb_tr10', mn:"Гарц", en:"Exit / crossing", rom:"Garts", img:"exit" },
+    ]
+  },
+
+  // ── Emotions ─────────────────────────────────────────────────────────────
+  emotions: {
+    label: "Emotions", unlockAfter: "verbs2", emoji: "😊",
+    words: [
+      { id:'wb_e1', mn:"Баяр", en:"Joy / celebration", rom:"Bayar", img:"joy" },
+      { id:'wb_e2', mn:"Гуниг", en:"Sadness / sorrow", rom:"Gunig", img:"sad" },
+      { id:'wb_e3', mn:"Уур", en:"Anger", rom:"Uur", img:"angry" },
+      { id:'wb_e4', mn:"Айдас", en:"Fear", rom:"Aidas", img:"fear" },
+      { id:'wb_e5', mn:"Гайхал", en:"Surprise / wonder", rom:"Gaikhal", img:"surprise" },
+      { id:'wb_e6', mn:"Хайр", en:"Love / affection", rom:"Khair", img:"love" },
+      { id:'wb_e7', mn:"Найдвар", en:"Hope", rom:"Naidvar", img:"hope" },
+      { id:'wb_e8', mn:"Итгэл", en:"Trust / faith", rom:"Itgel", img:"trust" },
+      { id:'wb_e9', mn:"Залхуу", en:"Laziness / boredom", rom:"Zalkhuu", img:"bored" },
+      { id:'wb_e10', mn:"Санаа зовних", en:"Worry / anxiety", rom:"Sanaa zovnikh", img:"worry" },
+      { id:'wb_e11', mn:"Ичих", en:"Shame / embarrassment", rom:"Ichikh", img:"shame" },
+      { id:'wb_e12', mn:"Омог", en:"Pride", rom:"Omog", img:"proud" },
+    ]
+  },
+
+  // ── Clothing ─────────────────────────────────────────────────────────────
+  clothing: {
+    label: "Clothing", unlockAfter: "body", emoji: "👕",
+    words: [
+      { id:'wb_cl1', mn:"Хувцас", en:"Clothes", rom:"Khuvtsas", img:"clothes" },
+      { id:'wb_cl2', mn:"Цамц", en:"Shirt / top", rom:"Tsamts", img:"shirt" },
+      { id:'wb_cl3', mn:"Өмд", en:"Trousers / pants", rom:"Omd", img:"pants" },
+      { id:'wb_cl4', mn:"Гутал", en:"Shoes / boots", rom:"Gutal", img:"shoes" },
+      { id:'wb_cl5', mn:"Малгай", en:"Hat", rom:"Malgai", img:"hat" },
+      { id:'wb_cl6', mn:"Дээл", en:"Deel (traditional robe)", rom:"Deel", img:"deel" },
+      { id:'wb_cl7', mn:"Пальто", en:"Coat", rom:"Palto", img:"coat" },
+      { id:'wb_cl8', mn:"Оймс", en:"Socks", rom:"Oims", img:"socks" },
+      { id:'wb_cl9', mn:"Бээлий", en:"Gloves", rom:"Beelii", img:"gloves" },
+      { id:'wb_cl10', mn:"Цүнх", en:"Bag", rom:"Tsunh", img:"bag" },
+    ]
+  },
+
+  // ── Food Extended ────────────────────────────────────────────────────────
+  food2: {
+    label: "More Food", unlockAfter: "food", emoji: "🍜",
+    words: [
+      { id:'wb_f21', mn:"Бууз", en:"Buuz (steamed dumplings)", rom:"Buuz", img:"buuz" },
+      { id:'wb_f22', mn:"Хуушуур", en:"Khuushuur (fried pastry)", rom:"Khuushuur", img:"khuushuur" },
+      { id:'wb_f23', mn:"Цуйван", en:"Tsuivan (noodle dish)", rom:"Tsuivan", img:"tsuivan" },
+      { id:'wb_f24', mn:"Тараг", en:"Tarag (yogurt)", rom:"Tarag", img:"yogurt" },
+      { id:'wb_f25', mn:"Аарц", en:"Aaruul (dried curd)", rom:"Aarats", img:"aaruul" },
+      { id:'wb_f26', mn:"Жимс", en:"Fruit", rom:"Jims", img:"fruit" },
+      { id:'wb_f27', mn:"Хүнс", en:"Food / groceries", rom:"Khuns", img:"groceries" },
+      { id:'wb_f28', mn:"Давс", en:"Salt", rom:"Davs", img:"salt" },
+      { id:'wb_f29', mn:"Чихэр", en:"Sugar / candy", rom:"Chikher", img:"sugar" },
+      { id:'wb_f30', mn:"Алим", en:"Apple", rom:"Alim", img:"apple" },
+      { id:'wb_f31', mn:"Лууван", en:"Carrot", rom:"Luuvan", img:"carrot" },
+      { id:'wb_f32', mn:"Төмс", en:"Potato", rom:"Toms", img:"potato" },
+      { id:'wb_f33', mn:"Сонгино", en:"Onion", rom:"Songino", img:"onion" },
+    ]
+  },
+
+  // ── School & Work ────────────────────────────────────────────────────────
+  school: {
+    label: "School & Work", unlockAfter: "places", emoji: "📚",
+    words: [
+      { id:'wb_sc1', mn:"Ном", en:"Book", rom:"Nom", img:"book" },
+      { id:'wb_sc2', mn:"Дэвтэр", en:"Notebook", rom:"Devter", img:"notebook" },
+      { id:'wb_sc3', mn:"Харандаа", en:"Pencil", rom:"Kharandaa", img:"pencil" },
+      { id:'wb_sc4', mn:"Үзэг", en:"Pen", rom:"Uzeg", img:"pen" },
+      { id:'wb_sc5', mn:"Хичээл", en:"Lesson / subject", rom:"Khicheel", img:"lesson" },
+      { id:'wb_sc6', mn:"Багш", en:"Teacher", rom:"Bagsh", img:"teacher" },
+      { id:'wb_sc7', mn:"Оюутан", en:"Student (university)", rom:"Oyuutan", img:"student" },
+      { id:'wb_sc8', mn:"Сурагч", en:"Student (school)", rom:"Suragch", img:"pupil" },
+      { id:'wb_sc9', mn:"Ажил", en:"Work / job", rom:"Ajil", img:"work" },
+      { id:'wb_sc10', mn:"Компьютер", en:"Computer", rom:"Kompyuter", img:"computer" },
+      { id:'wb_sc11', mn:"Утас", en:"Phone", rom:"Utas", img:"phone" },
+      { id:'wb_sc12', mn:"Мөнгө", en:"Money", rom:"Mongo", img:"money" },
+      { id:'wb_sc13', mn:"Цалин", en:"Salary / wage", rom:"Tsalin", img:"salary" },
+      { id:'wb_sc14', mn:"Хурал", en:"Meeting", rom:"Khural", img:"meeting" },
+    ]
+  },
+
+  // ── Adjectives ───────────────────────────────────────────────────────────
+  adjectives: {
+    label: "Adjectives", unlockAfter: "conversation", emoji: "✨",
+    words: [
+      { id:'wb_adj1', mn:"Шинэ", en:"New", rom:"Shine", img:"new" },
+      { id:'wb_adj2', mn:"Хуучин", en:"Old", rom:"Khuuchin", img:"old" },
+      { id:'wb_adj3', mn:"Урт", en:"Long / tall", rom:"Urt", img:"long" },
+      { id:'wb_adj4', mn:"Богино", en:"Short", rom:"Bogino", img:"short" },
+      { id:'wb_adj5', mn:"Өргөн", en:"Wide", rom:"Orgun", img:"wide" },
+      { id:'wb_adj6', mn:"Нарийн", en:"Narrow / thin", rom:"Nariin", img:"narrow" },
+      { id:'wb_adj7', mn:"Хүнд", en:"Heavy / difficult", rom:"Khund", img:"heavy" },
+      { id:'wb_adj8', mn:"Хөнгөн", en:"Light (weight) / easy", rom:"Khongun", img:"light_weight" },
+      { id:'wb_adj9', mn:"Хурдан", en:"Fast / quick", rom:"Khurdan", img:"fast" },
+      { id:'wb_adj10', mn:"Удаан", en:"Slow", rom:"Udaan", img:"slow" },
+      { id:'wb_adj11', mn:"Хямд", en:"Cheap", rom:"Khyamd", img:"cheap" },
+      { id:'wb_adj12', mn:"Үнэтэй", en:"Expensive", rom:"Unetei", img:"expensive" },
+      { id:'wb_adj13', mn:"Залуу", en:"Young", rom:"Zaluu", img:"young" },
+      { id:'wb_adj14', mn:"Хөгшин", en:"Old (person)", rom:"Khogshim", img:"elderly" },
+      { id:'wb_adj15', mn:"Гоё", en:"Beautiful / nice", rom:"Goyo", img:"beautiful" },
+      { id:'wb_adj16', mn:"Муухай", en:"Ugly", rom:"Muukhain", img:"ugly" },
+    ]
+  },
+
+  // ── Mongolian Culture ─────────────────────────────────────────────────────
+  culture: {
+    label: "Mongolian Culture", unlockAfter: "places", emoji: "🏹",
+    words: [
+      { id:'wb_cu1', mn:"Гэр", en:"Ger (yurt)", rom:"Ger", img:"ger" },
+      { id:'wb_cu2', mn:"Дээл", en:"Deel (traditional clothing)", rom:"Deel", img:"deel" },
+      { id:'wb_cu3', mn:"Наадам", en:"Naadam festival", rom:"Naadam", img:"naadam" },
+      { id:'wb_cu4', mn:"Бөх", en:"Wrestling", rom:"Bokh", img:"wrestling" },
+      { id:'wb_cu5', mn:"Сур харвах", en:"Archery", rom:"Sur kharvakh", img:"archery" },
+      { id:'wb_cu6', mn:"Морины уралдаан", en:"Horse racing", rom:"Moriny uraldaan", img:"horserace" },
+      { id:'wb_cu7', mn:"Айраг", en:"Airag (fermented mare's milk)", rom:"Airag", img:"airag" },
+      { id:'wb_cu8', mn:"Морин хуур", en:"Morin khuur (horsehead fiddle)", rom:"Morin khuur", img:"morinkhuur" },
+      { id:'wb_cu9', mn:"Цагаан сар", en:"Tsagaan Sar (Lunar New Year)", rom:"Tsagaan Sar", img:"tsagaansar" },
+      { id:'wb_cu10', mn:"Өвөг", en:"Ancestor", rom:"Ovog", img:"ancestor" },
+      { id:'wb_cu11', mn:"Уртын дуу", en:"Long song (traditional)", rom:"Urtyn duu", img:"longsong" },
+      { id:'wb_cu12', mn:"Хөөмий", en:"Throat singing", rom:"Khoomii", img:"khoomii" },
+    ]
+  }
+  ,
+
+  // ── Relationships & Social ───────────────────────────────────────────────
+  social: {
+    label: "Relationships", unlockAfter: "people", emoji: "🤝",
+    words: [
+      { id:'wb_so1', mn:"Нөхөр", en:"Husband / male friend", rom:"Nokhur", img:"husband" },
+      { id:'wb_so2', mn:"Эхнэр", en:"Wife", rom:"Ekhner", img:"wife" },
+      { id:'wb_so3', mn:"Хүүхэд", en:"Child / children", rom:"Khuukhed", img:"child" },
+      { id:'wb_so4', mn:"Хүү", en:"Son / boy", rom:"Khuu", img:"son" },
+      { id:'wb_so5', mn:"Охин", en:"Daughter / girl", rom:"Okhin", img:"daughter" },
+      { id:'wb_so6', mn:"Өвөө", en:"Grandfather", rom:"Ovoo", img:"grandfather" },
+      { id:'wb_so7', mn:"Эмээ", en:"Grandmother", rom:"Emee", img:"grandmother" },
+      { id:'wb_so8', mn:"Авга", en:"Uncle (father's brother)", rom:"Avga", img:"uncle" },
+      { id:'wb_so9', mn:"Нагац", en:"Uncle (mother's brother)", rom:"Nagats", img:"uncle2" },
+      { id:'wb_so10', mn:"Хөрш", en:"Neighbor", rom:"Khorsh", img:"neighbor" },
+      { id:'wb_so11', mn:"Дайсан", en:"Enemy", rom:"Daisan", img:"enemy" },
+      { id:'wb_so12', mn:"Баг", en:"Team", rom:"Bag", img:"team" },
+    ]
+  },
+
+  // ── House & Home ─────────────────────────────────────────────────────────
+  home: {
+    label: "House & Home", unlockAfter: "objects", emoji: "🏠",
+    words: [
+      { id:'wb_h1', mn:"Орон сууц", en:"Apartment / housing", rom:"Oron suuts", img:"apartment" },
+      { id:'wb_h2', mn:"Өрөө", en:"Room", rom:"Oroo", img:"room" },
+      { id:'wb_h3', mn:"Унтлагын өрөө", en:"Bedroom", rom:"Untlagiin oroo", img:"bedroom" },
+      { id:'wb_h4', mn:"Гал тогоо", en:"Kitchen", rom:"Gal togoo", img:"kitchen" },
+      { id:'wb_h5', mn:"Угаалгын өрөө", en:"Bathroom", rom:"Ugaalgiin oroo", img:"bathroom" },
+      { id:'wb_h6', mn:"Хаалга", en:"Door", rom:"Khaalga", img:"door" },
+      { id:'wb_h7', mn:"Цонх", en:"Window", rom:"Tsonkh", img:"window" },
+      { id:'wb_h8', mn:"Шал", en:"Floor", rom:"Shal", img:"floor" },
+      { id:'wb_h9', mn:"Тааз", en:"Ceiling", rom:"Taaz", img:"ceiling" },
+      { id:'wb_h10', mn:"Орон", en:"Bed", rom:"Oron", img:"bed" },
+      { id:'wb_h11', mn:"Ширээ", en:"Table / desk", rom:"Shiree", img:"table" },
+      { id:'wb_h12', mn:"Сандал", en:"Chair", rom:"Sandal", img:"chair" },
+      { id:'wb_h13', mn:"Зурхай", en:"TV", rom:"Zurkhai", img:"tv" },
+      { id:'wb_h14', mn:"Цонхны хөшиг", en:"Curtain", rom:"Tsonkhny khoshig", img:"curtain" },
+      { id:'wb_h15', mn:"Цахилгаан", en:"Electricity", rom:"Tsakkilgaan", img:"electricity" },
+    ]
+  },
+
+  // ── Nature Extended ──────────────────────────────────────────────────────
+  nature2: {
+    label: "More Nature", unlockAfter: "nature", emoji: "🌿",
+    words: [
+      { id:'wb_n21', mn:"Давтан", en:"Lake", rom:"Nuur", img:"lake" },
+      { id:'wb_n22', mn:"Нуур", en:"Lake", rom:"Nuur", img:"lake" },
+      { id:'wb_n23', mn:"Далай", en:"Ocean / sea", rom:"Dalai", img:"ocean" },
+      { id:'wb_n24', mn:"Элс", en:"Sand / desert", rom:"Els", img:"sand" },
+      { id:'wb_n25', mn:"Чулуу", en:"Stone / rock", rom:"Chuluu", img:"stone" },
+      { id:'wb_n26', mn:"Газар", en:"Earth / ground / land", rom:"Gazar", img:"ground" },
+      { id:'wb_n27', mn:"Тэнгэр", en:"Sky / heaven", rom:"Tenger", img:"sky" },
+      { id:'wb_n28', mn:"Одон", en:"Star", rom:"Odon", img:"star" },
+      { id:'wb_n29', mn:"Цэцэг", en:"Flower", rom:"Tsetseg", img:"flower" },
+      { id:'wb_n30', mn:"Өвс", en:"Grass", rom:"Ovs", img:"grass" },
+      { id:'wb_n31', mn:"Ой", en:"Forest", rom:"Oi", img:"forest" },
+      { id:'wb_n32', mn:"Хад", en:"Cliff / rock face", rom:"Khad", img:"cliff" },
+      { id:'wb_n33', mn:"Агуй", en:"Cave", rom:"Agui", img:"cave" },
+      { id:'wb_n34', mn:"Цас уул", en:"Glacier / snowy mountain", rom:"Tsas uul", img:"glacier" },
+    ]
+  },
+
+  // ── Animals Extended ─────────────────────────────────────────────────────
+  animals2: {
+    label: "More Animals", unlockAfter: "nature", emoji: "🐾",
+    words: [
+      { id:'wb_an1', mn:"Муур", en:"Cat", rom:"Muur", img:"cat" },
+      { id:'wb_an2', mn:"Тахиа", en:"Chicken", rom:"Takhia", img:"chicken" },
+      { id:'wb_an3', mn:"Үнэг", en:"Fox", rom:"Uneg", img:"fox" },
+      { id:'wb_an4', mn:"Туулай", en:"Rabbit", rom:"Tuulai", img:"rabbit" },
+      { id:'wb_an5', mn:"Хонь", en:"Sheep", rom:"Khon", img:"sheep" },
+      { id:'wb_an6', mn:"Ямаа", en:"Goat", rom:"Yamaa", img:"goat" },
+      { id:'wb_an7', mn:"Үхэр", en:"Cow / cattle", rom:"Ukher", img:"cow" },
+      { id:'wb_an8', mn:"Гахай", en:"Pig", rom:"Gakhai", img:"pig" },
+      { id:'wb_an9', mn:"Арслан", en:"Lion", rom:"Arslan", img:"lion" },
+      { id:'wb_an10', mn:"Бар", en:"Tiger", rom:"Bar", img:"tiger" },
+      { id:'wb_an11', mn:"Заан", en:"Elephant", rom:"Zaan", img:"elephant" },
+      { id:'wb_an12', mn:"Мэлхий", en:"Frog", rom:"Melkhii", img:"frog" },
+      { id:'wb_an13', mn:"Могой", en:"Snake", rom:"Mogoi", img:"snake" },
+      { id:'wb_an14', mn:"Хандгай", en:"Moose / elk", rom:"Khandgai", img:"moose" },
+      { id:'wb_an15', mn:"Ирвэс", en:"Snow leopard", rom:"Irves", img:"leopard" },
+    ]
+  },
+
+  // ── Health & Medicine ─────────────────────────────────────────────────────
+  health: {
+    label: "Health", unlockAfter: "body", emoji: "🏥",
+    words: [
+      { id:'wb_he1', mn:"Өвчин", en:"Illness / disease", rom:"Ovchim", img:"illness" },
+      { id:'wb_he2', mn:"Өвдөх", en:"To hurt / be painful", rom:"Ovdokh", img:"pain" },
+      { id:'wb_he3', mn:"Эм", en:"Medicine", rom:"Em", img:"medicine" },
+      { id:'wb_he4', mn:"Эмч", en:"Doctor", rom:"Emch", img:"doctor" },
+      { id:'wb_he5', mn:"Сувилагч", en:"Nurse", rom:"Suvilagch", img:"nurse" },
+      { id:'wb_he6', mn:"Ханиад", en:"Cold / flu", rom:"Khaniad", img:"cold2" },
+      { id:'wb_he7', mn:"Халуун", en:"Fever", rom:"Khaluun", img:"fever" },
+      { id:'wb_he8', mn:"Ядрах", en:"To get tired / exhausted", rom:"Yadrakh", img:"tired" },
+      { id:'wb_he9', mn:"Амрах", en:"To rest", rom:"Amrakh", img:"rest" },
+      { id:'wb_he10', mn:"Тариа", en:"Injection / shot", rom:"Taria", img:"injection" },
+      { id:'wb_he11', mn:"Хагалгаа", en:"Surgery / operation", rom:"Khagalgaa", img:"surgery" },
+      { id:'wb_he12', mn:"Эрүүл", en:"Healthy", rom:"Eruul", img:"healthy" },
+    ]
+  },
+
+  // ── Technology ───────────────────────────────────────────────────────────
+  tech: {
+    label: "Technology", unlockAfter: "school", emoji: "💻",
+    words: [
+      { id:'wb_te1', mn:"Интернет", en:"Internet", rom:"Internet", img:"internet" },
+      { id:'wb_te2', mn:"Имэйл", en:"Email", rom:"Email", img:"email" },
+      { id:'wb_te3', mn:"Мессеж", en:"Message / text", rom:"Mesej", img:"message" },
+      { id:'wb_te4', mn:"Апп", en:"App", rom:"App", img:"app" },
+      { id:'wb_te5', mn:"Вэбсайт", en:"Website", rom:"Website", img:"website" },
+      { id:'wb_te6', mn:"Нууц үг", en:"Password", rom:"Nuuts ug", img:"password" },
+      { id:'wb_te7', mn:"Файл", en:"File", rom:"Fail", img:"file" },
+      { id:'wb_te8', mn:"Зураг", en:"Photo / picture", rom:"Zurag", img:"photo" },
+      { id:'wb_te9', mn:"Видео", en:"Video", rom:"Video", img:"video" },
+      { id:'wb_te10', mn:"Цэнэглэх", en:"To charge (battery)", rom:"Tseneglegkh", img:"charge" },
+      { id:'wb_te11', mn:"Дуудлага", en:"Call (phone)", rom:"Duudlaga", img:"call" },
+      { id:'wb_te12', mn:"Wifi", en:"Wifi", rom:"Wifi", img:"wifi" },
+    ]
+  },
+
+  // ── Sports & Activities ──────────────────────────────────────────────────
+  sports: {
+    label: "Sports & Activities", unlockAfter: "culture", emoji: "⚽",
+    words: [
+      { id:'wb_sp1', mn:"Спорт", en:"Sport", rom:"Sport", img:"sport" },
+      { id:'wb_sp2', mn:"Хөлбөмбөг", en:"Football / soccer", rom:"Kholbombog", img:"soccer" },
+      { id:'wb_sp3', mn:"Сагсан бөмбөг", en:"Basketball", rom:"Sagsan bumbug", img:"basketball" },
+      { id:'wb_sp4', mn:"Сэлэлт", en:"Swimming", rom:"Seluult", img:"swimming" },
+      { id:'wb_sp5', mn:"Гүйлт", en:"Running", rom:"Guilt", img:"running" },
+      { id:'wb_sp6', mn:"Уулнд авирах", en:"Mountain climbing", rom:"Uuland avirakh", img:"climbing" },
+      { id:'wb_sp7', mn:"Бүжиг", en:"Dance", rom:"Bujig", img:"dance" },
+      { id:'wb_sp8', mn:"Дасгал", en:"Exercise", rom:"Dasgal", img:"exercise" },
+      { id:'wb_sp9', mn:"Тэмцээн", en:"Competition", rom:"Temtseen", img:"competition" },
+      { id:'wb_sp10', mn:"Ялалт", en:"Victory / win", rom:"Yalalt", img:"victory" },
+      { id:'wb_sp11', mn:"Ялагдал", en:"Defeat / loss", rom:"Yalagdal", img:"defeat" },
+      { id:'wb_sp12', mn:"Баг", en:"Team", rom:"Bag", img:"team" },
+    ]
+  },
+
+  // ── Directions & Space ───────────────────────────────────────────────────
+  directions: {
+    label: "Directions", unlockAfter: "places", emoji: "🧭",
+    words: [
+      { id:'wb_di1', mn:"Зүүн", en:"East / left", rom:"Zuun", img:"east" },
+      { id:'wb_di2', mn:"Баруун", en:"West / right", rom:"Baruun", img:"west" },
+      { id:'wb_di3', mn:"Хойд", en:"North", rom:"Khoid", img:"north" },
+      { id:'wb_di4', mn:"Урд", en:"South / front", rom:"Urd", img:"south" },
+      { id:'wb_di5', mn:"Дээр", en:"Above / on top", rom:"Deer", img:"above" },
+      { id:'wb_di6', mn:"Доор", en:"Below / under", rom:"Door", img:"below" },
+      { id:'wb_di7', mn:"Дотор", en:"Inside", rom:"Dotor", img:"inside" },
+      { id:'wb_di8', mn:"Гадаа", en:"Outside", rom:"Gadaa", img:"outside" },
+      { id:'wb_di9', mn:"Хажууд", en:"Beside / next to", rom:"Khajuud", img:"beside" },
+      { id:'wb_di10', mn:"Хооронд", en:"Between", rom:"Khorond", img:"between" },
+      { id:'wb_di11', mn:"Ойрхон", en:"Near / close", rom:"Oirkhon", img:"near" },
+      { id:'wb_di12', mn:"Хол", en:"Far", rom:"Khol", img:"far" },
+    ]
+  },
+
+  // ── Opposites & Concepts ─────────────────────────────────────────────────
+  concepts: {
+    label: "Key Concepts", unlockAfter: "adjectives", emoji: "🔑",
+    words: [
+      { id:'wb_co1', mn:"Асуудал", en:"Problem / issue", rom:"Asuudal", img:"problem" },
+      { id:'wb_co2', mn:"Хариулт", en:"Answer / response", rom:"Khariult", img:"answer" },
+      { id:'wb_co3', mn:"Асуулт", en:"Question", rom:"Asuult", img:"question" },
+      { id:'wb_co4', mn:"Санаа", en:"Idea / thought", rom:"Sanaa", img:"idea" },
+      { id:'wb_co5', mn:"Мэдээ", en:"News / information", rom:"Medee", img:"news" },
+      { id:'wb_co6', mn:"Түүх", en:"History / story", rom:"Tuukh", img:"history" },
+      { id:'wb_co7', mn:"Ирээдүй", en:"Future", rom:"Ireedui", img:"future" },
+      { id:'wb_co8', mn:"Өнгөрсөн", en:"Past", rom:"Ongurson", img:"past" },
+      { id:'wb_co9', mn:"Зорилго", en:"Goal / aim", rom:"Zorilgo", img:"goal" },
+      { id:'wb_co10', mn:"Амжилт", en:"Success", rom:"Amjilt", img:"success" },
+      { id:'wb_co11', mn:"Алдаа", en:"Mistake / error", rom:"Aldaa", img:"mistake" },
+      { id:'wb_co12', mn:"Боломж", en:"Opportunity / possibility", rom:"Bolomj", img:"opportunity" },
+      { id:'wb_co13', mn:"Хэрэгтэй", en:"Necessary / needed", rom:"Kheregutai", img:"necessary" },
+      { id:'wb_co14', mn:"Үнэ", en:"Price / value", rom:"Une", img:"price" },
+      { id:'wb_co15', mn:"Ялгаа", en:"Difference", rom:"Yalgaa", img:"difference" },
+    ]
+  },
+
+  // ── Daily Phrases & Connectors ───────────────────────────────────────────
+  connectors: {
+    label: "Connectors", unlockAfter: "conversation", emoji: "🔗",
+    words: [
+      { id:'wb_cn1', mn:"Гэхдээ", en:"But / however", rom:"Gekhde", img:"but" },
+      { id:'wb_cn2', mn:"Тийм учраас", en:"Therefore / so", rom:"Tiim uchraas", img:"therefore" },
+      { id:'wb_cn3', mn:"Мөн", en:"Also / and", rom:"Mon", img:"also" },
+      { id:'wb_cn4', mn:"Эсвэл", en:"Or", rom:"Esvel", img:"or" },
+      { id:'wb_cn5', mn:"Учир нь", en:"Because", rom:"Uchir n", img:"because" },
+      { id:'wb_cn6', mn:"Хэдийгээр", en:"Although / even though", rom:"Khediigeer", img:"although" },
+      { id:'wb_cn7', mn:"Дараа нь", en:"Then / after that", rom:"Daraa n", img:"then" },
+      { id:'wb_cn8', mn:"Эхлээд", en:"First / firstly", rom:"Ekhlleed", img:"first" },
+      { id:'wb_cn9', mn:"Эцэст нь", en:"Finally", rom:"Etsest n", img:"finally" },
+      { id:'wb_cn10', mn:"Ерөнхийдөө", en:"Generally / in general", rom:"Yeronkhiidoo", img:"generally" },
+      { id:'wb_cn11', mn:"Жишээлбэл", en:"For example", rom:"Jisheeluber", img:"example" },
+      { id:'wb_cn12', mn:"Бараг", en:"Almost / nearly", rom:"Barag", img:"almost" },
+    ]
+  },
+
+  // ── Shopping & Money ─────────────────────────────────────────────────────
+  money: {
+    label: "Shopping & Money", unlockAfter: "objects", emoji: "💰",
+    words: [
+      { id:'wb_m1', mn:"Худалдаа", en:"Trade / shopping", rom:"Khudaldaa", img:"trade" },
+      { id:'wb_m2', mn:"Үнэ", en:"Price", rom:"Une", img:"price2" },
+      { id:'wb_m3', mn:"Хямд", en:"Cheap", rom:"Khyamd", img:"cheap2" },
+      { id:'wb_m4', mn:"Үнэтэй", en:"Expensive", rom:"Unetei", img:"expensive2" },
+      { id:'wb_m5', mn:"Хөнгөлөлт", en:"Discount", rom:"Khonguluult", img:"discount" },
+      { id:'wb_m6', mn:"Баримт", en:"Receipt", rom:"Barimot", img:"receipt" },
+      { id:'wb_m7', mn:"Карт", en:"Card (payment)", rom:"Kart", img:"card" },
+      { id:'wb_m8', mn:"Бэлэн мөнгө", en:"Cash", rom:"Belen mongo", img:"cash" },
+      { id:'wb_m9', mn:"Дэлгүүр хэсэх", en:"To go shopping", rom:"Delguur khesekh", img:"shopping" },
+      { id:'wb_m10', mn:"Төгрөг", en:"Tugrik (Mongolian currency)", rom:"Togrog", img:"tugrik" },
+    ]
+  },
+
+  // ── Greetings Extended ───────────────────────────────────────────────────
+  greetings2: {
+    label: "More Greetings", unlockAfter: "greetings", emoji: "🌟",
+    words: [
+      { id:'wb_g21', mn:"Амар байна уу", en:"Are you at peace? (formal hello)", rom:"Amar baina uu", img:"peace" },
+      { id:'wb_g22', mn:"Сайхан байна уу", en:"Are you well? (warm hello)", rom:"Saikhan baina uu", img:"hello2" },
+      { id:'wb_g23', mn:"Баяртай", en:"Goodbye (formal)", rom:"Bayartai", img:"goodbye" },
+      { id:'wb_g24', mn:"Эрүүл мэндээрэй", en:"Stay healthy (farewell)", rom:"Eruul mendeerai", img:"farewell" },
+      { id:'wb_g25', mn:"Талархаж байна", en:"I am grateful", rom:"Talarkaj baina", img:"grateful" },
+      { id:'wb_g26', mn:"Хүндэтгэлтэйгээр", en:"With respect (formal closing)", rom:"Khundetgelteigiir", img:"respect" },
+      { id:'wb_g27', mn:"Золгох", en:"To greet (Tsagaan Sar greeting)", rom:"Zolgokh", img:"zolgokh" },
+      { id:'wb_g28', mn:"Дахиад уулзацгаая", en:"Let us meet again", rom:"Dakhiad uulzatsagaaya", img:"meetagain" },
+    ]
+  }
 };
 
 // ─── Image SVG library ─────────────────────────────────────────────────────
@@ -1327,6 +1862,109 @@ function getWordImage(key) {
 
   // Concrete nouns — emoji
   var emojiMap = {
+    // Abstract words -> text display handled by textOnly above
+    // All concrete emoji mappings:
+    // Animals
+    dog:'🐕', horse:'🐎', camel:'🐫', wolf:'🐺', bear:'🐻', fish:'🐟', bird:'🐦',
+    cat:'🐱', chicken:'🐔', fox:'🦊', rabbit:'🐰', sheep:'🐑', goat:'🐐', cow:'🐄',
+    pig:'🐷', lion:'🦁', tiger:'🐯', elephant:'🐘', frog:'🐸', snake:'🐍',
+    moose:'🦌', leopard:'🐆',
+    // Nature
+    water:'💧', fire:'🔥', sun:'☀️', moon:'🌙', mountain:'⛰️', steppe:'🌾', tree:'🌲',
+    lake:'🏞️', ocean:'🌊', sand:'🏜️', stone:'🪨', ground:'🌍', sky:'🌌', star:'⭐',
+    grass:'🌿', forest:'🌲', cliff:'🏔️', cave:'🕳️', glacier:'🏔️', flower:'🌸',
+    river:'🏞️', cloud:'☁️', rain:'🌧️', snow:'❄️', wind:'💨', fog:'🌫️',
+    warm:'🌡️', cold:'🥶', hot:'🔥', thunder:'⛈️', weather:'🌤️',
+    // Food
+    eat:'🍽️', drink:'🥤', meat:'🍖', tea:'🍵', bread:'🍞', milk:'🥛', rice:'🍚', egg:'🥚',
+    buuz:'🥟', khuushuur:'🫔', tsuivan:'🍜', yogurt:'🥛', aaruul:'🧀',
+    fruit:'🍎', groceries:'🛒', salt:'🧂', sugar:'🍬', potato:'🥔', onion:'🧅',
+    carrot:'🥕', apple:'🍎',
+    // Numbers
+    one:'1️⃣', two:'2️⃣', three:'3️⃣', four:'4️⃣', five:'5️⃣',
+    six:'6️⃣', seven:'7️⃣', eight:'8️⃣', nine:'9️⃣', ten:'🔟',
+    // Objects
+    house:'🏠', book:'📚', car:'🚗', guitar:'🎸', phone:'📱', knife:'🔪',
+    money:'💰', arrow:'➡️', light:'💡', window:'🪟', hand:'✋', eye:'👁️', foot:'🦶',
+    notebook:'📓', pencil:'✏️', pen:'🖊️', computer:'💻', bag:'👜',
+    // People & Body
+    mother:'👩', father:'👨', brother:'👦', sister:'👧', friends:'👫', human:'🧑',
+    husband:'👨', wife:'👩', child:'👶', son:'👦', daughter:'👧',
+    grandfather:'👴', grandmother:'👵', uncle:'👨', uncle2:'👨', neighbor:'🏘️',
+    enemy:'⚔️', team:'👥', person:'🧑', person2:'👤', person3:'🧍', group:'👨‍👩‍👧',
+    head:'🗣️', face:'😊', ear:'👂', nose:'👃', mouth:'👄', back:'🔙',
+    heart:'❤️', stomach:'🫃', shoulder:'💆',
+    // Colors
+    red:'🔴', blue:'🔵', green:'🟢', yellow:'🟡', white:'⬜', black:'⬛',
+    brown:'🟫', pink:'🩷', purple:'🟣', grey:'🩶', orange:'🟠',
+    // Time
+    today:'📅', tomorrow:'⏭️', yesterday:'⏮️', now:'⚡', later:'⏳',
+    morning:'🌅', evening:'🌆', night:'🌙', week:'📆', month:'🗓️',
+    year:'🗓️', hour:'🕐', minute:'⏱️', monday:'1️⃣', saturday:'6️⃣', sunday:'7️⃣',
+    // Places & Transport
+    school:'🏫', hospital:'🏥', shop:'🛍️', market:'🏪', bank:'🏦',
+    restaurant:'🍽️', library:'📚', hotel:'🏨', airport:'✈️', park:'🌳',
+    street:'🛣️', bridge:'🌉', summit:'🏔️', airplane:'✈️', bus:'🚌',
+    taxi:'🚕', train:'🚂', bicycle:'🚲', sign:'🚧', road:'🛤️', exit:'🚪',
+    // Clothing
+    clothes:'👗', shirt:'👕', pants:'👖', shoes:'👟', hat:'🧢', deel:'🥻',
+    coat:'🧥', socks:'🧦', gloves:'🧤',
+    // Emotions
+    joy:'😄', sad:'😢', angry:'😠', fear:'😨', surprise:'😲', love:'❤️',
+    hope:'🌟', trust:'🤝', bored:'😑', worry:'😟', shame:'😳', proud:'🦁',
+    // Verbs (concrete enough for emoji)
+    take:'🤲', give:'🎁', know:'🧠', do:'⚙️', find:'🔍', play:'🎮',
+    sing:'🎤', fly:'✈️', think:'💭', remember:'💾', forget:'😶', want:'⭐',
+    can:'💪', become:'🦋', return:'↩️',
+    see:'👁️', hear:'👂', speak:'🗣️', read:'📖', write:'✍️', sit:'🪑',
+    sleep:'😴', go:'🚶', come:'🏃',
+    // Health
+    illness:'🤒', pain:'😣', medicine:'💊', doctor:'👨‍⚕️', nurse:'👩‍⚕️',
+    cold2:'🤧', fever:'🌡️', tired:'😴', rest:'🛌', injection:'💉',
+    surgery:'🏥', healthy:'💪',
+    // Tech
+    internet:'🌐', email:'📧', message:'💬', app:'📱', website:'🌐',
+    password:'🔑', file:'📄', photo:'📷', video:'🎬', charge:'🔋',
+    call:'📞', wifi:'📶',
+    // Sports
+    sport:'⚽', soccer:'⚽', basketball:'🏀', swimming:'🏊', running:'🏃',
+    climbing:'🧗', dance:'💃', exercise:'🏋️', competition:'🏆',
+    victory:'🥇', defeat:'😞',
+    // Directions
+    east:'⬅️', west:'➡️', north:'⬆️', south:'⬇️', above:'⬆️', below:'⬇️',
+    inside:'🔲', outside:'🌐', beside:'↔️', between:'↕️', near:'📍', far:'🗺️',
+    // Concepts
+    problem:'❗', answer:'✅', question:'❓', idea:'💡', news:'📰',
+    history:'📜', future:'🔮', past:'⏮️', goal:'🎯', success:'🏆',
+    mistake:'❌', opportunity:'🚀', necessary:'⚠️', price:'🏷️', difference:'↔️',
+    // Connectors (text fallback handled by textOnly)
+    but:'🔄', therefore:'➡️', also:'➕', or:'🔀', because:'💭',
+    although:'🤔', then:'⏭️', first:'1️⃣', finally:'🏁',
+    generally:'🌐', example:'📝', almost:'〰️',
+    // Shopping
+    trade:'🛒', price2:'🏷️', cheap2:'💚', expensive2:'💎', discount:'🏷️',
+    receipt:'🧾', card:'💳', cash:'💵', shopping:'🛍️', tugrik:'💰',
+    cheap:'💚', expensive:'💎', new:'✨', old:'📜', long:'📏', short:'📐',
+    wide:'↔️', narrow:'↕️', heavy:'🏋️', light_weight:'🪶', fast:'⚡',
+    slow:'🐢', young:'🌱', elderly:'👴', beautiful:'🌺', ugly:'💀',
+    // Culture
+    ger:'🏠', naadam:'🎉', wrestling:'🤼', archery:'🏹', horserace:'🏇',
+    airag:'🍺', morinkhuur:'🎻', tsagaansar:'🌕', ancestor:'👻',
+    longsong:'🎵', khoomii:'🎶',
+    // Home
+    apartment:'🏢', room:'🚪', bedroom:'🛏️', kitchen:'🍳', bathroom:'🚿',
+    door:'🚪', floor:'⬜', ceiling:'🏠', bed:'🛏️', table:'🪑', chair:'🪑',
+    tv:'📺', curtain:'🪟', electricity:'⚡',
+    // Greetings2
+    peace:'☮️', hello2:'👋', goodbye:'🤝', farewell:'✌️', grateful:'🙏',
+    respect:'🫡', zolgokh:'🤲', meetagain:'👋',
+    // School/Work
+    lesson:'📖', teacher:'👩‍🏫', student:'👨‍🎓', pupil:'🧒', work:'💼',
+    salary:'💰', meeting:'🤝',
+    // Adjectives that work as emoji
+    big:'🔲', small:'🔹', good:'⭐', bad:'👎',
+    // Greetings (text handled above but keep emoji fallback)
+    greeting:'👋', wave:'🤝', thanks:'🙏', sorry:'😔', yes:'✅', no:'❌', ok:'👍',
     mother:'👩', father:'👨', brother:'👦', sister:'👧', friends:'👫',
     dog:'🐕', horse:'🐎', camel:'🐫', wolf:'🐺', bear:'🐻', fish:'🐟', bird:'🐦',
     water:'💧', fire:'🔥', sun:'☀️', moon:'🌙', mountain:'⛰️', steppe:'🌾', tree:'🌲',
@@ -1334,6 +1972,56 @@ function getWordImage(key) {
     one:'1️⃣', two:'2️⃣', three:'3️⃣', four:'4️⃣', five:'5️⃣',
     six:'6️⃣', seven:'7️⃣', eight:'8️⃣', nine:'9️⃣', ten:'🔟',
     see:'👁️',
+    // Social / Relationships
+    husband:'👨', wife:'👩', child:'👶', son:'👦', daughter:'👧',
+    grandfather:'👴', grandmother:'👵', uncle:'👨', uncle2:'👨',
+    neighbor:'🏘️', enemy:'⚔️', team:'👥',
+    // Home
+    apartment:'🏢', room:'🚪', bedroom:'🛏️', kitchen:'🍳',
+    bathroom:'🚿', door:'🚪', floor:'⬜', ceiling:'🏠',
+    bed:'🛏️', table:'🪑', chair:'🪑', tv:'📺',
+    curtain:'🪟', electricity:'⚡',
+    // Nature2
+    lake:'🏞️', ocean:'🌊', sand:'🏜️', stone:'🪨', ground:'🌍',
+    sky:'🌌', star:'⭐', grass:'🌿', forest:'🌲', cliff:'🏔️',
+    cave:'🕳️', glacier:'🏔️',
+    // Animals2
+    cat:'🐱', chicken:'🐔', fox:'🦊', rabbit:'🐰', sheep:'🐑',
+    goat:'🐐', cow:'🐄', pig:'🐷', lion:'🦁', tiger:'🐯',
+    elephant:'🐘', frog:'🐸', snake:'🐍', moose:'🦌', leopard:'🐆',
+    // Health
+    illness:'🤒', pain:'😣', medicine:'💊', doctor:'👨‍⚕️', nurse:'👩‍⚕️',
+    cold2:'🤧', fever:'🌡️', tired:'😴', rest:'🛌',
+    injection:'💉', surgery:'🏥', healthy:'💪',
+    // Tech
+    internet:'🌐', email:'📧', message:'💬', app:'📱', website:'🌐',
+    password:'🔑', file:'📄', photo:'📷', video:'🎬',
+    charge:'🔋', call:'📞', wifi:'📶',
+    // Sports
+    sport:'⚽', soccer:'⚽', basketball:'🏀', swimming:'🏊',
+    running:'🏃', climbing:'🧗', dance:'💃', exercise:'🏋️',
+    competition:'🏆', victory:'🥇', defeat:'😞',
+    // Directions
+    east:'⬅️', west:'➡️', north:'⬆️', south:'⬇️',
+    above:'⬆️', below:'⬇️', inside:'🔲', outside:'🌐',
+    beside:'↔️', between:'↕️', near:'📍', far:'🗺️',
+    // Concepts
+    problem:'❗', answer:'✅', question:'❓', idea:'💡', news:'📰',
+    history:'📜', future:'🔮', past:'⏮️', goal:'🎯',
+    success:'🏆', mistake:'❌', opportunity:'🚀', necessary:'⚠️',
+    price:'🏷️', difference:'↔️',
+    // Connectors
+    but:'🔄', therefore:'➡️', also:'➕', or:'🔀', because:'💭',
+    although:'🤔', then:'⏭️', first:'1️⃣', finally:'🏁',
+    generally:'🌐', example:'📝', almost:'〰️',
+    // Shopping
+    trade:'🛒', price2:'🏷️', cheap2:'💚', expensive2:'💎',
+    discount:'🏷️', receipt:'🧾', card:'💳', cash:'💵',
+    shopping:'🛍️', tugrik:'💰',
+    // Greetings2
+    peace:'☮️', hello2:'👋', goodbye:'🤝', farewell:'✌️',
+    grateful:'🙏', respect:'🫡', zolgokh:'🤲', meetagain:'👋',
+    // house in emojiMap already has house
     house:'🏠', book:'📚', apple:'🍎', car:'🚗', guitar:'🎸',
     phone:'📱', knife:'🔪', carrot:'🥕', flower:'🌸',
     money:'💰', arrow:'➡️', light:'💡', window:'🪟',
@@ -1551,7 +2239,7 @@ function loadQuestion() {
              q.type==='word' ? 'What does this word mean?' : 'What does this phrase mean?';
   if (srs.wrongCount >= 2) lbl += '  ⚠️ tricky';
   document.getElementById('q-label').textContent = lbl;
-  document.getElementById('q-sub').textContent = '';
+  document.getElementById('q-sub').textContent = (q.type==='word'||q.type==='phrase') ? 'What does this mean?' : (q.type==='vowel'||q.type==='consonant') ? 'What sound does this make?' : '';
   document.getElementById('q-main').textContent = q.letter;
 
   if ((q.type==='word'||q.type==='phrase') && appSettings.autoplay) setTimeout(() => speak(q.letter), 200);
@@ -1619,7 +2307,7 @@ function loadType(q) {
   document.getElementById('type-area').style.display = 'block';
   document.getElementById('type-input').value = '';
   document.getElementById('type-input').disabled = false;
-  document.getElementById('q-sub').textContent = q.type==='vowel'||q.type==='consonant' ? 'Type the romanization (e.g. "a", "kh")' : 'Type the meaning in English';
+  document.getElementById('q-sub').textContent = q.type==='vowel'||q.type==='consonant' ? 'Type the romanization (e.g. "a", "kh")' : 'Type the Mongolian word';
   document.getElementById('type-input').focus();
 }
 
@@ -1930,12 +2618,7 @@ function openWordBank() {
 
 
 function isGroupUnlocked(groupKey) {
-  const group = WORD_BANK[groupKey];
-  if (!group.unlockAfter) return true;
-  const prev = WORD_BANK[group.unlockAfter];
-  if (!prev) return true;
-  const mastered = prev.words.filter(w => getMastery(w.id) === 'mastered').length;
-  return mastered >= Math.ceil(prev.words.length * 0.7);
+  return true; // All groups unlocked
 }
 
 function renderWordBank() {
@@ -1967,6 +2650,7 @@ function renderWordBank() {
 
 // ─── Image Quiz ────────────────────────────────────────────────────────────
 let iqWords = [], iqCurrent = 0, iqScore = 0, iqCorrect = 0, iqGroupKey = '';
+let iqShowingEnglish = false;
 let currentIQWord = null;
 
 function startImageQuiz(groupKey) {
@@ -2001,11 +2685,19 @@ function loadIQQuestion() {
     setTimeout(() => speakWord(q.letter), 300);
     document.getElementById('iq-hear-btn').style.display = 'inline-block';
   } else {
-    document.getElementById('iq-label').textContent = 'What does this mean in English?';
-    document.getElementById('iq-image').innerHTML = getWordImage(q.img);
+    // Check if this word has a real emoji image or just text fallback
+    const imgSvg = getWordImage(q.img);
+    iqShowingEnglish = imgSvg.indexOf('background:#1a1830') >= 0 || imgSvg.indexOf('tap 🔊') >= 0;
+    document.getElementById('iq-image').innerHTML = imgSvg;
+    if (iqShowingEnglish) {
+      document.getElementById('iq-label').textContent = 'What does this mean in English?';
+    } else {
+      document.getElementById('iq-label').textContent = 'What is this in Mongolian?';
+    }
   }
 
-  // Build answer choices — all Mongolian script
+  // Build answer choices
+    // Build answer choices — all Mongolian script
   const groupWords = WORD_BANK[iqGroupKey].words;
   const pool = Object.values(WORD_BANK).flatMap(g => g.words);
   const others = pool.filter(w => w.mn !== q.letter).sort(() => Math.random()-0.5).slice(0,3);
@@ -2018,9 +2710,12 @@ function loadIQQuestion() {
     btn.className = 'ans-btn';
     // Image mode: show English meaning as answer choices
     // Reverse audio mode: show Mongolian script as answer choices
-    btn.innerHTML = useReverse
-      ? '<span style="font-size:16px;">' + opt.mn + '</span>'
-      : '<span style="font-size:15px;">' + opt.en + '</span>';
+    // Abstract text word → English choices. Emoji word or audio → Mongolian choices
+    if (!useReverse && iqShowingEnglish) {
+      btn.innerHTML = '<span style="font-size:15px;">' + opt.en + '</span>';
+    } else {
+      btn.innerHTML = '<span style="font-size:16px;">' + opt.mn + '</span>';
+    }
     btn.onclick = () => checkIQAnswer(opt.mn, q, btn);
     grid.appendChild(btn);
   });
@@ -2050,7 +2745,7 @@ function checkIQAnswer(ans, q, btn) {
     btn.classList.add('correct');
     iqScore += 100; iqCorrect++;
     playCorrect();
-    document.getElementById('iq-feedback').textContent = '✓ Correct! — ' + q.letter + ' = ' + q.sound;
+    document.getElementById('iq-feedback').textContent = '✓ ' + q.letter + ' = ' + q.sound;
     document.getElementById('iq-feedback').className = 'feedback-bar correct';
     const iqSvg = document.getElementById('iq-mascot-svg');
     const iqMsg = document.getElementById('iq-mascot-msg');
@@ -2062,7 +2757,7 @@ function checkIQAnswer(ans, q, btn) {
       if (b.textContent.trim() === q.letter || b.textContent.trim() === q.sound) b.classList.add('reveal');
     });
     playWrong();
-    document.getElementById('iq-feedback').textContent = '✗ Answer: ' + q.letter + ' (' + q.sound + ')';
+    document.getElementById('iq-feedback').textContent = '✗ It was: ' + q.letter + ' (' + q.sound + ')';
     document.getElementById('iq-feedback').className = 'feedback-bar wrong';
     const iqSvg = document.getElementById('iq-mascot-svg');
     const iqMsg = document.getElementById('iq-mascot-msg');
@@ -2545,6 +3240,89 @@ const SENTENCES = [
   { id:'s138', mn:['Дахин','нэг','давтаж','хэлэх','үү','?'], blank:'давтаж', en:`Can you repeat it one more time?`, options:['орчуулж','бичиж','харуулж'], grammar:null },
   { id:'s139', mn:['Та','надтай','ярилцах','цагтай','юу','?'], blank:'ярилцах', en:`Do you have time to talk with me?`, options:['тоглох','явах','идэх'], grammar:null },
   { id:'s140', mn:['Монгол','хэлнийхэн','хурдан','ярьдаг','юм','байна','.'], blank:'хурдан', en:`Mongolian speakers speak fast.`, options:['удаан','чанга','чимээгүй'], grammar:null }
+  // ── Colors & Descriptions ────────────────────────────────────────────────
+  ,{ id:'s141', mn:['Энэ','цамц','улаан','өнгөтэй','.'], blank:'улаан', en:`This shirt is red.`, options:['цэнхэр','шар','ногоон'], grammar:null },
+  { id:'s142', mn:['Чиний','нүд','хар','өнгөтэй','байна','.'], blank:'хар', en:`Your eyes are black.`, options:['цагаан','цэнхэр','ногоон'], grammar:null },
+  { id:'s143', mn:['Монгол','тугийн','өнгө','улаан','цэнхэр','юм','.'], blank:'улаан', en:`The Mongolian flag is red and blue.`, options:['шар','ногоон','хар'], grammar:null },
+  { id:'s144', mn:['Тэнгэр','цэнхэр','байна','.'], blank:'цэнхэр', en:`The sky is blue.`, options:['шар','ногоон','саарал'], grammar:null },
+  { id:'s145', mn:['Өвс','ногоон','байдаг','.'], blank:'ногоон', en:`Grass is green.`, options:['шар','улаан','хар'], grammar:null },
+
+  // ── Describing Objects ────────────────────────────────────────────────────
+  { id:'s146', mn:['Энэ','ном','хэт','хүнд','байна','.'], blank:'хүнд', en:`This book is too heavy.`, options:['хөнгөн','урт','богино'], grammar:null },
+  { id:'s147', mn:['Тэр','гудамж','маш','урт','байдаг','.'], blank:'урт', en:`That street is very long.`, options:['богино','өргөн','нарийн'], grammar:null },
+  { id:'s148', mn:['Шинэ','утас','үнэтэй','байна','.'], blank:'Шинэ', en:`The new phone is expensive.`, options:['Хуучин','Том','Жижиг'], grammar:null },
+  { id:'s149', mn:['Энэ','хувцас','хямд','байна','уу','?'], blank:'хямд', en:`Is this clothing cheap?`, options:['үнэтэй','сайхан','шинэ'], grammar:null },
+  { id:'s150', mn:['Тэр','байшин','маш','өндөр','байна','.'], blank:'өндөр', en:`That building is very tall.`, options:['намхан','том','хуучин'], grammar:null },
+
+  // ── Daily Routines ────────────────────────────────────────────────────────
+  { id:'s151', mn:['Би','өдөр','бүр','шүдээ','угаадаг','.'], blank:'шүдээ', en:`I brush my teeth every day.`, options:['нүүрээ','гараа','хөлөө'], grammar:null },
+  { id:'s152', mn:['Өглөө','цай','уугаад','ажилдаа','явдаг','.'], blank:'цай', en:`I drink tea in the morning and go to work.`, options:['кофе','сүү','ус'], grammar:null },
+  { id:'s153', mn:['Орой','ном','уншаад','унтдаг','.'], blank:'ном', en:`In the evening I read a book and sleep.`, options:['утас','зурагт','хоол'], grammar:null },
+  { id:'s154', mn:['Долоо','хоног','бүр','дасгал','хийдэг','.'], blank:'дасгал', en:`I exercise every week.`, options:['ажил','хоол','тоглоом'], grammar:null },
+  { id:'s155', mn:['Би','эрт','унтаж','эрт','бодог','.'], blank:'эрт', en:`I sleep early and wake up early.`, options:['орой','удаан','хожуу'], grammar:`💡 Mongolian often repeats words for emphasis — эрт...эрт means consistently early` },
+
+  // ── Family Conversations ──────────────────────────────────────────────────
+  { id:'s156', mn:['Манай','аав','маш','завгүй','байдаг','.'], blank:'завгүй', en:`My father is always very busy.`, options:['залхуу','ядарсан','чөлөөтэй'], grammar:null },
+  { id:'s157', mn:['Ээж','маань','маш','сайн','хоол','хийдэг','.'], blank:'сайн', en:`My mother cooks very well.`, options:['хурдан','олон','хялбар'], grammar:null },
+  { id:'s158', mn:['Дүү','маань','сургуульд','явдаг','.'], blank:'сургуульд', en:`My younger sibling goes to school.`, options:['ажилд','тоглоомд','дэлгүүрт'], grammar:null },
+  { id:'s159', mn:['Бид','бүгдээрээ','хамт','хоол','иддэг','.'], blank:'хамт', en:`We all eat together.`, options:['тусдаа','дангаараа','орой'], grammar:null },
+  { id:'s160', mn:['Манай','гэр','бүл','Улаанбаатарт','амьдардаг','.'], blank:'Улаанбаатарт', en:`My family lives in Ulaanbaatar.`, options:['Дархант','Эрдэнэтэд','хотод'], grammar:null },
+
+  // ── Opinions & Preferences ────────────────────────────────────────────────
+  { id:'s161', mn:['Миний','бодлоор','энэ','зөв','шийдвэр','юм','.'], blank:'бодлоор', en:`In my opinion this is the right decision.`, options:['мэдлэгээр','хэлснээр','хүслээр'], grammar:`💡 'бодлоор' = "in my opinion" — literally "by my thought"` },
+  { id:'s162', mn:['Энэ','кино','маш','сонирхолтой','байна','.'], blank:'кино', en:`This movie is very interesting.`, options:['ном','дуу','тоглоом'], grammar:null },
+  { id:'s163', mn:['Би','нохой','дуртай','харин','муур','дургүй','.'], blank:'дуртай', en:`I like dogs but I do not like cats.`, options:['мэддэг','уздаг','сонсдог'], grammar:`💡 'харин' means "but/however" in Mongolian` },
+  { id:'s164', mn:['Чи','юу','идэхийг','илүүд','үздэг','вэ','?'], blank:'илүүд', en:`Which do you prefer to eat?`, options:['дуртай','мэддэг','хүсдэг'], grammar:null },
+  { id:'s165', mn:['Монгол','хоол','Хятад','хоолноос','илүү','амттай','.'], blank:'илүү', en:`Mongolian food is more delicious than Chinese food.`, options:['бага','хэтэрхий','маш'], grammar:`💡 'илүү' = more, 'бага' = less — used for comparisons` },
+
+  // ── Nature & Outdoors ─────────────────────────────────────────────────────
+  { id:'s166', mn:['Говийн','цөл','маш','том','юм','.'], blank:'Говийн', en:`The Gobi desert is very large.`, options:['Монголын','Хятадын','Дэлхийн'], grammar:null },
+  { id:'s167', mn:['Гол','дагуу','явбал','гоё','байна','.'], blank:'Гол', en:`It is nice to walk along the river.`, options:['Уул','Ой','Тал'], grammar:null },
+  { id:'s168', mn:['Зун','нарны','гэрэл','хүчтэй','байдаг','.'], blank:'нарны', en:`In summer the sunlight is strong.`, options:['сарны','одны','тэнгэрийн'], grammar:null },
+  { id:'s169', mn:['Монгол','тал','хэмжээлшгүй','өргөн','.'], blank:'өргөн', en:`The Mongolian steppe is immeasurably wide.`, options:['урт','том','сайхан'], grammar:null },
+  { id:'s170', mn:['Намрын','навч','шар','улаан','болдог','.'], blank:'шар', en:`Autumn leaves turn yellow and red.`, options:['ногоон','цагаан','хар'], grammar:null },
+
+  // ── Shopping Conversations ─────────────────────────────────────────────────
+  { id:'s171', mn:['Энэ','хэдэн','төгрөг','вэ','?'], blank:'төгрөг', en:`How many tugriks is this?`, options:['кг','метр','ширхэг'], grammar:null },
+  { id:'s172', mn:['Арай','хямдруулж','болох','уу','?'], blank:'хямдруулж', en:`Can you make it a bit cheaper?`, options:['өсгөж','нэмж','авч'], grammar:null },
+  { id:'s173', mn:['Бэлэн','мөнгөөр','төлье','.'], blank:'Бэлэн', en:`I will pay with cash.`, options:['Картаар','Утсаар','Чекээр'], grammar:null },
+  { id:'s174', mn:['Энэ','хэмжээ','надад','таарахгүй','байна','.'], blank:'таарахгүй', en:`This size does not fit me.`, options:['багадахгүй','олдохгүй','тохирохгүй'], grammar:null },
+  { id:'s175', mn:['Өөр','загвар','байна','уу','?'], blank:'загвар', en:`Do you have another style/design?`, options:['өнгө','хэмжээ','төрөл'], grammar:null },
+
+  // ── Health Conversations ──────────────────────────────────────────────────
+  { id:'s176', mn:['Толгой','маань','өвдөж','байна','.'], blank:'Толгой', en:`My head hurts.`, options:['Ходоод','Хоолой','Нуруу'], grammar:`💡 Body part + маань + өвдөж байна = "my ___ hurts"` },
+  { id:'s177', mn:['Ханиад','хүрсэн','юм','шиг','байна','.'], blank:'Ханиад', en:`I think I have caught a cold.`, options:['Халуун','Өвчин','Жихүүн'], grammar:null },
+  { id:'s178', mn:['Та','эм','уусан','уу','?'], blank:'эм', en:`Have you taken medicine?`, options:['хоол','ус','тариа'], grammar:null },
+  { id:'s179', mn:['Сайн','амраарай','хурдан','эдгэрээрэй','.'], blank:'эдгэрээрэй', en:`Rest well and get well soon.`, options:['ирээрэй','явааарай','суугааарай'], grammar:null },
+  { id:'s180', mn:['Эмч','рүү','явах','хэрэгтэй','байна','уу','?'], blank:'Эмч', en:`Do you need to go to the doctor?`, options:['Эмнэлэг','Эм','Сувилагч'], grammar:null },
+
+  // ── Technology & Modern Life ──────────────────────────────────────────────
+  { id:'s181', mn:['Интернет','холболт','байхгүй','байна','.'], blank:'Интернет', en:`There is no internet connection.`, options:['Цахилгаан','Ус','Утас'], grammar:null },
+  { id:'s182', mn:['Утасны','цэнэг','дуусаж','байна','.'], blank:'цэнэг', en:`The phone battery is running out.`, options:['дуу','зураг','дугаар'], grammar:null },
+  { id:'s183', mn:['Надад','мессеж','илгээгээрэй','.'], blank:'мессеж', en:`Please send me a message.`, options:['зураг','файл','дуудлага'], grammar:null },
+  { id:'s184', mn:['Видео','дуудлага','хийж','болох','уу','?'], blank:'Видео', en:`Can we do a video call?`, options:['Утас','Дуу','Зураг'], grammar:null },
+  { id:'s185', mn:['Wifi','нууц','үг','юу','вэ','?'], blank:'нууц', en:`What is the wifi password?`, options:['нэр','дугаар','хаяг'], grammar:null },
+
+  // ── Sports & Activities ───────────────────────────────────────────────────
+  { id:'s186', mn:['Бөхийн','барилдаан','үзэхэд','дуртай','юу','?'], blank:'барилдаан', en:`Do you like watching wrestling?`, options:['уралдаан','тоглоом','наадам'], grammar:null },
+  { id:'s187', mn:['Та','ямар','спорт','хийдэг','вэ','?'], blank:'спорт', en:`What sport do you play?`, options:['хоол','ажил','хичээл'], grammar:null },
+  { id:'s188', mn:['Хөлбөмбөг','тоглох','дуртай','юу','?'], blank:'Хөлбөмбөг', en:`Do you like playing football?`, options:['Сагсан бөмбөг','Гар бөмбөг','Теннис'], grammar:null },
+  { id:'s189', mn:['Энэ','жил','марафонд','оролцоно','.'], blank:'марафонд', en:`I will participate in a marathon this year.`, options:['тэмцээнд','наадамд','уралдаанд'], grammar:null },
+  { id:'s190', mn:['Дасгал','хийснээр','эрүүл','байдаг','.'], blank:'Дасгал', en:`By exercising you stay healthy.`, options:['Хоол','Нойр','Амралт'], grammar:null },
+
+  // ── Mongolian Culture Deep Dive ───────────────────────────────────────────
+  { id:'s191', mn:['Цагаан','сар','хаврын','эхний','өдөр','байдаг','.'], blank:'хаврын', en:`Tsagaan Sar is on the first day of spring.`, options:['намрын','зуны','өвлийн'], grammar:null },
+  { id:'s192', mn:['Золгох','ёслол','дагаж','мэндэлдэг','.'], blank:'Золгох', en:`We greet each other following the zolgokh ceremony.`, options:['Бөхийн','Морины','Сурын'], grammar:`💡 Золгох is the traditional greeting where younger people support elder's arms with both hands` },
+  { id:'s193', mn:['Морин','хуур','монгол','хөгжмийн','билэг','тэмдэг','.'], blank:'хуур', en:`The morin khuur is the symbol of Mongolian music.`, options:['бүжиг','дуу','зураг'], grammar:null },
+  { id:'s194', mn:['Хөөмий','хоолойгоор','дуулдаг','онцгой','урлаг','юм','.'], blank:'Хөөмий', en:`Khoomii is a special art of singing through the throat.`, options:['Бөх','Сур','Морь'], grammar:null },
+  { id:'s195', mn:['Монголчууд','морийг','маш','эрхэмлэдэг','.'], blank:'морийг', en:`Mongolians greatly respect horses.`, options:['нохойг','тэмээг','үхрийг'], grammar:null },
+
+  // ── Travel & Directions ───────────────────────────────────────────────────
+  { id:'s196', mn:['Энэ','зам','хаашаа','хүрдэг','вэ','?'], blank:'хаашаа', en:`Where does this road lead?`, options:['хаанаас','яагаад','хэзээ'], grammar:null },
+  { id:'s197', mn:['Буудал','хоёр','блок','цааш','байна','.'], blank:'блок', en:`The hotel is two blocks away.`, options:['км','метр','алхам'], grammar:null },
+  { id:'s198', mn:['Зүүн','тийш','эргээд','шулуун','яв','.'], blank:'Зүүн', en:`Turn left and go straight.`, options:['Баруун','Хойд','Урд'], grammar:null },
+  { id:'s199', mn:['Нисэх','онгоц','хэдэн','цагт','хөөрдөг','вэ','?'], blank:'хөөрдөг', en:`What time does the plane take off?`, options:['буудаг','ирдэг','явдаг'], grammar:null },
+  { id:'s200', mn:['Би','анх','удаа','Монголд','ирлээ','.'], blank:'анх', en:`I came to Mongolia for the first time.`, options:['дахин','гурав','хэд'], grammar:null }
 ];
 
 // Known word IDs from word bank for highlighting
@@ -2637,6 +3415,18 @@ function playSentenceAudio() {
 function checkSentenceAnswer(ans, s, btn) {
   if (smAnswered) return;
   smAnswered = true;
+  const isCorrectCheck = ans.toLowerCase() === s.blank.toLowerCase();
+  if (!isCorrectCheck) {
+    // Track wrong sentences
+    let wrongSents = [];
+    try { wrongSents = JSON.parse(localStorage.getItem('mn_wrong_sentences')||'[]'); } catch(e) {}
+    const existing = wrongSents.find(x=>x.id===s.id);
+    if (existing) existing.wrongCount = (existing.wrongCount||0)+1;
+    else wrongSents.push({id:s.id, wrongCount:1, lastSeen:Date.now()});
+    wrongSents.sort((a,b)=>b.wrongCount-a.wrongCount);
+    if (wrongSents.length>50) wrongSents=wrongSents.slice(0,50);
+    try { localStorage.setItem('mn_wrong_sentences', JSON.stringify(wrongSents)); } catch(e) {}
+  }
 
   document.querySelectorAll('.smode-ans').forEach(b => b.disabled = true);
   const isCorrect = ans.toLowerCase() === s.blank.toLowerCase();
@@ -3116,148 +3906,96 @@ function showDailyWordExample(id) {
 // ─── Progress Map ──────────────────────────────────────────────────────────
 const MAP_STAGES = [
   {
-    id: 'alphabet',
-    icon: '🔤',
-    label: 'Alphabet',
-    sub: 'Master the Cyrillic script',
-    color: '#60a5fa',
+    id:'alphabet', icon:'🔤', label:'Alphabet', sub:'Master the Cyrillic script', color:'#60a5fa',
     getProgress: () => {
-      const letters = [...(ALL_QUESTIONS.vowels||[]), ...(ALL_QUESTIONS.consonants||[])];
-      const mastered = letters.filter(q => getMastery(q.id) === 'mastered').length;
-      return { done: mastered, total: letters.length, pct: Math.round(mastered/letters.length*100) };
+      const letters = [...(ALL_QUESTIONS.vowels||[]),...(ALL_QUESTIONS.consonants||[])];
+      const mastered = letters.filter(q=>getMastery(q.id)==='mastered').length;
+      return {done:mastered, total:letters.length, pct:Math.round(mastered/letters.length*100)};
     },
-    detail: () => {
-      const letters = [...(ALL_QUESTIONS.vowels||[]), ...(ALL_QUESTIONS.consonants||[])];
-      const groups = { mastered:[], familiar:[], learning:[], new:[] };
-      letters.forEach(q => groups[getMastery(q.id)].push(q.letter.charAt(0)));
-      return [
-        { label:'Mastered', items: groups.mastered, color:'#7c6af7' },
-        { label:'Familiar', items: groups.familiar, color:'#4ade80' },
-        { label:'Learning', items: groups.learning, color:'#facc15' },
-        { label:'Not yet seen', items: groups.new, color:'#555' },
-      ];
+    detail:()=>{
+      const letters=[...(ALL_QUESTIONS.vowels||[]),...(ALL_QUESTIONS.consonants||[])];
+      const groups={mastered:[],familiar:[],learning:[],new:[]};
+      letters.forEach(q=>groups[getMastery(q.id)].push(q.letter.charAt(0)));
+      return [{label:'Mastered',items:groups.mastered,color:'#7c6af7'},{label:'Familiar',items:groups.familiar,color:'#4ade80'},{label:'Learning',items:groups.learning,color:'#facc15'},{label:'Not yet',items:groups.new,color:'#555'}];
     }
   },
   {
-    id: 'greetings',
-    icon: '👋',
-    label: 'Greetings',
-    sub: 'Core phrases to start talking',
-    color: '#f97316',
+    id:'words_basic', icon:'📖', label:'Basic Words', sub:'Greetings, people, numbers', color:'#f97316',
     getProgress: () => {
-      const words = WORD_BANK.greetings.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
+      const groups = ['greetings','people','numbers','food'];
+      const words = groups.flatMap(g=>WORD_BANK[g]?WORD_BANK[g].words:[]);
+      const mastered = words.filter(w=>getMastery(w.id)==='mastered').length;
+      return {done:mastered, total:words.length, pct:words.length>0?Math.round(mastered/words.length*100):0};
+    }, detail:null
   },
   {
-    id: 'people',
-    icon: '👨‍👩‍👧',
-    label: 'People & Family',
-    sub: 'Talk about the people around you',
-    color: '#f76a8a',
+    id:'words_nature', icon:'🌿', label:'Nature & Animals', sub:'The Mongolian world outdoors', color:'#4ade80',
     getProgress: () => {
-      const words = WORD_BANK.people.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
+      const groups = ['nature','nature2','animals2','weather'];
+      const words = groups.flatMap(g=>WORD_BANK[g]?WORD_BANK[g].words:[]);
+      const mastered = words.filter(w=>getMastery(w.id)==='mastered').length;
+      return {done:mastered, total:words.length, pct:words.length>0?Math.round(mastered/words.length*100):0};
+    }, detail:null
   },
   {
-    id: 'nature',
-    icon: '🌿',
-    label: 'Nature & Animals',
-    sub: 'Mongolia - the world outside the ger',
-    color: '#4ade80',
+    id:'words_life', icon:'🏠', label:'Daily Life', sub:'Home, work, school, transport', color:'#facc15',
     getProgress: () => {
-      const words = WORD_BANK.nature.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
+      const groups = ['objects','home','school','transport','clothing','money'];
+      const words = groups.flatMap(g=>WORD_BANK[g]?WORD_BANK[g].words:[]);
+      const mastered = words.filter(w=>getMastery(w.id)==='mastered').length;
+      return {done:mastered, total:words.length, pct:words.length>0?Math.round(mastered/words.length*100):0};
+    }, detail:null
   },
   {
-    id: 'food',
-    icon: '🍖',
-    label: 'Food & Drink',
-    sub: 'Eat, drink, and survive',
-    color: '#facc15',
+    id:'words_advanced', icon:'🧠', label:'Advanced Words', sub:'Emotions, concepts, adjectives', color:'#a78bfa',
     getProgress: () => {
-      const words = WORD_BANK.food.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
+      const groups = ['emotions','adjectives','verbs2','body','colors','time','connectors','concepts','social','directions'];
+      const words = groups.flatMap(g=>WORD_BANK[g]?WORD_BANK[g].words:[]);
+      const mastered = words.filter(w=>getMastery(w.id)==='mastered').length;
+      return {done:mastered, total:words.length, pct:words.length>0?Math.round(mastered/words.length*100):0};
+    }, detail:null
   },
   {
-    id: 'numbers',
-    icon: '🔢',
-    label: 'Numbers',
-    sub: 'Count and quantify',
-    color: '#a78bfa',
+    id:'culture', icon:'🏹', label:'Mongolian Culture', sub:'Ger, Naadam, traditions', color:'#f76a8a',
     getProgress: () => {
-      const words = WORD_BANK.numbers.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
+      const groups = ['culture','food2','greetings2','places','health','tech','sports'];
+      const words = groups.flatMap(g=>WORD_BANK[g]?WORD_BANK[g].words:[]);
+      const mastered = words.filter(w=>getMastery(w.id)==='mastered').length;
+      return {done:mastered, total:words.length, pct:words.length>0?Math.round(mastered/words.length*100):0};
+    }, detail:null
   },
   {
-    id: 'actions',
-    icon: '⚡',
-    label: 'Actions',
-    sub: 'Express what you do',
-    color: '#f97316',
+    id:'sentences', icon:'💬', label:'Sentences', sub:'200 real Mongolian sentences', color:'#7c6af7',
     getProgress: () => {
-      const words = WORD_BANK.actions.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
+      const sessions = globalStats.totalSessions||0;
+      const done = Math.min(sessions*3, SENTENCES.length);
+      return {done, total:SENTENCES.length, pct:Math.round(done/SENTENCES.length*100)};
+    }, detail:null
   },
   {
-    id: 'conversation',
-    icon: '💬',
-    label: 'Conversation',
-    sub: 'Ask questions and describe things',
-    color: '#60a5fa',
+    id:'production', icon:'🧩', label:'Production', sub:'Build sentences from English', color:'#f97316',
     getProgress: () => {
-      const words = WORD_BANK.conversation.words;
-      const mastered = words.filter(w => getMastery(w.id) === 'mastered').length;
-      return { done: mastered, total: words.length, pct: Math.round(mastered/words.length*100) };
-    },
-    detail: null
-  },
-  {
-    id: 'sentences',
-    icon: '📝',
-    label: 'Sentences',
-    sub: 'Understand real Mongolian in context',
-    color: '#7c6af7',
-    getProgress: () => {
-      // Based on sentence mode sessions played
-      const sessions = globalStats.totalSessions;
-      const done = Math.min(sessions, SENTENCES.length);
-      return { done, total: SENTENCES.length, pct: Math.round(done/SENTENCES.length*100) };
-    },
-    detail: null
-  },
-  {
-    id: 'fluency',
-    icon: '🏔️',
-    label: 'Fluency',
-    sub: 'The summit — speak freely with friends',
-    color: '#facc15',
-    getProgress: () => {
-      // Fluency = all word groups mastered 70%+ AND 10+ sentence sessions
       const allWords = Object.values(WORD_BANK).flatMap(g=>g.words);
-      const masteredWords = allWords.filter(w => getMastery(w.id) === 'mastered').length;
-      const done = masteredWords;
-      const total = allWords.length;
-      return { done, total, pct: Math.round(done/total*100) };
-    },
-    detail: null
+      const mastered = allWords.filter(w=>getMastery(w.id)==='mastered').length;
+      const pct = Math.round(mastered/allWords.length*100);
+      return {done:mastered, total:allWords.length, pct};
+    }, detail:null
+  },
+  {
+    id:'listening', icon:'👂', label:'Listening', sub:'Hear and transcribe Mongolian', color:'#60a5fa',
+    getProgress: () => {
+      const sessions = globalStats.totalSessions||0;
+      const done = Math.min(sessions, 50);
+      return {done, total:50, pct:Math.round(done/50*100)};
+    }, detail:null
+  },
+  {
+    id:'conversation', icon:'🗣️', label:'Conversation', sub:'Speak freely with Gobi and friends', color:'#facc15',
+    getProgress: () => {
+      const allWords = Object.values(WORD_BANK).flatMap(g=>g.words);
+      const mastered = allWords.filter(w=>getMastery(w.id)==='mastered').length;
+      return {done:mastered, total:allWords.length, pct:Math.round(mastered/allWords.length*100)};
+    }, detail:null
   },
 ];
 
@@ -3914,11 +4652,52 @@ let convoMessages = [], convoScenario = 'free', convoTyping = false;
 let convoKbVisible = false;
 
 const SCENARIO_PROMPTS = {
-  free: `You are Gobi, a friendly Mongolian language tutor bear. The user is a beginner. Have a natural conversation in Mongolian. For each reply: 1) Write response in Mongolian Cyrillic 2) Add English translation in parentheses 3) Gently correct mistakes 4) Add short grammar tip if relevant. Keep replies short — 1-3 sentences. Be encouraging.`,
-  greet: `You are Gobi, a Mongolian tutor. Practice greetings: hello, how are you, introductions, goodbye. Reply in Mongolian with English translation. Correct mistakes gently.`,
-  food: `You are Gobi, a Mongolian tutor. Roleplay as a waiter at a Mongolian restaurant. Guide the user to order in Mongolian. Reply in Mongolian with English translation.`,
-  directions: `You are Gobi, a local in Ulaanbaatar. Practice asking and giving directions. Reply in Mongolian with English translation. Correct mistakes gently.`,
-  friends: `You are Gobi, a Mongolian friend having casual conversation about daily life, hobbies, plans. Use everyday Mongolian. Reply with English translation. Correct mistakes gently.`,
+  free: `You are Gobi, a friendly Mongolian language tutor bear. The user is a beginner learning Mongolian.
+
+For EVERY reply use this exact format:
+[Your Mongolian response here] (English translation)
+
+Then if the user wrote any Mongolian, add a short SCORE section like this:
+📊 Grammar: 8/10 | Vocabulary: 7/10 | Natural: 6/10
+✏️ [One specific correction or encouragement — max 1 sentence]
+
+Keep your Mongolian response to 1-3 sentences. Be warm and encouraging.`,
+
+  greet: `You are Gobi, a Mongolian tutor practicing greetings: hello, how are you, introductions, goodbye.
+
+Format every reply:
+[Mongolian response] (English translation)
+
+If user wrote Mongolian:
+📊 Grammar: X/10 | Vocabulary: X/10 | Natural: X/10
+✏️ [One correction or tip]`,
+
+  food: `You are Gobi, a waiter at a Mongolian restaurant. Guide the user to order food in Mongolian.
+
+Format every reply:
+[Mongolian response] (English translation)
+
+If user wrote Mongolian:
+📊 Grammar: X/10 | Vocabulary: X/10 | Natural: X/10
+✏️ [One correction or tip]`,
+
+  directions: `You are Gobi, a local in Ulaanbaatar helping with directions.
+
+Format every reply:
+[Mongolian response] (English translation)
+
+If user wrote Mongolian:
+📊 Grammar: X/10 | Vocabulary: X/10 | Natural: X/10
+✏️ [One correction or tip]`,
+
+  friends: `You are Gobi, a Mongolian friend having casual conversation.
+
+Format every reply:
+[Mongolian response] (English translation)
+
+If user wrote Mongolian:
+📊 Grammar: X/10 | Vocabulary: X/10 | Natural: X/10
+✏️ [One correction or tip]`,
 };
 
 const SCENARIO_STARTERS = {
@@ -3944,13 +4723,23 @@ function clearConvo() {
   if (starter) { addConvoMessage('ai', starter.mn, starter.en, null); doTTS(starter.mn); }
 }
 
-function addConvoMessage(role, mn, en, tip) {
+function addConvoMessage(role, mn, en, tip, score) {
   const el = document.getElementById('convo-messages');
   if (!el) return;
   const div = document.createElement('div');
   div.className = 'convo-msg ' + role;
   if (role === 'ai') {
-    div.innerHTML = `<div class="msg-mn">${mn}</div>${en?`<div class="msg-en">${en}</div>`:''} ${tip?`<div class="msg-tip">💡 ${tip}</div>`:''}<button class="convo-hear-btn" onclick="doTTS('${mn.replace(/'/g,"\\'")}')">🔊 Hear</button>`;
+    let scoreHtml = '';
+    if (score) {
+      const scores = score.match(/(\d+)\/10/g) || [];
+      const avg = scores.length ? Math.round(scores.reduce((a,s)=>a+parseInt(s),0)/scores.length) : 0;
+      const color = avg>=8?'#4ade80':avg>=6?'#facc15':'#f87171';
+      scoreHtml = `<div style="margin-top:8px;padding:8px 10px;background:#0f0f14;border-radius:8px;border-left:3px solid ${color};">
+        <div style="font-size:12px;color:${color};font-weight:600;margin-bottom:3px;">${score}</div>
+        ${tip?`<div style="font-size:12px;color:#7c6af7;margin-top:3px;">✏️ ${tip}</div>`:''}
+      </div>`;
+    }
+    div.innerHTML = `<div class="msg-mn">${mn}</div>${en?`<div class="msg-en">${en}</div>`:''} ${scoreHtml}<button class="convo-hear-btn" onclick="doTTS('${mn.replace(/'/g,"\\'")}')">🔊 Hear</button>`;
   } else { div.textContent = mn; }
   el.appendChild(div);
   el.scrollTop = el.scrollHeight;
@@ -4007,9 +4796,15 @@ async function sendConvoMessage() {
     else {
       const mnMatch = reply.match(/^([^(\n]+)/);
       const enMatch = reply.match(/\(([^)]+)\)/);
-      const tipMatch = null;
-      addConvoMessage('ai', mnMatch?mnMatch[1].trim():reply, enMatch?enMatch[1].trim():null, tipMatch?tipMatch[1].trim():null);
-      doTTS(mnMatch?mnMatch[1].trim():reply);
+      // Extract score and correction from Gobi's structured response
+      const replyLines = reply.split('\n').filter(l=>l.trim());
+      const scoreLine = replyLines.find(l=>l.includes('📊'));
+      const corrLine = replyLines.find(l=>l.includes('✏️'));
+      const scorePart = scoreLine ? scoreLine.replace('📊','').trim() : null;
+      const corrPart = corrLine ? corrLine.replace('✏️','').trim() : null;
+      const mnText = mnMatch?mnMatch[1].trim():reply;
+      addConvoMessage('ai', mnText, enMatch?enMatch[1].trim():null, corrPart, scorePart);
+      doTTS(mnText);
       playCorrect();
     }
   } catch(e) {
@@ -4474,6 +5269,581 @@ function finishProduction() {
   setTimeout(() => toast.remove(), 3000);
 }
 
+
+// ─── Sentence Production Mode ──────────────────────────────────────────────
+let spSentences = [], spCurrent = 0, spScore = 0, spCorrect = 0, spAnswered = false;
+let spMode = 'tiles', spKbBuilt = false;
+let spAnswer = []; // for tile mode
+
+function startSentenceProduction() {
+  spSentences = [...SENTENCES].sort(() => Math.random()-0.5).slice(0, appSettings.quizLength||15);
+  spCurrent = 0; spScore = 0; spCorrect = 0; spAnswered = false;
+  showScreen('screen-sp');
+  buildSPKeyboard();
+  loadSPQuestion();
+}
+
+function buildSPKeyboard() {
+  if (spKbBuilt) return;
+  const KB_ROWS = [
+    ['й','ц','у','к','е','н','г','ш','щ','з','х'],
+    ['ф','ы','в','а','п','р','о','л','д','ж','э'],
+    ['я','ч','с','м','и','т','ь','б','ю','ө','ү'],
+  ];
+  KB_ROWS.forEach((row, i) => {
+    const el = document.getElementById('sp-kb-row-'+(i+1));
+    if (!el) return; el.innerHTML='';
+    row.forEach(l => {
+      const btn = document.createElement('button');
+      btn.className='kb-key'; btn.textContent=l.toUpperCase();
+      btn.addEventListener('click',()=>{ spKbType(l); playClick(); });
+      el.appendChild(btn);
+    });
+  });
+  spKbBuilt = true;
+}
+
+function spKbType(l) { const d=document.getElementById('sp-kb-text'); if(d) d.textContent+=l; }
+function spKbDelete() { const d=document.getElementById('sp-kb-text'); if(d) d.textContent=d.textContent.slice(0,-1); }
+function spKbClear() { const d=document.getElementById('sp-kb-text'); if(d) d.textContent=''; }
+
+function setSPMode(mode) {
+  spMode = mode;
+  document.getElementById('sp-mode-tile-btn').classList.toggle('active', mode==='tiles');
+  document.getElementById('sp-mode-kb-btn').classList.toggle('active', mode==='keyboard');
+  document.getElementById('sp-mode-speech-btn').classList.toggle('active', mode==='speech');
+  document.getElementById('sp-tile-wrap').style.display = mode==='tiles'?'block':'none';
+  document.getElementById('sp-kb-wrap').style.display = mode==='keyboard'?'flex':'none';
+  document.getElementById('sp-speech-wrap').style.display = mode==='speech'?'block':'none';
+}
+
+function loadSPQuestion() {
+  if (spCurrent >= spSentences.length) { finishSP(); return; }
+  const s = spSentences[spCurrent];
+  spAnswered = false; spAnswer = [];
+
+  document.getElementById('sp-progress').style.width = (spCurrent/spSentences.length*100)+'%';
+  document.getElementById('sp-score').textContent = spScore+' pts';
+  document.getElementById('sp-feedback').className = 'feedback-bar';
+  document.getElementById('sp-next-btn').style.display = 'none';
+  document.getElementById('sp-correction').style.display = 'none';
+  document.getElementById('sp-kb-text') && (document.getElementById('sp-kb-text').textContent='');
+
+  // Show English
+  document.getElementById('sp-english').textContent = s.en;
+
+  // Mascot
+  const m = document.getElementById('sp-mascot');
+  if (m) m.innerHTML = getBearSVG('neutral', true);
+  document.getElementById('sp-msg').textContent = 'Build the Mongolian sentence!';
+
+  // Build word tiles — shuffle the Mongolian words + some distractors
+  const words = [...s.mn];
+  // Add 2-3 distractor words from other sentences
+  const allWords = SENTENCES.flatMap(x=>x.mn).filter(w=>!words.includes(w)&&w!=='.'&&w!=='?'&&w!='!');
+  const distractors = allWords.sort(()=>Math.random()-0.5).slice(0,3);
+  const tiles = [...words, ...distractors].sort(()=>Math.random()-0.5);
+
+  const bank = document.getElementById('sp-word-bank');
+  if (bank) {
+    bank.innerHTML = '';
+    tiles.forEach((w,i) => {
+      const chip = document.createElement('span');
+      chip.className = 'sp-word-chip';
+      chip.textContent = w;
+      chip.dataset.idx = i;
+      chip.onclick = () => spAddChip(w, chip);
+      bank.appendChild(chip);
+    });
+  }
+  spClearAnswer(true);
+}
+
+function spAddChip(word, chipEl) {
+  if (spAnswered) return;
+  chipEl.classList.add('used');
+  spAnswer.push({ word, el: chipEl });
+  renderSPAnswer();
+  playClick();
+}
+
+function spRemoveLastChip() {
+  if (spAnswered || spAnswer.length===0) return;
+  const last = spAnswer.pop();
+  last.el.classList.remove('used');
+  renderSPAnswer();
+}
+
+function spClearAnswer(silent) {
+  if (spAnswer.length > 0 && !silent) {
+    spAnswer.forEach(a => a.el.classList.remove('used'));
+    spAnswer = [];
+  } else if (silent) {
+    spAnswer = [];
+  }
+  renderSPAnswer();
+}
+
+function renderSPAnswer() {
+  const area = document.getElementById('sp-answer-area');
+  const placeholder = document.getElementById('sp-placeholder');
+  if (!area) return;
+  // Remove existing answer chips (not placeholder)
+  area.querySelectorAll('.sp-answer-chip').forEach(c=>c.remove());
+  if (spAnswer.length === 0) {
+    if (placeholder) placeholder.style.display='';
+  } else {
+    if (placeholder) placeholder.style.display='none';
+    spAnswer.forEach((a,i) => {
+      const chip = document.createElement('span');
+      chip.className = 'sp-answer-chip';
+      chip.textContent = a.word;
+      chip.onclick = (e) => {
+        e.stopPropagation();
+        a.el.classList.remove('used');
+        spAnswer.splice(i,1);
+        renderSPAnswer();
+      };
+      area.appendChild(chip);
+    });
+  }
+}
+
+function playSPHint() {
+  const s = spSentences[spCurrent];
+  if (s) doTTS(s.mn.join(' '));
+}
+
+function checkSentenceProduction() {
+  if (spAnswered) return;
+  const s = spSentences[spCurrent];
+  let typed = '';
+
+  if (spMode==='tiles') {
+    typed = spAnswer.map(a=>a.word).join(' ');
+  } else if (spMode==='keyboard') {
+    typed = (document.getElementById('sp-kb-text')?.textContent||'').trim();
+  }
+  if (!typed) return;
+
+  spAnswered = true;
+
+  const target = s.mn.join(' ').replace(/[.?!]/g,'').trim().toLowerCase();
+  const attempt = typed.replace(/[.?!]/g,'').trim().toLowerCase();
+  const isCorrect = attempt === target;
+
+  // Partial score based on word overlap
+  const targetWords = target.split(' ');
+  const attemptWords = attempt.split(' ');
+  const matchedWords = attemptWords.filter(w => targetWords.includes(w)).length;
+  const partialPct = Math.round(matchedWords/targetWords.length*100);
+
+  doTTS(s.mn.join(' '));
+
+  const fb = document.getElementById('sp-feedback');
+  const correction = document.getElementById('sp-correction');
+  const mascot = document.getElementById('sp-mascot');
+
+  if (isCorrect) {
+    spScore += 200; spCorrect++;
+    playCorrect();
+    fb.textContent = '✓ Perfect! ' + partialPct + '% word match';
+    fb.className = 'feedback-bar correct';
+    if (mascot) mascot.innerHTML = getBearSVG('proud', true);
+    document.getElementById('sp-msg').textContent = 'Outstanding!';
+  } else {
+    if (partialPct >= 60) { spScore += 80; playCorrect(); }
+    else playWrong();
+    fb.textContent = partialPct + '% word match — ' + (partialPct>=60?'Close!':'Keep going!');
+    fb.className = partialPct>=60 ? 'feedback-bar correct' : 'feedback-bar wrong';
+    correction.style.display = 'block';
+    correction.innerHTML = '<strong style="color:#e8e8f0;">Correct sentence:</strong> ' + s.mn.join(' ') + '<br><span style="color:#555;">' + s.en + '</span>' + (s.grammar?'<br><span style="color:#7c6af7;font-size:12px;margin-top:4px;display:block;">'+s.grammar+'</span>':'');
+    if (mascot) mascot.innerHTML = getBearSVG(partialPct>=60?'neutral':'sad', true);
+    document.getElementById('sp-msg').textContent = partialPct>=60 ? 'Almost there!' : 'Study the correct form!';
+  }
+
+  document.getElementById('sp-score').textContent = spScore+' pts';
+  document.getElementById('sp-next-btn').style.display = 'block';
+}
+
+function startSPSpeech() {
+  if (!SpeechRecognition) { alert('Use Chrome for speech recognition.'); return; }
+  const btn = document.getElementById('sp-mic-btn');
+  if (isListening) { stopSpeech(); btn.classList.remove('listening'); btn.innerHTML='🎤'; return; }
+  btn.classList.add('listening'); btn.innerHTML='⏹';
+  playClick();
+
+  const s = spSentences[spCurrent];
+  startSpeech(
+    (results) => {
+      btn.classList.remove('listening'); btn.innerHTML='🎤';
+      if (spAnswered) return;
+      spAnswered = true;
+
+      const target = s.mn.join(' ').toLowerCase();
+      const best = results.reduce((b,r)=>{ const sc=speechScore(r,target); return sc>b.score?{text:r,score:sc}:b; }, {text:results[0],score:0});
+
+      doTTS(s.mn.join(' '));
+      const fb = document.getElementById('sp-feedback');
+      const correction = document.getElementById('sp-correction');
+      const mascot = document.getElementById('sp-mascot');
+
+      if (best.score >= 70) {
+        spScore+=200; spCorrect++;
+        playCorrect();
+        fb.textContent = best.score+'% match — great pronunciation!';
+        fb.className='feedback-bar correct';
+        if(mascot) mascot.innerHTML=getBearSVG('proud',true);
+      } else {
+        playWrong();
+        fb.textContent = best.score+'% match — heard: "'+best.text+'"';
+        fb.className='feedback-bar wrong';
+        correction.style.display='block';
+        correction.innerHTML='<strong style="color:#e8e8f0;">Target:</strong> '+s.mn.join(' ')+'<br><span style="color:#555;">'+s.en+'</span>';
+        if(mascot) mascot.innerHTML=getBearSVG('sad',true);
+      }
+      document.getElementById('sp-next-btn').style.display='block';
+    },
+    ()=>{ btn.classList.remove('listening'); btn.innerHTML='🎤'; },
+    'mn-MN'
+  );
+}
+
+function nextSP() {
+  spCurrent++;
+  spClearAnswer(true);
+  document.querySelectorAll('#sp-word-bank .sp-word-chip').forEach(c=>c.classList.remove('used'));
+  loadSPQuestion();
+}
+
+function finishSP() {
+  const pct = spSentences.length>0 ? Math.round(spCorrect/spSentences.length*100) : 0;
+  playFinish();
+  showScreen('screen-home'); switchTab('learn');
+  const toast = document.createElement('div');
+  toast.style.cssText='position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#4ade80;color:#0a1a0a;padding:10px 22px;border-radius:99px;font-size:14px;font-weight:600;z-index:99;font-family:system-ui;';
+  toast.textContent = pct>=80 ? '🧠 '+pct+'% — you can produce Mongolian!' : '📈 '+pct+'% — sentence production takes time!';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),3000);
+}
+
+
+// ─── Spaced Grammar Injection ──────────────────────────────────────────────
+// Maps word/pattern patterns to relevant grammar rules
+const GRAMMAR_TRIGGERS = {
+  // SOV word order
+  'verb_end': {
+    words: ['уудаг','байна','байдаг','явдаг','хийдэг','сурдаг','ярьдаг','уншдаг','иддэг'],
+    tip: 'SOV — Subject Object Verb',
+    msg: `Mongolian puts the verb at the END — "I tea drink" not "I drink tea". The verb you missed always comes last!`,
+    rule: 'g1'
+  },
+  // Байна vs байдаг
+  'baina_vs_baidag': {
+    words: ['байна','байдаг'],
+    tip: '"байна" vs "байдаг"',
+    msg: `"байна" = happening RIGHT NOW. "байдаг" = always true or habitual. Like "-ing" vs simple present in English.`,
+    rule: 'g4'
+  },
+  // Negation
+  'negation': {
+    words: ['мэдэхгүй','ойлгохгүй','байхгүй','байхгүй','уудаггүй','явдаггүй'],
+    tip: 'Negation with "-гүй"',
+    msg: `Add "-гүй" or "-хгүй" to negate any verb. мэдэх→мэдэхгүй (know→don't know). Simple once you see the pattern!`,
+    rule: 'g16'
+  },
+  // No plural needed
+  'plural': {
+    words: ['нохой','морь','хүн','найзууд','ном','мод'],
+    tip: 'Mongolian plurals',
+    msg: `Mongolian often skips plurals — "нохой" means both "dog" AND "dogs". Context makes it clear. No need to add "-ууд" every time!`,
+    rule: 'g7'
+  },
+  // Question particles
+  'question': {
+    words: ['уу','үү','вэ','бэ'],
+    tip: 'Question particles',
+    msg: `Add "уу/үү" or "вэ/бэ" at the end to make any sentence a question — which one depends on vowel harmony of the last word.`,
+    rule: 'g12'
+  },
+  // From suffix
+  'from_suffix': {
+    words: ['Америкаас','Монголоос','Хятадаас','хаанаас'],
+    tip: '"-аас" means "from"',
+    msg: `Add "-аас" (or "-ээс/өөс/өөс") to a place name to say "from". Америк→Америкаас. The vowel changes to match vowel harmony.`,
+    rule: 'g10'
+  },
+  // -тай / дуртай
+  'durtai': {
+    words: ['дуртай','дургүй','хайртай','сонирхолтой'],
+    tip: '"дуртай" = to like',
+    msg: `"дуртай" means "fond of" — just put it after whatever you like. "Би нохой дуртай" = I like dogs. No verb needed!`,
+    rule: 'g15'
+  },
+};
+
+let lastGrammarTip = null;
+
+function getGrammarTipForWord(word) {
+  if (!word) return null;
+  const w = word.toLowerCase();
+  for (const [key, trigger] of Object.entries(GRAMMAR_TRIGGERS)) {
+    if (trigger.words.some(tw => w.includes(tw) || tw.includes(w))) {
+      if (lastGrammarTip === key) return null; // Don't repeat same tip twice in a row
+      lastGrammarTip = key;
+      return trigger;
+    }
+  }
+  return null;
+}
+
+function showGrammarInjection(word, containerEl) {
+  const tip = getGrammarTipForWord(word);
+  if (!tip || !containerEl) return;
+  if (!appSettings.grammarTips) return;
+
+  // Remove any existing injection
+  const existing = document.getElementById('grammar-injection');
+  if (existing) existing.remove();
+
+  const div = document.createElement('div');
+  div.id = 'grammar-injection';
+  div.style.cssText = 'background:#111824;border:1px solid #1e3055;border-radius:10px;padding:12px 14px;margin-top:10px;animation:fadeIn 0.3s ease;';
+  div.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="font-size:16px;">💡</span>
+      <span style="font-size:12px;font-weight:600;color:#6090d0;text-transform:uppercase;letter-spacing:0.08em;">${tip.tip}</span>
+    </div>
+    <p style="font-size:13px;color:#7090b0;line-height:1.6;margin-bottom:8px;">${tip.msg}</p>
+    <button onclick="openGrammarNotes();document.getElementById('grammar-injection')?.remove();" 
+      style="background:none;border:1px solid #1e3055;border-radius:6px;padding:4px 12px;font-size:11px;color:#6090d0;cursor:pointer;font-family:inherit;">
+      See full rule →
+    </button>`;
+  containerEl.appendChild(div);
+}
+
+// Hook into handleAnswer to inject grammar tips on wrong answers
+const _origHandleAnswer = handleAnswer;
+handleAnswer = function(q, isCorrect) {
+  _origHandleAnswer(q, isCorrect);
+  if (!isCorrect && q.letter) {
+    // Inject after feedback bar
+    setTimeout(() => {
+      const fb = document.getElementById('quiz-feedback') || document.getElementById('feedback-bar');
+      const container = fb?.parentElement;
+      if (container) showGrammarInjection(q.letter, container);
+    }, 400);
+  }
+};
+
+// Also hook into sentence mode wrong answers
+const _origCheckSentenceAnswer = checkSentenceAnswer;
+checkSentenceAnswer = function(ans, s, btn) {
+  _origCheckSentenceAnswer(ans, s, btn);
+  if (ans.toLowerCase() !== s.blank.toLowerCase()) {
+    setTimeout(() => {
+      const fb = document.getElementById('sm-feedback');
+      if (fb?.parentElement) showGrammarInjection(s.blank, fb.parentElement);
+    }, 400);
+  }
+};
+
+
+// ─── Wrong Sentence Review ────────────────────────────────────────────────
+function getWrongSentences() {
+  try {
+    const ids = JSON.parse(localStorage.getItem('mn_wrong_sentences')||'[]');
+    return ids.map(x => ({
+      s: SENTENCES.find(s=>s.id===x.id),
+      wrongCount: x.wrongCount
+    })).filter(x=>x.s);
+  } catch(e) { return []; }
+}
+
+function renderWrongSentences() {
+  const list = document.getElementById('wrs-list');
+  const count = document.getElementById('wrs-count');
+  const drillBtn = document.getElementById('wrs-drill-btn');
+  if (!list) return;
+  const wrong = getWrongSentences();
+  count.textContent = wrong.length + ' sentence' + (wrong.length!==1?'s':'');
+  drillBtn.style.display = wrong.length>=2 ? 'block' : 'none';
+  if (wrong.length===0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:#444;font-size:13px;">No wrong sentences yet — complete sentence mode to build history!</div>';
+    return;
+  }
+  list.innerHTML = wrong.map(({s,wrongCount}) => `
+    <div style="background:#16161e;border:1px solid #2a2a38;border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;" onclick="doTTS('${s.mn.join(' ').replace(/'/g,"\\'")}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;">Missed ${wrongCount}x — tap to hear</span>
+        <span style="background:#2a0f0f;color:#f87171;border:1px solid #4a1a1a;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;">✗ ${wrongCount}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;">
+        ${s.mn.map(w => w===s.blank
+          ? `<span style="background:#7c6af7;color:white;padding:3px 10px;border-radius:6px;font-size:15px;font-weight:600;">${w}</span>`
+          : `<span style="color:#e8e8f0;font-size:15px;">${w}</span>`
+        ).join('')}
+      </div>
+      <div style="font-size:13px;color:#555;">${s.en}</div>
+      ${s.grammar?`<div style="font-size:12px;color:#7c6af7;margin-top:6px;">${s.grammar}</div>`:''}
+    </div>`).join('');
+}
+
+function drillWrongSentences() {
+  const wrong = getWrongSentences();
+  if (wrong.length<2) return;
+  smSentences = wrong.slice(0,15).map(x=>x.s);
+  smCurrent=0; smScore=0; smCorrect=0; smAnswered=false;
+  showScreen('screen-sentence');
+  loadSentence();
+}
+
+function openWrongSentences() {
+  showScreen('screen-wrong-sent');
+  renderWrongSentences();
+}
+
+
+// ─── Listening Dictation ──────────────────────────────────────────────────
+let ldSentences = [], ldCurrent = 0, ldScore = 0, ldCorrect = 0, ldAnswered = false;
+
+function startListeningDictation() {
+  ldSentences = [...SENTENCES].sort(()=>Math.random()-0.5).slice(0, appSettings.quizLength||15);
+  ldCurrent=0; ldScore=0; ldCorrect=0; ldAnswered=false;
+  showScreen('screen-dictation');
+  loadDictationQuestion();
+}
+
+function loadDictationQuestion() {
+  if (ldCurrent >= ldSentences.length) { finishDictation(); return; }
+  const s = ldSentences[ldCurrent];
+  ldAnswered = false;
+
+  document.getElementById('ld-progress').style.width = (ldCurrent/ldSentences.length*100)+'%';
+  document.getElementById('ld-score').textContent = ldScore+' pts';
+  document.getElementById('ld-feedback').className = 'feedback-bar';
+  document.getElementById('ld-next-btn').style.display = 'none';
+  document.getElementById('ld-reveal').style.display = 'none';
+
+  const m = document.getElementById('ld-mascot');
+  if (m) m.innerHTML = getBearSVG('neutral', true);
+  document.getElementById('ld-msg').textContent = 'Listen carefully and type each word!';
+
+  // Build word inputs — one input per non-punctuation word
+  const inputs = document.getElementById('ld-inputs');
+  inputs.innerHTML = '';
+  s.mn.forEach((w, i) => {
+    if (['.','?','!',','].includes(w)) {
+      const span = document.createElement('span');
+      span.className = 'dict-word-input punct';
+      span.textContent = w;
+      inputs.appendChild(span);
+    } else {
+      const inp = document.createElement('input');
+      inp.className = 'dict-word-input';
+      inp.type = 'text';
+      inp.dataset.target = w;
+      inp.dataset.idx = i;
+      inp.placeholder = '...';
+      inp.style.width = Math.max(60, w.length*14) + 'px';
+      inp.onkeydown = (e) => {
+        if (e.key==='Enter') {
+          const next = inputs.querySelectorAll('input')[Array.from(inputs.querySelectorAll('input')).indexOf(inp)+1];
+          if (next) next.focus(); else checkDictation();
+        }
+      };
+      inputs.appendChild(inp);
+    }
+  });
+
+  // Auto-play after short delay
+  setTimeout(playDictation, 500);
+
+  // Focus first input
+  setTimeout(() => {
+    const first = inputs.querySelector('input');
+    if (first) first.focus();
+  }, 800);
+}
+
+function playDictation() {
+  const s = ldSentences[ldCurrent];
+  if (!s) return;
+  const btn = document.getElementById('ld-play-btn');
+  if (btn) { btn.classList.add('playing'); setTimeout(()=>btn.classList.remove('playing'), 2000); }
+  doTTS(s.mn.join(' '));
+}
+
+function checkDictation() {
+  if (ldAnswered) return;
+  const s = ldSentences[ldCurrent];
+  ldAnswered = true;
+
+  const inputs = document.querySelectorAll('#ld-inputs input');
+  let totalWords = inputs.length;
+  let correctWords = 0;
+
+  inputs.forEach(inp => {
+    const typed = inp.value.trim().toLowerCase();
+    const target = inp.dataset.target.toLowerCase();
+    if (typed === target) {
+      inp.classList.add('correct');
+      correctWords++;
+    } else {
+      inp.classList.add('wrong');
+      inp.value = inp.dataset.target; // Show correct answer
+    }
+    inp.disabled = true;
+  });
+
+  const pct = totalWords>0 ? Math.round(correctWords/totalWords*100) : 0;
+  const isGood = pct >= 70;
+
+  if (isGood) { ldScore+=150; ldCorrect++; playCorrect(); }
+  else { playWrong(); }
+
+  // Track wrong sentences
+  if (!isGood) {
+    try {
+      let ws = JSON.parse(localStorage.getItem('mn_wrong_sentences')||'[]');
+      const ex = ws.find(x=>x.id===s.id);
+      if (ex) ex.wrongCount=(ex.wrongCount||0)+1;
+      else ws.push({id:s.id, wrongCount:1, lastSeen:Date.now()});
+      localStorage.setItem('mn_wrong_sentences', JSON.stringify(ws));
+    } catch(e) {}
+  }
+
+  const fb = document.getElementById('ld-feedback');
+  fb.textContent = pct+'% correct — '+correctWords+'/'+totalWords+' words';
+  fb.className = 'feedback-bar ' + (isGood?'correct':'wrong');
+
+  const reveal = document.getElementById('ld-reveal');
+  reveal.style.display = 'block';
+  reveal.innerHTML = s.mn.join(' ') + '<br><span style="font-size:13px;color:#555;">'+s.en+'</span>' +
+    (s.grammar ? '<br><span style="font-size:12px;color:#7c6af7;margin-top:4px;display:block;">'+s.grammar+'</span>' : '');
+
+  doTTS(s.mn.join(' '));
+
+  const mascot = document.getElementById('ld-mascot');
+  if (mascot) mascot.innerHTML = getBearSVG(isGood?'happy':'sad', true);
+  document.getElementById('ld-msg').textContent = isGood?'Great listening!':'Keep practicing!';
+  document.getElementById('ld-score').textContent = ldScore+' pts';
+  document.getElementById('ld-next-btn').style.display = 'block';
+}
+
+function nextDictation() { ldCurrent++; loadDictationQuestion(); }
+
+function finishDictation() {
+  const pct = ldSentences.length>0 ? Math.round(ldCorrect/ldSentences.length*100) : 0;
+  playFinish();
+  showScreen('screen-home'); switchTab('practice');
+  const toast = document.createElement('div');
+  toast.style.cssText='position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#60a5fa;color:#0a1020;padding:10px 22px;border-radius:99px;font-size:14px;font-weight:600;z-index:99;font-family:system-ui;';
+  toast.textContent = pct>=80?'👂 '+pct+'% — excellent listening!':'👂 '+pct+'% — listening takes time!';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),3000);
+}
+
 // ─── Tab Navigation ────────────────────────────────────────────────────────
 let activeTab = 'home';
 
@@ -4876,6 +6246,119 @@ window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
 </div>
 
 
+<!-- SENTENCE PRODUCTION SCREEN -->
+<div class="screen" id="screen-sp">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Sentence Production</h2>
+    <span class="quiz-score-badge" id="sp-score">0 pts</span>
+  </div>
+  <span class="sp-mode-badge">🧠 Produce full sentences — no blanks!</span>
+  <div class="mascot-quiz-wrap">
+    <div id="sp-mascot"></div>
+    <p class="mascot-quiz-msg" id="sp-msg">Build the Mongolian sentence!</p>
+  </div>
+  <div style="width:100%;height:5px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:1rem;">
+    <div id="sp-progress" style="height:100%;background:#4ade80;border-radius:99px;width:0%;transition:width 0.3s;"></div>
+  </div>
+
+  <!-- English sentence to translate -->
+  <div style="background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.2rem;margin-bottom:1rem;text-align:center;">
+    <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Translate this into Mongolian</p>
+    <p class="sp-sentence-en" id="sp-english"></p>
+    <button onclick="playSPHint()" id="sp-hint-btn" style="background:none;border:1px solid #2a2a38;border-radius:99px;padding:4px 14px;font-size:12px;color:#555;cursor:pointer;font-family:inherit;margin-top:8px;">💡 Hear the answer</button>
+  </div>
+
+  <!-- Mode toggle -->
+  <div class="kb-mode-toggle" style="margin-bottom:8px;">
+    <button class="kb-mode-btn active" id="sp-mode-tile-btn" onclick="setSPMode('tiles')">🧩 Word tiles</button>
+    <button class="kb-mode-btn" id="sp-mode-kb-btn" onclick="setSPMode('keyboard')">⌨️ Type it</button>
+    <button class="kb-mode-btn" id="sp-mode-speech-btn" onclick="setSPMode('speech')">🎤 Speak it</button>
+  </div>
+
+  <!-- Tile mode -->
+  <div id="sp-tile-wrap">
+    <div class="sp-answer-area" id="sp-answer-area" onclick="spRemoveLastChip()">
+      <span class="sp-placeholder" id="sp-placeholder">Tap words below to build the sentence...</span>
+    </div>
+    <div class="sp-word-bank" id="sp-word-bank"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button onclick="spClearAnswer()" style="flex:1;padding:10px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;">Clear</button>
+      <button onclick="checkSentenceProduction()" style="flex:2;padding:10px;background:#4ade80;border:none;border-radius:10px;font-size:14px;font-weight:700;color:#0a1a0a;cursor:pointer;font-family:inherit;">Check ✓</button>
+    </div>
+  </div>
+
+  <!-- Keyboard mode -->
+  <div id="sp-kb-wrap" style="display:none;flex-direction:column;gap:5px;">
+    <div class="kb-display">
+      <span id="sp-kb-text"></span>
+      <button onclick="spKbDelete()">⌫</button>
+    </div>
+    <div id="sp-kb-row-1" class="kb-row"></div>
+    <div id="sp-kb-row-2" class="kb-row"></div>
+    <div id="sp-kb-row-3" class="kb-row"></div>
+    <div class="kb-row" style="margin-top:2px;">
+      <button class="kb-key special" onclick="spKbClear()">Clear</button>
+      <button class="kb-key" onclick="spKbType(' ')" style="flex:3;max-width:none;">Space</button>
+      <button class="kb-key submit-key" onclick="checkSentenceProduction()">Check ✓</button>
+    </div>
+  </div>
+
+  <!-- Speech mode -->
+  <div id="sp-speech-wrap" style="display:none;text-align:center;padding:1rem;">
+    <button id="sp-mic-btn" class="mic-btn" style="width:70px;height:70px;font-size:28px;margin:0 auto;" onclick="startSPSpeech()">🎤</button>
+    <p style="font-size:13px;color:#555;margin-top:10px;">Tap the mic and say the full sentence</p>
+  </div>
+
+  <div class="feedback-bar" id="sp-feedback" style="margin-top:10px;"></div>
+  <div id="sp-correction" style="display:none;background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px;margin-top:8px;font-size:13px;color:#888;line-height:1.6;"></div>
+  <button class="next-btn" id="sp-next-btn" onclick="nextSP()" style="display:none;">Next →</button>
+</div>
+
+
+<!-- WRONG SENTENCES SCREEN -->
+<div class="screen" id="screen-wrong-sent">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1.2rem;">
+    <button onclick="showScreen('screen-home');switchTab('practice');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Practice</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Weak Sentences</h2>
+    <span id="wrs-count" style="font-size:12px;color:#555;"></span>
+  </div>
+  <button id="wrs-drill-btn" onclick="drillWrongSentences()" style="width:100%;padding:12px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:600;color:white;cursor:pointer;font-family:inherit;margin-bottom:1rem;display:none;">⚡ Drill these sentences</button>
+  <div id="wrs-list"></div>
+</div>
+
+
+<!-- LISTENING DICTATION SCREEN -->
+<div class="screen" id="screen-dictation">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('practice');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Practice</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Listening Dictation</h2>
+    <span class="quiz-score-badge" id="ld-score">0 pts</span>
+  </div>
+  <span class="dict-mode-badge">👂 Hear it → type every word in Cyrillic</span>
+  <div class="mascot-quiz-wrap">
+    <div id="ld-mascot"></div>
+    <p class="mascot-quiz-msg" id="ld-msg">Listen carefully and type each word!</p>
+  </div>
+  <div style="width:100%;height:5px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:1rem;">
+    <div id="ld-progress" style="height:100%;background:#60a5fa;border-radius:99px;width:0%;transition:width 0.3s;"></div>
+  </div>
+  <div class="dict-sentence-display">
+    <p style="font-size:12px;color:#555;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Type what you hear — word by word</p>
+    <button class="dict-play-btn" id="ld-play-btn" onclick="playDictation()">🔊</button>
+    <p style="font-size:12px;color:#555;margin-top:8px;">Tap to hear the sentence. Tap again to replay.</p>
+  </div>
+  <div class="dict-word-inputs" id="ld-inputs"></div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;">
+    <button onclick="playDictation()" style="flex:1;padding:10px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;">🔊 Play again</button>
+    <button onclick="checkDictation()" style="flex:2;padding:10px;background:#60a5fa;border:none;border-radius:10px;font-size:14px;font-weight:700;color:#0a1020;cursor:pointer;font-family:inherit;">Check ✓</button>
+  </div>
+  <div class="feedback-bar" id="ld-feedback"></div>
+  <div id="ld-reveal" style="display:none;background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px;margin-top:8px;font-size:14px;color:#e8e8f0;text-align:center;line-height:1.8;"></div>
+  <button class="next-btn" id="ld-next-btn" onclick="nextDictation()" style="display:none;">Next →</button>
+</div>
+
+
 </body>
 </html>  <div style="width:100%;display:flex;align-items:center;gap:10px;margin-bottom:10px;">
     <div class="quiz-progress-wrap" style="flex:1;"><div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -5239,6 +6722,119 @@ window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
 
   <div class="feedback-bar" id="prod-feedback"></div>
   <button class="next-btn" id="prod-next-btn" onclick="nextProduction()" style="display:none;">Next →</button>
+</div>
+
+
+<!-- SENTENCE PRODUCTION SCREEN -->
+<div class="screen" id="screen-sp">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Sentence Production</h2>
+    <span class="quiz-score-badge" id="sp-score">0 pts</span>
+  </div>
+  <span class="sp-mode-badge">🧠 Produce full sentences — no blanks!</span>
+  <div class="mascot-quiz-wrap">
+    <div id="sp-mascot"></div>
+    <p class="mascot-quiz-msg" id="sp-msg">Build the Mongolian sentence!</p>
+  </div>
+  <div style="width:100%;height:5px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:1rem;">
+    <div id="sp-progress" style="height:100%;background:#4ade80;border-radius:99px;width:0%;transition:width 0.3s;"></div>
+  </div>
+
+  <!-- English sentence to translate -->
+  <div style="background:#16161e;border:1.5px solid #2a2a38;border-radius:14px;padding:1.2rem;margin-bottom:1rem;text-align:center;">
+    <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Translate this into Mongolian</p>
+    <p class="sp-sentence-en" id="sp-english"></p>
+    <button onclick="playSPHint()" id="sp-hint-btn" style="background:none;border:1px solid #2a2a38;border-radius:99px;padding:4px 14px;font-size:12px;color:#555;cursor:pointer;font-family:inherit;margin-top:8px;">💡 Hear the answer</button>
+  </div>
+
+  <!-- Mode toggle -->
+  <div class="kb-mode-toggle" style="margin-bottom:8px;">
+    <button class="kb-mode-btn active" id="sp-mode-tile-btn" onclick="setSPMode('tiles')">🧩 Word tiles</button>
+    <button class="kb-mode-btn" id="sp-mode-kb-btn" onclick="setSPMode('keyboard')">⌨️ Type it</button>
+    <button class="kb-mode-btn" id="sp-mode-speech-btn" onclick="setSPMode('speech')">🎤 Speak it</button>
+  </div>
+
+  <!-- Tile mode -->
+  <div id="sp-tile-wrap">
+    <div class="sp-answer-area" id="sp-answer-area" onclick="spRemoveLastChip()">
+      <span class="sp-placeholder" id="sp-placeholder">Tap words below to build the sentence...</span>
+    </div>
+    <div class="sp-word-bank" id="sp-word-bank"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button onclick="spClearAnswer()" style="flex:1;padding:10px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;">Clear</button>
+      <button onclick="checkSentenceProduction()" style="flex:2;padding:10px;background:#4ade80;border:none;border-radius:10px;font-size:14px;font-weight:700;color:#0a1a0a;cursor:pointer;font-family:inherit;">Check ✓</button>
+    </div>
+  </div>
+
+  <!-- Keyboard mode -->
+  <div id="sp-kb-wrap" style="display:none;flex-direction:column;gap:5px;">
+    <div class="kb-display">
+      <span id="sp-kb-text"></span>
+      <button onclick="spKbDelete()">⌫</button>
+    </div>
+    <div id="sp-kb-row-1" class="kb-row"></div>
+    <div id="sp-kb-row-2" class="kb-row"></div>
+    <div id="sp-kb-row-3" class="kb-row"></div>
+    <div class="kb-row" style="margin-top:2px;">
+      <button class="kb-key special" onclick="spKbClear()">Clear</button>
+      <button class="kb-key" onclick="spKbType(' ')" style="flex:3;max-width:none;">Space</button>
+      <button class="kb-key submit-key" onclick="checkSentenceProduction()">Check ✓</button>
+    </div>
+  </div>
+
+  <!-- Speech mode -->
+  <div id="sp-speech-wrap" style="display:none;text-align:center;padding:1rem;">
+    <button id="sp-mic-btn" class="mic-btn" style="width:70px;height:70px;font-size:28px;margin:0 auto;" onclick="startSPSpeech()">🎤</button>
+    <p style="font-size:13px;color:#555;margin-top:10px;">Tap the mic and say the full sentence</p>
+  </div>
+
+  <div class="feedback-bar" id="sp-feedback" style="margin-top:10px;"></div>
+  <div id="sp-correction" style="display:none;background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px;margin-top:8px;font-size:13px;color:#888;line-height:1.6;"></div>
+  <button class="next-btn" id="sp-next-btn" onclick="nextSP()" style="display:none;">Next →</button>
+</div>
+
+
+<!-- WRONG SENTENCES SCREEN -->
+<div class="screen" id="screen-wrong-sent">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1.2rem;">
+    <button onclick="showScreen('screen-home');switchTab('practice');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Practice</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Weak Sentences</h2>
+    <span id="wrs-count" style="font-size:12px;color:#555;"></span>
+  </div>
+  <button id="wrs-drill-btn" onclick="drillWrongSentences()" style="width:100%;padding:12px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:600;color:white;cursor:pointer;font-family:inherit;margin-bottom:1rem;display:none;">⚡ Drill these sentences</button>
+  <div id="wrs-list"></div>
+</div>
+
+
+<!-- LISTENING DICTATION SCREEN -->
+<div class="screen" id="screen-dictation">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('practice');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Practice</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Listening Dictation</h2>
+    <span class="quiz-score-badge" id="ld-score">0 pts</span>
+  </div>
+  <span class="dict-mode-badge">👂 Hear it → type every word in Cyrillic</span>
+  <div class="mascot-quiz-wrap">
+    <div id="ld-mascot"></div>
+    <p class="mascot-quiz-msg" id="ld-msg">Listen carefully and type each word!</p>
+  </div>
+  <div style="width:100%;height:5px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:1rem;">
+    <div id="ld-progress" style="height:100%;background:#60a5fa;border-radius:99px;width:0%;transition:width 0.3s;"></div>
+  </div>
+  <div class="dict-sentence-display">
+    <p style="font-size:12px;color:#555;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Type what you hear — word by word</p>
+    <button class="dict-play-btn" id="ld-play-btn" onclick="playDictation()">🔊</button>
+    <p style="font-size:12px;color:#555;margin-top:8px;">Tap to hear the sentence. Tap again to replay.</p>
+  </div>
+  <div class="dict-word-inputs" id="ld-inputs"></div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;">
+    <button onclick="playDictation()" style="flex:1;padding:10px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;">🔊 Play again</button>
+    <button onclick="checkDictation()" style="flex:2;padding:10px;background:#60a5fa;border:none;border-radius:10px;font-size:14px;font-weight:700;color:#0a1020;cursor:pointer;font-family:inherit;">Check ✓</button>
+  </div>
+  <div class="feedback-bar" id="ld-feedback"></div>
+  <div id="ld-reveal" style="display:none;background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px;margin-top:8px;font-size:14px;color:#e8e8f0;text-align:center;line-height:1.8;"></div>
+  <button class="next-btn" id="ld-next-btn" onclick="nextDictation()" style="display:none;">Next →</button>
 </div>
 
 
