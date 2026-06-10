@@ -1857,7 +1857,7 @@ function getWordImage(key) {
   };
   if (textOnly[key]) {
     var sz = textOnly[key].length > 7 ? 13 : textOnly[key].length > 4 ? 17 : 21;
-    return '<svg width="90" height="90" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="border-radius:12px;background:#1a1830;border:1.5px solid #3a2a50;"><text x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-size="' + sz + '" font-weight="700" fill="#7c6af7" font-family="system-ui">' + textOnly[key] + '</text><text x="50" y="80" text-anchor="middle" font-size="9" fill="#555" font-family="system-ui">tap 🔊 to hear</text></svg>';
+    return '<svg width="90" height="90" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="border-radius:12px;background:#1a1830;border:1.5px solid #3a2a50;"><text x="50" y="45" text-anchor="middle" dominant-baseline="middle" font-size="' + sz + '" font-weight="700" fill="#7c6af7" font-family="system-ui">' + textOnly[key] + '</text><text x="50" y="75" text-anchor="middle" font-size="18" font-family="system-ui">🔊</text></svg>';
   }
 
   // Concrete nouns — emoji
@@ -2674,7 +2674,7 @@ function loadIQQuestion() {
   document.getElementById('iq-score').textContent = iqScore + ' pts';
   document.getElementById('iq-feedback').className = 'feedback-bar';
   document.getElementById('iq-next-btn').style.display = 'none';
-  document.getElementById('iq-hear-btn').style.display = 'none';
+  document.getElementById('iq-hear-btn').style.display = 'inline-block';
 
   // Pick quiz mode: image→pick Mongolian (primary) OR hear→pick Mongolian (reverse)
   const useReverse = iqCurrent % 3 === 2; // every 3rd question is reverse audio
@@ -2689,6 +2689,8 @@ function loadIQQuestion() {
     const imgSvg = getWordImage(q.img);
     iqShowingEnglish = imgSvg.indexOf('background:#1a1830') >= 0 || imgSvg.indexOf('tap 🔊') >= 0;
     document.getElementById('iq-image').innerHTML = imgSvg;
+    document.getElementById('iq-image').onclick = () => doTTS(q.letter);
+    document.getElementById('iq-image').style.cursor = 'pointer';
     if (iqShowingEnglish) {
       document.getElementById('iq-label').textContent = 'What does this mean in English?';
     } else {
@@ -2724,7 +2726,7 @@ function loadIQQuestion() {
   const iqSvg = document.getElementById('iq-mascot-svg');
   const iqMsg = document.getElementById('iq-mascot-msg');
   if (iqSvg) iqSvg.innerHTML = getBearSVG('neutral', true);
-  if (iqMsg) iqMsg.textContent = useReverse ? 'Listen carefully!' : 'What is this?';
+  if (iqMsg) iqMsg.textContent = useReverse ? 'Listen carefully!' : iqShowingEnglish ? 'Tap the card to hear it!' : 'Pick the Mongolian word!';
 }
 
 function checkIQAnswer(ans, q, btn) {
