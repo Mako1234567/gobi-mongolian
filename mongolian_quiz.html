@@ -4343,6 +4343,16 @@ function filterPhrases(filter, el) {
   renderPhraseList();
 }
 
+// ─── Phrase Favorites ─────────────────────────────────────────────────────
+let phraseFavs = new Set();
+try { phraseFavs = new Set(JSON.parse(localStorage.getItem('mn_fav_phrases') || '[]')); } catch(e) {}
+function saveFavs() { try { localStorage.setItem('mn_fav_phrases', JSON.stringify([...phraseFavs])); } catch(e) {} }
+function toggleFav(mn, btn) {
+  if (phraseFavs.has(mn)) { phraseFavs.delete(mn); btn.textContent = '☆'; btn.style.color = '#333'; }
+  else { phraseFavs.add(mn); btn.textContent = '★'; btn.style.color = '#facc15'; playCorrect(); }
+  saveFavs();
+}
+
 function renderPhraseList() {
   const el = document.getElementById('phrase-list');
   if (!el) return;
