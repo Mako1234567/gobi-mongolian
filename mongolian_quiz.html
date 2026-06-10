@@ -444,6 +444,18 @@
   .speech-score.ok { background:#1e1808;color:#facc15;border:1px solid #4a3810; }
   .speech-score.bad { background:#2a0f0f;color:#f87171;border:1px solid #4a1a1a; }
 
+
+  /* Production Mode */
+  .prod-word-display { width:100%;background:#16161e;border:1.5px solid #2a2a38;border-radius:16px;padding:2rem;text-align:center;margin-bottom:1rem; }
+  .prod-english { font-size:28px;font-weight:700;color:#e8e8f0;margin-bottom:8px; }
+  .prod-hint { font-size:13px;color:#555;margin-bottom:12px; }
+  .prod-image { display:flex;justify-content:center;margin-bottom:12px; }
+  .prod-result { font-size:20px;font-weight:700;margin-top:10px;min-height:32px; }
+  .prod-result.correct { color:#4ade80; }
+  .prod-result.wrong { color:#f87171; }
+  .prod-attempts { font-size:12px;color:#555;margin-top:4px; }
+  .prod-mode-badge { display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;background:#1e1008;color:#f97316;border:1px solid #4a2a10;margin-bottom:1rem; }
+
 </style>
 </head>
 <body>
@@ -1934,7 +1946,7 @@ function renderWordBank() {
     const unlocked = isGroupUnlocked(key);
     const mastered = group.words.filter(w => getMastery(w.id) === 'mastered').length;
     const pct = Math.round(mastered / group.words.length * 100);
-    html += `<div style="background:#16161e;border:1.5px solid ${unlocked?'#2a2a38':'#1e1e1e'};border-radius:14px;padding:14px 16px;opacity:${unlocked?1:0.45};cursor:${unlocked?'pointer':'default'};" ${unlocked?`onclick="startImageQuiz('${key}')"`:''}> 
+    html += `<div style="background:#16161e;border:1.5px solid ${unlocked?'#2a2a38':'#1e1e1e'};border-radius:14px;padding:14px 16px;opacity:${unlocked?1:0.45};">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:${unlocked?'10px':'0'};">
         <span style="font-size:24px;">${group.emoji}</span>
         <div style="flex:1;">
@@ -1943,7 +1955,11 @@ function renderWordBank() {
         </div>
         ${unlocked ? `<span style="font-size:12px;color:${pct===100?'#7c6af7':pct>0?'#4ade80':'#555'};">${mastered}/${group.words.length}</span>` : '<span style="font-size:16px;">🔒</span>'}
       </div>
-      ${unlocked ? `<div style="height:4px;background:#2a2a38;border-radius:99px;overflow:hidden;"><div style="height:100%;background:${pct===100?'#7c6af7':'#4ade80'};width:${pct}%;border-radius:99px;transition:width 0.4s;"></div></div>` : ''}
+      ${unlocked ? `<div style="height:4px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:10px;"><div style="height:100%;background:${pct===100?'#7c6af7':'#4ade80'};width:${pct}%;border-radius:99px;transition:width 0.4s;"></div></div>` : ''}
+      ${unlocked ? `<div style="display:flex;gap:8px;">
+        <button onclick="startImageQuiz('${key}')" style="flex:1;padding:8px;background:#1a1a2a;border:1px solid #2a2a38;border-radius:8px;font-size:12px;color:#888;cursor:pointer;font-family:inherit;">🖼️ Image quiz</button>
+        <button onclick="startProductionMode('${key}')" style="flex:1;padding:8px;background:#1e1008;border:1px solid #4a2a10;border-radius:8px;font-size:12px;color:#f97316;cursor:pointer;font-family:inherit;font-weight:600;">🧠 Production</button>
+      </div>` : ''}
     </div>`;
   });
   el.innerHTML = html;
@@ -2464,6 +2480,71 @@ const SENTENCES = [
   { id:'s88', mn:['Гудамжаар','шулуун','яв','.'], blank:'шулуун', en:`Go straight down the street.`, options:['баруун','зүүн','буцаж'], grammar:null },
   { id:'s89', mn:['Би','төөрчихлөө','.'], blank:'төөрчихлөө', en:`I am lost.`, options:['ядарчихлаа','хоцорчихлоо','мартчихлаа'], grammar:null },
   { id:'s90', mn:['Хоолны','газар','ойрхон','байна','уу','?'], blank:'ойрхон', en:`Is there a restaurant nearby?`, options:['хол','том','сайн'], grammar:null }
+  // ── Shopping ──────────────────────────────────────────────────────────
+  ,{ id:'s91', mn:['Энэ','хэд','вэ','?'], blank:'хэд', en:`How much is this?`, options:['юу','хэн','яагаад'], grammar:null },
+  { id:'s92', mn:['Арай','хямдруулж','болох','уу','?'], blank:'хямдруулж', en:`Can you make it cheaper?`, options:['өгч','авч','хийж'], grammar:null },
+  { id:'s93', mn:['Би','энийг','авья','.'], blank:'авья', en:`I will take this.`, options:['үзье','орхие','өгье'], grammar:`💡 '-ья' at the end makes a suggestion or decision — "let me/I will"` },
+  { id:'s94', mn:['Өөр','өнгөтэй','байна','уу','?'], blank:'өнгөтэй', en:`Do you have it in another color?`, options:['хэмжээтэй','загвартай','төрөлтэй'], grammar:null },
+  { id:'s95', mn:['Хэмжээ','тохирохгүй','байна','.'], blank:'тохирохгүй', en:`The size does not fit.`, options:['сайхангүй','хямдгүй','байхгүй'], grammar:null },
+  { id:'s96', mn:['Хаана','төлж','болох','вэ','?'], blank:'төлж', en:`Where can I pay?`, options:['авч','харж','явж'], grammar:null },
+  { id:'s97', mn:['Карт','гүйцэтгэж','болох','уу','?'], blank:'Карт', en:`Can I pay by card?`, options:['Бэлэн','Утас','Цэнэг'], grammar:null },
+  { id:'s98', mn:['Баримт','өгөөч','.'], blank:'Баримт', en:`Please give me a receipt.`, options:['Хувь','Жагсаалт','Захиалга'], grammar:null },
+
+  // ── Health & Body ─────────────────────────────────────────────────────
+  { id:'s99', mn:['Толгой','өвдөж','байна','.'], blank:'Толгой', en:`My head hurts.`, options:['Ходоод','Хоолой','Нуруу'], grammar:`💡 Body part + өвдөж байна = "my ___ hurts"` },
+  { id:'s100', mn:['Эмч','рүү','явах','хэрэгтэй','юу','?'], blank:'явах', en:`Do I need to go to the doctor?`, options:['очих','харах','дуудах'], grammar:null },
+  { id:'s101', mn:['Би','ханиад','хүрчихсэн','.'], blank:'ханиад', en:`I have caught a cold.`, options:['халуун','өвчин','жихүүн'], grammar:null },
+  { id:'s102', mn:['Эм','уух','хэрэгтэй','юу','?'], blank:'Эм', en:`Do I need to take medicine?`, options:['Тариа','Ус','Хоол'], grammar:null },
+  { id:'s103', mn:['Сайн','амрааарай','.'], blank:'амрааарай', en:`Please rest well.`, options:['явааарай','идэааарай','суугааарай'], grammar:null },
+  { id:'s104', mn:['Чи','сайн','байна','уу','?'], blank:'сайн', en:`Are you feeling well?`, options:['муу','ядарсан','өвдсөн'], grammar:null },
+
+  // ── Weather & Seasons ─────────────────────────────────────────────────
+  { id:'s105', mn:['Өнөөдөр','цас','орж','байна','.'], blank:'цас', en:`It is snowing today.`, options:['бороо','манан','салхи'], grammar:null },
+  { id:'s106', mn:['Маргааш','салхитай','байна','гэнэ','.'], blank:'салхитай', en:`They say it will be windy tomorrow.`, options:['бороотой','цастай','дулаан'], grammar:`💡 'гэнэ' at the end means "they say" or "apparently"` },
+  { id:'s107', mn:['Намар','навч','улайдаг','.'], blank:'навч', en:`In autumn the leaves turn red.`, options:['цас','бороо','нар'], grammar:null },
+  { id:'s108', mn:['Зун','халуун','байдаг','уу','?'], blank:'халуун', en:`Is it hot in summer?`, options:['хүйтэн','салхитай','бороотой'], grammar:null },
+  { id:'s109', mn:['Хавар','цэцэг','ургадаг','.'], blank:'цэцэг', en:`Flowers bloom in spring.`, options:['навч','цас','бороо'], grammar:null },
+  { id:'s110', mn:['Өвлийн','хүйтэнд','дассан','.'], blank:'дассан', en:`I am used to the winter cold.`, options:['айсан','ядарсан','баярласан'], grammar:null },
+
+  // ── Hobbies & Interests ───────────────────────────────────────────────
+  { id:'s111', mn:['Чи','юу','хийхэд','дуртай','вэ','?'], blank:'дуртай', en:`What do you like to do?`, options:['мэддэг','сурдаг','чаддаг'], grammar:null },
+  { id:'s112', mn:['Би','хөгжим','сонсоход','дуртай','.'], blank:'хөгжим', en:`I like listening to music.`, options:['кино','ном','тоглоом'], grammar:null },
+  { id:'s113', mn:['Та','спорт','хийдэг','үү','?'], blank:'спорт', en:`Do you play sports?`, options:['хөгжим','тоглоом','дуу'], grammar:null },
+  { id:'s114', mn:['Би','зураг','зурахад','дуртай','.'], blank:'зураг', en:`I like drawing.`, options:['дуу','тоглоом','ном'], grammar:null },
+  { id:'s115', mn:['Чамд','ямар','хөгжим','таалагддаг','вэ','?'], blank:'таалагддаг', en:`What kind of music do you like?`, options:['мэддэг','байдаг','сонсдог'], grammar:null },
+  { id:'s116', mn:['Гитар','тоглож','чаддаг','уу','?'], blank:'Гитар', en:`Can you play guitar?`, options:['Пиано','Хуур','Морин хуур'], grammar:`💡 Морин хуур is the traditional Mongolian horsehead fiddle` },
+  { id:'s117', mn:['Би','бөхийн','барилдааных','үзэхэд','дуртай','.'], blank:'бөхийн', en:`I like watching wrestling.`, options:['морины','сурын','хөлбөмбөгийн'], grammar:null },
+
+  // ── Mongolian Food ────────────────────────────────────────────────────
+  { id:'s118', mn:['Бууз','хийж','чаддаг','уу','?'], blank:'Бууз', en:`Can you make buuz (dumplings)?`, options:['Хуушуур','Цуйван','Банш'], grammar:`💡 Буузis the most famous Mongolian dumpling — steamed, filled with meat` },
+  { id:'s119', mn:['Хуушуур','маш','амттай','байдаг','.'], blank:'Хуушуур', en:`Khuushuur is very delicious.`, options:['Буузны','Цуйвангийн','Банш'], grammar:`💡 Хуушуур is a fried meat pastry — popular at Naadam` },
+  { id:'s120', mn:['Тараг','уух','дуртай','юу','?'], blank:'Тараг', en:`Do you like drinking tarag (yogurt)?`, options:['Айраг','Сүү','Цай'], grammar:`💡 Тараг is Mongolian yogurt made from cow or mare's milk` },
+  { id:'s121', mn:['Цуйван','бол','миний','дуртай','хоол','.'], blank:'дуртай', en:`Tsuivan is my favorite food.`, options:['гол','том','сайн'], grammar:`💡 Цуйван is a stir-fried noodle dish with meat and vegetables` },
+  { id:'s122', mn:['Монгол','хоол','идэж','үзсэн','үү','?'], blank:'идэж', en:`Have you ever tried Mongolian food?`, options:['харж','сонсож','мэдэж'], grammar:null },
+
+  // ── Phone & Texting ───────────────────────────────────────────────────
+  { id:'s123', mn:['Чиний','утасны','дугаар','хэд','вэ','?'], blank:'дугаар', en:`What is your phone number?`, options:['нэр','хаяг','нас'], grammar:null },
+  { id:'s124', mn:['Чамд','мессеж','явуулъя','.'], blank:'мессеж', en:`I will send you a message.`, options:['зураг','дуудлага','файл'], grammar:null },
+  { id:'s125', mn:['Утасаа','аваач','.'], blank:'Утасаа', en:`Pick up your phone.`, options:['Номоо','Цүнхээ','Ундаа'], grammar:null },
+  { id:'s126', mn:['Би','дараа','залгая','.'], blank:'залгая', en:`I will call you later.`, options:['явъя','ирье','үзье'], grammar:null },
+  { id:'s127', mn:['Интернет','холболт','байна','уу','?'], blank:'Интернет', en:`Is there internet connection?`, options:['Цахилгаан','Ус','Халуун'], grammar:null },
+
+  // ── Compliments & Small Talk ──────────────────────────────────────────
+  { id:'s128', mn:['Чи','маш','сайхан','хувцасласан','байна','.'], blank:'сайхан', en:`You are dressed very nicely.`, options:['муухай','хачин','энгийн'], grammar:null },
+  { id:'s129', mn:['Энэ','бол','маш','гоё','байна','.'], blank:'гоё', en:`This is very beautiful.`, options:['муухай','хачин','хуучин'], grammar:null },
+  { id:'s130', mn:['Чи','маш','ухаалаг','юм','байна','.'], blank:'ухаалаг', en:`You are very smart.`, options:['залхуу','хажирсан','чимээгүй'], grammar:null },
+  { id:'s131', mn:['Өнөөдөр','чи','сайхан','харагдаж','байна','.'], blank:'сайхан', en:`You look nice today.`, options:['муухай','хачин','залхуусан'], grammar:null },
+  { id:'s132', mn:['Чиний','монгол','хэл','маш','сайн','байна','!'], blank:'сайн', en:`Your Mongolian is very good!`, options:['муу','хачин','хэцүү'], grammar:null },
+
+  // ── Asking for Help ───────────────────────────────────────────────────
+  { id:'s133', mn:['Надад','туслах','уу','?'], blank:'туслах', en:`Can you help me?`, options:['явах','харах','сонсох'], grammar:null },
+  { id:'s134', mn:['Үүнийг','хэрхэн','хэлдэг','вэ','?'], blank:'хэрхэн', en:`How do you say this?`, options:['яагаад','хэзээ','хэн'], grammar:null },
+  { id:'s135', mn:['Надад','ойлгуулж','өгөөч','.'], blank:'ойлгуулж', en:`Please explain it to me.`, options:['хэлж','заажь','харуулж'], grammar:null },
+  { id:'s136', mn:['Та','англиар','ярьж','чаддаг','уу','?'], blank:'англиар', en:`Can you speak English?`, options:['монголоор','оросоор','хятадаар'], grammar:null },
+  { id:'s137', mn:['Би','алдаа','гаргасан','уу','?'], blank:'алдаа', en:`Did I make a mistake?`, options:['дуу','тоглоом','ажил'], grammar:null },
+  { id:'s138', mn:['Дахин','нэг','давтаж','хэлэх','үү','?'], blank:'давтаж', en:`Can you repeat it one more time?`, options:['орчуулж','бичиж','харуулж'], grammar:null },
+  { id:'s139', mn:['Та','надтай','ярилцах','цагтай','юу','?'], blank:'ярилцах', en:`Do you have time to talk with me?`, options:['тоглох','явах','идэх'], grammar:null },
+  { id:'s140', mn:['Монгол','хэлнийхэн','хурдан','ярьдаг','юм','байна','.'], blank:'хурдан', en:`Mongolian speakers speak fast.`, options:['удаан','чанга','чимээгүй'], grammar:null }
 ];
 
 // Known word IDs from word bank for highlighting
@@ -4179,6 +4260,220 @@ function startPronunciationPractice(word, targetEl) {
   }, 1500); // Let TTS finish first
 }
 
+
+// ─── Production Mode (English → Mongolian active recall) ──────────────────
+let prodWords = [], prodCurrent = 0, prodScore = 0, prodCorrect = 0;
+let prodAnswered = false, prodMode = 'kb', prodKbBuilt = false;
+
+function startProductionMode(groupKey) {
+  const group = WORD_BANK[groupKey];
+  if (!group) return;
+  // Randomize order, SRS-prioritize
+  prodWords = getSRSSorted(group.words.map(w => ({
+    id: w.id, mn: w.mn, en: w.en, rom: w.rom, img: w.img
+  }))).slice(0, group.words.length);
+  prodCurrent = 0; prodScore = 0; prodCorrect = 0; prodAnswered = false;
+  showScreen('screen-production');
+  buildProdKeyboard();
+  loadProductionQuestion();
+}
+
+function buildProdKeyboard() {
+  if (prodKbBuilt) return;
+  const KB_ROWS = [
+    ['й','ц','у','к','е','н','г','ш','щ','з','х'],
+    ['ф','ы','в','а','п','р','о','л','д','ж','э'],
+    ['я','ч','с','м','и','т','ь','б','ю','ө','ү'],
+  ];
+  KB_ROWS.forEach((row, i) => {
+    const el = document.getElementById('prod-kb-row-' + (i+1));
+    if (!el) return; el.innerHTML = '';
+    row.forEach(l => {
+      const btn = document.createElement('button');
+      btn.className = 'kb-key'; btn.textContent = l.toUpperCase();
+      btn.addEventListener('click', () => { prodKbType(l); playClick(); });
+      el.appendChild(btn);
+    });
+  });
+  prodKbBuilt = true;
+}
+
+function prodKbType(l) { const d = document.getElementById('prod-kb-text'); if(d) d.textContent += l; }
+function prodKbDelete() { const d = document.getElementById('prod-kb-text'); if(d) d.textContent = d.textContent.slice(0,-1); }
+function prodKbClear() { const d = document.getElementById('prod-kb-text'); if(d) d.textContent = ''; }
+
+function setProdMode(mode) {
+  prodMode = mode;
+  document.getElementById('prod-kb-cyrillic-btn').classList.toggle('active', mode==='kb');
+  document.getElementById('prod-kb-speech-btn').classList.toggle('active', mode==='speech');
+  document.getElementById('prod-kb-roman-btn').classList.toggle('active', mode==='roman');
+  document.getElementById('prod-kb-wrap').style.display = mode==='kb' ? 'flex' : 'none';
+  document.getElementById('prod-speech-wrap').style.display = mode==='speech' ? 'block' : 'none';
+  document.getElementById('prod-roman-wrap').style.display = mode==='roman' ? 'block' : 'none';
+}
+
+function loadProductionQuestion() {
+  if (prodCurrent >= prodWords.length) { finishProduction(); return; }
+  const w = prodWords[prodCurrent];
+  prodAnswered = false;
+
+  // Reset UI
+  document.getElementById('prod-progress').style.width = (prodCurrent/prodWords.length*100) + '%';
+  document.getElementById('prod-score').textContent = prodScore + ' pts';
+  document.getElementById('prod-feedback').className = 'feedback-bar';
+  document.getElementById('prod-next-btn').style.display = 'none';
+  document.getElementById('prod-result').textContent = '';
+  document.getElementById('prod-attempts').textContent = '';
+  document.getElementById('prod-audio-btn').style.display = 'none';
+  document.getElementById('prod-kb-text') && (document.getElementById('prod-kb-text').textContent = '');
+  const ri = document.getElementById('prod-roman-input'); if(ri) ri.value = '';
+
+  // Show English + image (NO Mongolian shown — that's the point!)
+  document.getElementById('prod-english').textContent = w.en;
+  document.getElementById('prod-image').innerHTML = getWordImage(w.img);
+  document.getElementById('prod-hint').textContent = w.rom ? 'Romanization hint available after answering' : '';
+
+  // Enable keyboard keys
+  document.querySelectorAll('#prod-kb-wrap .kb-key').forEach(k => k.style.pointerEvents = '');
+
+  // Mascot
+  const mascot = document.getElementById('prod-mascot');
+  if (mascot) mascot.innerHTML = getBearSVG('neutral', true);
+  document.getElementById('prod-msg').textContent = 'Type the Mongolian word!';
+}
+
+function prodPlayAudio() {
+  const w = prodWords[prodCurrent];
+  if (w) doTTS(w.mn);
+}
+
+function checkProduction() {
+  if (prodAnswered) return;
+  const w = prodWords[prodCurrent];
+  let typed = '';
+
+  if (prodMode === 'kb') {
+    typed = (document.getElementById('prod-kb-text')?.textContent || '').trim();
+  } else if (prodMode === 'roman') {
+    typed = (document.getElementById('prod-roman-input')?.value || '').trim().toLowerCase();
+  }
+  if (!typed) return;
+
+  prodAnswered = true;
+  document.querySelectorAll('#prod-kb-wrap .kb-key').forEach(k => k.style.pointerEvents = 'none');
+  const ri = document.getElementById('prod-roman-input'); if(ri) ri.disabled = true;
+
+  // Check answer
+  const target = w.mn.toLowerCase().replace(/\s+/g,'');
+  const input = typed.toLowerCase().replace(/\s+/g,'');
+  const romTarget = (w.rom||'').toLowerCase().replace(/\s+/g,'');
+
+  const isCorrect = input === target || (prodMode==='roman' && input === romTarget);
+
+  // Reveal audio button
+  document.getElementById('prod-audio-btn').style.display = 'inline-block';
+  doTTS(w.mn);
+  updateSRS(w.id, isCorrect);
+
+  const resultEl = document.getElementById('prod-result');
+  const mascot = document.getElementById('prod-mascot');
+
+  if (isCorrect) {
+    prodScore += 150; prodCorrect++; // More points for active recall
+    playCorrect();
+    resultEl.textContent = '✓ ' + w.mn;
+    resultEl.className = 'prod-result correct';
+    document.getElementById('prod-feedback').textContent = '✓ Perfect! ' + w.mn + ' = ' + w.en;
+    document.getElementById('prod-feedback').className = 'feedback-bar correct';
+    if (mascot) mascot.innerHTML = getBearSVG('happy', true);
+    document.getElementById('prod-msg').textContent = 'Excellent recall!';
+    if (w.rom) document.getElementById('prod-attempts').textContent = 'Romanization: ' + w.rom;
+  } else {
+    playWrong();
+    resultEl.textContent = '✗ Answer: ' + w.mn;
+    resultEl.className = 'prod-result wrong';
+    document.getElementById('prod-feedback').textContent = '✗ It was: ' + w.mn + (w.rom ? ' (' + w.rom + ')' : '');
+    document.getElementById('prod-feedback').className = 'feedback-bar wrong';
+    document.getElementById('prod-attempts').textContent = 'You typed: ' + typed;
+    if (mascot) mascot.innerHTML = getBearSVG('sad', true);
+    document.getElementById('prod-msg').textContent = 'Keep going — active recall is hard!';
+    if (w.rom) document.getElementById('prod-hint').textContent = 'Romanization: ' + w.rom;
+  }
+
+  document.getElementById('prod-next-btn').style.display = 'block';
+}
+
+function startProductionSpeech() {
+  if (!SpeechRecognition) { alert('Use Chrome for speech recognition.'); return; }
+  const btn = document.getElementById('prod-mic-btn');
+  if (isListening) { stopSpeech(); btn.classList.remove('listening'); btn.innerHTML='🎤'; return; }
+
+  btn.classList.add('listening'); btn.innerHTML='⏹';
+  playClick();
+
+  const w = prodWords[prodCurrent];
+  startSpeech(
+    (results) => {
+      btn.classList.remove('listening'); btn.innerHTML='🎤';
+      if (prodAnswered) return;
+      prodAnswered = true;
+
+      const target = w.mn.toLowerCase();
+      const best = results.reduce((b, r) => {
+        const sc = speechScore(r, target);
+        return sc > b.score ? {text:r, score:sc} : b;
+      }, {text:results[0], score:0});
+
+      updateSRS(w.id, best.score >= 70);
+      doTTS(w.mn);
+      document.getElementById('prod-audio-btn').style.display = 'inline-block';
+
+      const resultEl = document.getElementById('prod-result');
+      const mascot = document.getElementById('prod-mascot');
+      const cls = best.score>=80?'correct':best.score>=50?'ok':'wrong';
+
+      if (best.score >= 70) {
+        prodScore += 150; prodCorrect++;
+        playCorrect();
+        resultEl.textContent = '✓ ' + w.mn;
+        resultEl.className = 'prod-result correct';
+        document.getElementById('prod-feedback').textContent = best.score + '% match — great pronunciation!';
+        document.getElementById('prod-feedback').className = 'feedback-bar correct';
+        if (mascot) mascot.innerHTML = getBearSVG('happy', true);
+      } else {
+        playWrong();
+        resultEl.textContent = '✗ Answer: ' + w.mn;
+        resultEl.className = 'prod-result wrong';
+        document.getElementById('prod-feedback').textContent = best.score + '% match — heard: "' + best.text + '"';
+        document.getElementById('prod-feedback').className = 'feedback-bar wrong';
+        if (mascot) mascot.innerHTML = getBearSVG('sad', true);
+      }
+      document.getElementById('prod-attempts').textContent = 'Heard: "' + best.text + '" — ' + best.score + '% match';
+      document.getElementById('prod-next-btn').style.display = 'block';
+    },
+    () => { btn.classList.remove('listening'); btn.innerHTML='🎤'; },
+    'mn-MN'
+  );
+}
+
+function nextProduction() {
+  prodCurrent++;
+  document.getElementById('prod-kb-text') && (document.getElementById('prod-kb-text').textContent = '');
+  const ri = document.getElementById('prod-roman-input'); if(ri) { ri.value=''; ri.disabled=false; }
+  loadProductionQuestion();
+}
+
+function finishProduction() {
+  const pct = prodWords.length > 0 ? Math.round(prodCorrect/prodWords.length*100) : 0;
+  playFinish();
+  showScreen('screen-home'); switchTab('learn');
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#f97316;color:white;padding:10px 22px;border-radius:99px;font-size:14px;font-weight:600;z-index:99;font-family:system-ui;';
+  toast.textContent = pct>=80 ? '🧠 ' + pct + '% — active recall is working!' : '🧠 ' + pct + '% — keep drilling!';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
 // ─── Tab Navigation ────────────────────────────────────────────────────────
 let activeTab = 'home';
 
@@ -4513,6 +4808,74 @@ window.fbSignIn = async () => {
 window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
 </script>
 
+<!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
+<div class="screen" id="screen-production">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Production Mode</h2>
+    <span class="quiz-score-badge" id="prod-score">0 pts</span>
+  </div>
+  <span class="prod-mode-badge">🧠 Active recall — no hints!</span>
+  <div class="mascot-quiz-wrap">
+    <div id="prod-mascot"></div>
+    <p class="mascot-quiz-msg" id="prod-msg">Type or speak the Mongolian word!</p>
+  </div>
+  <div style="width:100%;height:5px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:1rem;">
+    <div id="prod-progress" style="height:100%;background:#f97316;border-radius:99px;width:0%;transition:width 0.3s;"></div>
+  </div>
+  <div class="prod-word-display">
+    <div class="prod-image" id="prod-image"></div>
+    <p class="prod-english" id="prod-english"></p>
+    <p class="prod-hint" id="prod-hint"></p>
+    <button onclick="prodPlayAudio()" style="background:#1e1e2a;border:1px solid #2a2a38;border-radius:99px;padding:5px 16px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;display:none;" id="prod-audio-btn">🔊 Hear it</button>
+    <div class="prod-result" id="prod-result"></div>
+    <div class="prod-attempts" id="prod-attempts"></div>
+  </div>
+
+  <!-- Input area -->
+  <div id="prod-input-area" style="width:100%;">
+    <div class="kb-mode-toggle" style="margin-bottom:6px;">
+      <button class="kb-mode-btn active" id="prod-kb-cyrillic-btn" onclick="setProdMode('kb')">🇲🇳 Keyboard</button>
+      <button class="kb-mode-btn" id="prod-kb-speech-btn" onclick="setProdMode('speech')">🎤 Speak</button>
+      <button class="kb-mode-btn" id="prod-kb-roman-btn" onclick="setProdMode('roman')">Romanization</button>
+    </div>
+
+    <!-- Cyrillic keyboard -->
+    <div id="prod-kb-wrap" style="display:flex;flex-direction:column;gap:5px;">
+      <div class="kb-display">
+        <span id="prod-kb-text"></span>
+        <button onclick="prodKbDelete()">⌫</button>
+      </div>
+      <div id="prod-kb-row-1" class="kb-row"></div>
+      <div id="prod-kb-row-2" class="kb-row"></div>
+      <div id="prod-kb-row-3" class="kb-row"></div>
+      <div class="kb-row" style="margin-top:2px;">
+        <button class="kb-key special" onclick="prodKbClear()">Clear</button>
+        <button class="kb-key" onclick="prodKbType(' ')" style="flex:3;max-width:none;">Space</button>
+        <button class="kb-key submit-key" onclick="checkProduction()">Check ✓</button>
+      </div>
+    </div>
+
+    <!-- Speech mode -->
+    <div id="prod-speech-wrap" style="display:none;text-align:center;padding:1rem;">
+      <button id="prod-mic-btn" class="mic-btn" style="width:70px;height:70px;font-size:28px;margin:0 auto;" onclick="startProductionSpeech()">🎤</button>
+      <p style="font-size:13px;color:#555;margin-top:10px;">Tap the mic and say the word in Mongolian</p>
+    </div>
+
+    <!-- Roman input -->
+    <div id="prod-roman-wrap" style="display:none;">
+      <input id="prod-roman-input" type="text" placeholder="Type romanization (e.g. sain uu)..."
+        style="width:100%;padding:14px;font-size:16px;font-family:inherit;background:#16161e;border:1.5px solid #2a2a38;border-radius:12px;color:#e8e8f0;outline:none;margin-bottom:8px;"
+        onkeydown="if(event.key==='Enter')checkProduction()">
+      <button onclick="checkProduction()" style="width:100%;padding:13px;background:#7c6af7;border:none;border-radius:12px;font-size:15px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Check ✓</button>
+    </div>
+  </div>
+
+  <div class="feedback-bar" id="prod-feedback"></div>
+  <button class="next-btn" id="prod-next-btn" onclick="nextProduction()" style="display:none;">Next →</button>
+</div>
+
+
 </body>
 </html>  <div style="width:100%;display:flex;align-items:center;gap:10px;margin-bottom:10px;">
     <div class="quiz-progress-wrap" style="flex:1;"><div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -4810,6 +5173,74 @@ window.fbSignIn = async () => {
 };
 window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
 </script>
+
+<!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
+<div class="screen" id="screen-production">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Production Mode</h2>
+    <span class="quiz-score-badge" id="prod-score">0 pts</span>
+  </div>
+  <span class="prod-mode-badge">🧠 Active recall — no hints!</span>
+  <div class="mascot-quiz-wrap">
+    <div id="prod-mascot"></div>
+    <p class="mascot-quiz-msg" id="prod-msg">Type or speak the Mongolian word!</p>
+  </div>
+  <div style="width:100%;height:5px;background:#2a2a38;border-radius:99px;overflow:hidden;margin-bottom:1rem;">
+    <div id="prod-progress" style="height:100%;background:#f97316;border-radius:99px;width:0%;transition:width 0.3s;"></div>
+  </div>
+  <div class="prod-word-display">
+    <div class="prod-image" id="prod-image"></div>
+    <p class="prod-english" id="prod-english"></p>
+    <p class="prod-hint" id="prod-hint"></p>
+    <button onclick="prodPlayAudio()" style="background:#1e1e2a;border:1px solid #2a2a38;border-radius:99px;padding:5px 16px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;display:none;" id="prod-audio-btn">🔊 Hear it</button>
+    <div class="prod-result" id="prod-result"></div>
+    <div class="prod-attempts" id="prod-attempts"></div>
+  </div>
+
+  <!-- Input area -->
+  <div id="prod-input-area" style="width:100%;">
+    <div class="kb-mode-toggle" style="margin-bottom:6px;">
+      <button class="kb-mode-btn active" id="prod-kb-cyrillic-btn" onclick="setProdMode('kb')">🇲🇳 Keyboard</button>
+      <button class="kb-mode-btn" id="prod-kb-speech-btn" onclick="setProdMode('speech')">🎤 Speak</button>
+      <button class="kb-mode-btn" id="prod-kb-roman-btn" onclick="setProdMode('roman')">Romanization</button>
+    </div>
+
+    <!-- Cyrillic keyboard -->
+    <div id="prod-kb-wrap" style="display:flex;flex-direction:column;gap:5px;">
+      <div class="kb-display">
+        <span id="prod-kb-text"></span>
+        <button onclick="prodKbDelete()">⌫</button>
+      </div>
+      <div id="prod-kb-row-1" class="kb-row"></div>
+      <div id="prod-kb-row-2" class="kb-row"></div>
+      <div id="prod-kb-row-3" class="kb-row"></div>
+      <div class="kb-row" style="margin-top:2px;">
+        <button class="kb-key special" onclick="prodKbClear()">Clear</button>
+        <button class="kb-key" onclick="prodKbType(' ')" style="flex:3;max-width:none;">Space</button>
+        <button class="kb-key submit-key" onclick="checkProduction()">Check ✓</button>
+      </div>
+    </div>
+
+    <!-- Speech mode -->
+    <div id="prod-speech-wrap" style="display:none;text-align:center;padding:1rem;">
+      <button id="prod-mic-btn" class="mic-btn" style="width:70px;height:70px;font-size:28px;margin:0 auto;" onclick="startProductionSpeech()">🎤</button>
+      <p style="font-size:13px;color:#555;margin-top:10px;">Tap the mic and say the word in Mongolian</p>
+    </div>
+
+    <!-- Roman input -->
+    <div id="prod-roman-wrap" style="display:none;">
+      <input id="prod-roman-input" type="text" placeholder="Type romanization (e.g. sain uu)..."
+        style="width:100%;padding:14px;font-size:16px;font-family:inherit;background:#16161e;border:1.5px solid #2a2a38;border-radius:12px;color:#e8e8f0;outline:none;margin-bottom:8px;"
+        onkeydown="if(event.key==='Enter')checkProduction()">
+      <button onclick="checkProduction()" style="width:100%;padding:13px;background:#7c6af7;border:none;border-radius:12px;font-size:15px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Check ✓</button>
+    </div>
+  </div>
+
+  <div class="feedback-bar" id="prod-feedback"></div>
+  <button class="next-btn" id="prod-next-btn" onclick="nextProduction()" style="display:none;">Next →</button>
+</div>
+
 
 </body>
 </html>
