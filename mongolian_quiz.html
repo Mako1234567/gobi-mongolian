@@ -2,14 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-  <meta name="theme-color" content="#0c0c10">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Gobi">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-180.png">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mongolian Quiz</title>
 <style>
@@ -429,20 +421,16 @@
   .convo-msg.ai .msg-mn { font-size:16px;font-weight:600;color:#e8e8f0;margin-bottom:4px; }
   .convo-msg.ai .msg-en { font-size:12px;color:#666;margin-bottom:4px; }
   .convo-msg.ai .msg-tip { font-size:11px;color:#7c6af7;margin-top:4px;padding-top:4px;border-top:1px solid #2a2a38; }
-  .convo-msg.typing { opacity:0.6; }
   .convo-input-wrap { display:flex;gap:8px;width:100%;align-items:flex-end; }
   .convo-input { flex:1;padding:12px 14px;font-size:14px;font-family:inherit;background:#16161e;border:1.5px solid #2a2a38;border-radius:12px;color:#e8e8f0;outline:none;resize:none;min-height:46px;max-height:120px; }
   .convo-input:focus { border-color:#7c6af7; }
-  .convo-send-btn { width:46px;height:46px;background:#7c6af7;border:none;border-radius:12px;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center; }
+  .convo-send-btn { width:46px;height:46px;background:#7c6af7;border:none;border-radius:12px;font-size:18px;cursor:pointer;flex-shrink:0; }
   .convo-send-btn:disabled { opacity:0.5;cursor:default; }
   .convo-hear-btn { background:none;border:1px solid #2a2a38;border-radius:8px;padding:3px 10px;font-size:12px;color:#666;cursor:pointer;font-family:inherit;margin-top:4px; }
-  .convo-hear-btn:hover { border-color:#7c6af7;color:#7c6af7; }
   .convo-scenario { display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem; }
   .convo-scenario-btn { padding:6px 12px;border-radius:99px;border:1px solid #2a2a38;background:none;font-size:12px;color:#888;cursor:pointer;font-family:inherit; }
-  .convo-scenario-btn:hover { border-color:#7c6af7;color:#7c6af7; }
   .convo-scenario-btn.active { border-color:#7c6af7;color:#7c6af7;background:#1a1830; }
-  .convo-clear-btn { background:none;border:none;font-size:12px;color:#555;cursor:pointer;font-family:inherit;padding:4px; }
-  .convo-clear-btn:hover { color:#f87171; }
+  .convo-clear-btn { background:none;border:none;font-size:12px;color:#555;cursor:pointer;font-family:inherit; }
 
 </style>
 </head>
@@ -2423,6 +2411,46 @@ const SENTENCES = [
   { id:'s48', mn:['Тэр','монгол','хэл','мэддэг','.'], blank:'мэддэг', en:'He/She knows Mongolian.', options:['сурдаг','ярьдаг','уншдаг'], grammar:null },
   { id:'s49', mn:['Өнөөдөр','чөлөөтэй','юу','?'], blank:'чөлөөтэй', en:'Are you free today?', options:['завтай','бэлэн','сайн'], grammar:null },
   { id:'s50', mn:['Би','чамаас','сурч','байна','.'], blank:'сурч', en:'I am learning from you.', options:['тусламж','асууж','хайж'], grammar:null }
+  ,{ id:'s51', mn:['Миний','нэр','Сойер','гэдэг','.'], blank:'нэр', en:`My name is Sawyer.`, options:['гэр','нас','найз'], grammar:`💡 'нэр' means name` },
+  { id:'s52', mn:['Та','хаанаас','ирсэн','бэ','?'], blank:'хаанаас', en:`Where are you from?`, options:['яагаад','хэзээ','хэн'], grammar:null },
+  { id:'s53', mn:['Би','Америкаас','ирсэн','.'], blank:'Америкаас', en:`I am from America.`, options:['Монголоос','Хятадаас','Оросоос'], grammar:`💡 '-аас' at the end of a place name means 'from'` },
+  { id:'s54', mn:['Та','юу','хийдэг','вэ','?'], blank:'юу', en:`What do you do?`, options:['хаана','хэн','хэзээ'], grammar:null },
+  { id:'s55', mn:['Би','оюутан','юм','.'], blank:'оюутан', en:`I am a student.`, options:['багш','эмч','жолооч'], grammar:null },
+  { id:'s56', mn:['Танилцаж','байгаадаа','баяртай','.'], blank:'Танилцаж', en:`Nice to meet you.`, options:['Уулзаж','Ярилцаж','Тоглож'], grammar:null },
+  { id:'s57', mn:['Чи','монгол','хэл','мэддэг','үү','?'], blank:'мэддэг', en:`Do you know Mongolian?`, options:['сурдаг','ярьдаг','уншдаг'], grammar:null },
+  { id:'s58', mn:['Чи','хаана','амьдардаг','вэ','?'], blank:'амьдардаг', en:`Where do you live?`, options:['ажилладаг','сурдаг','тоглодог'], grammar:null },
+  { id:'s59', mn:['Манай','гэр','бүлд','таван','хүн','бий','.'], blank:'таван', en:`There are five people in my family.`, options:['гурван','дөрвөн','зургаан'], grammar:null },
+  { id:'s60', mn:['Миний','ээж','эмч','юм','.'], blank:'ээж', en:`My mother is a doctor.`, options:['аав','ах','эгч'], grammar:null },
+  { id:'s61', mn:['Миний','аав','багш','юм','.'], blank:'аав', en:`My father is a teacher.`, options:['ээж','ах','дүү'], grammar:null },
+  { id:'s62', mn:['Надад','нэг','дүү','бий','.'], blank:'дүү', en:`I have one younger sibling.`, options:['ах','эгч','найз'], grammar:`💡 'дүү' means younger sibling regardless of gender` },
+  { id:'s63', mn:['Манай','гэрт','нохой','бий','.'], blank:'нохой', en:`We have a dog at home.`, options:['муур','морь','шувуу'], grammar:null },
+  { id:'s64', mn:['Би','өдөр','бүр','сургуульд','явдаг','.'], blank:'сургуульд', en:`I go to school every day.`, options:['ажилд','дэлгүүрт','номын санд'], grammar:null },
+  { id:'s65', mn:['Хичээл','наймд','эхэлдэг','.'], blank:'наймд', en:`Class starts at eight.`, options:['есөд','арвад','долоод'], grammar:null },
+  { id:'s66', mn:['Миний','дуртай','хичээл','математик','юм','.'], blank:'математик', en:`My favorite subject is math.`, options:['физик','биологи','түүх'], grammar:null },
+  { id:'s67', mn:['Шалгалт','маргааш','байна','.'], blank:'маргааш', en:`The exam is tomorrow.`, options:['өнөөдөр','нөгөөдөр','өчигдөр'], grammar:null },
+  { id:'s68', mn:['Өнөөдөр','Даваа','гараг','юм','.'], blank:'Даваа', en:`Today is Monday.`, options:['Мягмар','Лхагва','Пүрэв'], grammar:`💡 Days: Даваа=Mon, Мягмар=Tue, Лхагва=Wed, Пүрэв=Thu, Баасан=Fri` },
+  { id:'s69', mn:['Гурван','цаг','болж','байна','.'], blank:'Гурван', en:`It is three o'clock.`, options:['Хоёр','Дөрвөн','Таван'], grammar:null },
+  { id:'s70', mn:['Маргааш','Бямба','гараг','.'], blank:'Бямба', en:`Tomorrow is Saturday.`, options:['Ням','Даваа','Баасан'], grammar:`💡 Weekend: Бямба=Saturday, Ням=Sunday` },
+  { id:'s71', mn:['Би','өглөө','эрт','босдог','.'], blank:'эрт', en:`I wake up early in the morning.`, options:['орой','хожуу','дунд'], grammar:null },
+  { id:'s72', mn:['Наадам','зунд','болдог','.'], blank:'зунд', en:`Naadam happens in summer.`, options:['намарт','өвөлд','хаврт'], grammar:null },
+  { id:'s73', mn:['Айраг','гүүний','сүүнээс','хийдэг','.'], blank:'гүүний', en:`Airag is made from mare's milk.`, options:['үнээний','тэмээний','ямааны'], grammar:`💡 Айраг is fermented mare's milk — Mongolia's national drink` },
+  { id:'s74', mn:['Монгол','морь','маш','хурдан','юм','.'], blank:'хурдан', en:`Mongolian horses are very fast.`, options:['том','хүчтэй','ухаалаг'], grammar:null },
+  { id:'s75', mn:['Улаанбаатар','бол','Монголын','нийслэл','юм','.'], blank:'нийслэл', en:`Ulaanbaatar is the capital of Mongolia.`, options:['хот','гэр','газар'], grammar:null },
+  { id:'s76', mn:['Монголд','өвөл','их','хүйтэн','байдаг','.'], blank:'хүйтэн', en:`Winter in Mongolia is very cold.`, options:['дулаан','сайн','салхитай'], grammar:null },
+  { id:'s77', mn:['Би','маш','баяртай','байна','.'], blank:'баяртай', en:`I am very happy.`, options:['гунигтай','залхуусан','ядарсан'], grammar:null },
+  { id:'s78', mn:['Чи','яагаад','уйлж','байна','вэ','?'], blank:'уйлж', en:`Why are you crying?`, options:['инээж','дуулж','тоглож'], grammar:null },
+  { id:'s79', mn:['Би','маш','ядарсан','байна','.'], blank:'ядарсан', en:`I am very tired.`, options:['баяртай','залхуусан','санаа зовсон'], grammar:null },
+  { id:'s80', mn:['Би','чамайг','санаж','байна','.'], blank:'санаж', en:`I miss you.`, options:['хайрлаж','мэдэж','харж'], grammar:null },
+  { id:'s81', mn:['Бүх','зүйл','сайн','болно','.'], blank:'сайн', en:`Everything will be fine.`, options:['муу','хэцүү','хачин'], grammar:null },
+  { id:'s82', mn:['Би','чамд','итгэдэг','.'], blank:'итгэдэг', en:`I trust you.`, options:['дуртай','мэддэг','харддаг'], grammar:null },
+  { id:'s83', mn:['Энэ','ном','мянган','төгрөг','юм','.'], blank:'мянган', en:`This book is one thousand tugriks.`, options:['зуун','арван','таван'], grammar:`💡 Mongolian currency is the төгрөг (tugrik)` },
+  { id:'s84', mn:['Арав','минутын','дараа','очно','.'], blank:'Арав', en:`I will go in ten minutes.`, options:['Хорь','Гуч','Тав'], grammar:null },
+  { id:'s85', mn:['Дэлгүүр','хэдэн','цагт','хаагддаг','вэ','?'], blank:'хаагддаг', en:`What time does the store close?`, options:['нээгддэг','эхэлдэг','дуусдаг'], grammar:null },
+  { id:'s86', mn:['Эмнэлэг','хаана','байдаг','вэ','?'], blank:'Эмнэлэг', en:`Where is the hospital?`, options:['Дэлгүүр','Сургууль','Зах'], grammar:null },
+  { id:'s87', mn:['Энэ','зам','зөв','үү','?'], blank:'зөв', en:`Is this the right road?`, options:['буруу','урт','богино'], grammar:null },
+  { id:'s88', mn:['Гудамжаар','шулуун','яв','.'], blank:'шулуун', en:`Go straight down the street.`, options:['баруун','зүүн','буцаж'], grammar:null },
+  { id:'s89', mn:['Би','төөрчихлөө','.'], blank:'төөрчихлөө', en:`I am lost.`, options:['ядарчихлаа','хоцорчихлоо','мартчихлаа'], grammar:null },
+  { id:'s90', mn:['Хоолны','газар','ойрхон','байна','уу','?'], blank:'ойрхон', en:`Is there a restaurant nearby?`, options:['хол','том','сайн'], grammar:null }
 ];
 
 // Known word IDs from word bank for highlighting
@@ -3788,32 +3816,22 @@ function showIntroIfNeeded() {
 
 
 // ─── Conversation Practice ────────────────────────────────────────────────
-let convoMessages = [];
-let convoScenario = 'free';
-let convoTyping = false;
+let convoMessages = [], convoScenario = 'free', convoTyping = false;
+let convoKbVisible = false;
 
 const SCENARIO_PROMPTS = {
-  free: `You are Gobi, a friendly Mongolian language tutor bear. The user is a beginner learning Mongolian. Have a natural conversation in Mongolian. For each reply:
-1. Write your response in Mongolian (Cyrillic)
-2. Add an English translation in parentheses
-3. If the user made a mistake, gently correct it
-4. Add a short grammar tip if relevant
-Keep replies short — 1-3 sentences max. Be encouraging and fun.`,
-
-  greet: `You are Gobi, a Mongolian tutor. Practice greetings with the user. Guide them through: saying hello, asking how they are, introducing themselves, saying goodbye. Reply in Mongolian with English translation. Correct mistakes gently. Keep it short and encouraging.`,
-
-  food: `You are Gobi, a Mongolian tutor. Roleplay ordering food at a Mongolian restaurant. You are the waiter. Guide the user to order food and drinks in Mongolian. Reply in Mongolian with English translation. Correct mistakes gently.`,
-
-  directions: `You are Gobi, a Mongolian tutor. Practice asking and giving directions in Mongolian. You are a local in Ulaanbaatar. Guide the user to ask where things are and understand directions. Reply in Mongolian with English translation. Correct mistakes gently.`,
-
-  friends: `You are Gobi, a Mongolian friend having a casual conversation. Talk about what you did today, weekend plans, hobbies. Use casual everyday Mongolian like friends would speak. Reply in Mongolian with English translation. Correct mistakes gently.`,
+  free: `You are Gobi, a friendly Mongolian language tutor bear. The user is a beginner. Have a natural conversation in Mongolian. For each reply: 1) Write response in Mongolian Cyrillic 2) Add English translation in parentheses 3) Gently correct mistakes 4) Add short grammar tip if relevant. Keep replies short — 1-3 sentences. Be encouraging.`,
+  greet: `You are Gobi, a Mongolian tutor. Practice greetings: hello, how are you, introductions, goodbye. Reply in Mongolian with English translation. Correct mistakes gently.`,
+  food: `You are Gobi, a Mongolian tutor. Roleplay as a waiter at a Mongolian restaurant. Guide the user to order in Mongolian. Reply in Mongolian with English translation.`,
+  directions: `You are Gobi, a local in Ulaanbaatar. Practice asking and giving directions. Reply in Mongolian with English translation. Correct mistakes gently.`,
+  friends: `You are Gobi, a Mongolian friend having casual conversation about daily life, hobbies, plans. Use everyday Mongolian. Reply with English translation. Correct mistakes gently.`,
 };
 
 const SCENARIO_STARTERS = {
   free: { mn: 'Сайн уу! Би Гоби. Монгол хэл сурч байна уу? 🐻', en: 'Hello! I am Gobi. Are you learning Mongolian?' },
-  greet: { mn: 'Сайн уу! Мэндчилгээ дадлага хийцгаая. Эхлэе — надад мэндлээрэй! 👋', en: 'Hello! Let us practice greetings. Start — say hello to me!' },
+  greet: { mn: 'Сайн уу! Мэндчилгээ дадлага хийцгаая. Надад мэндлээрэй! 👋', en: 'Hello! Let us practice greetings. Say hello to me!' },
   food: { mn: 'Тавтай морилно уу! Юу захиалах вэ? 🍖', en: 'Welcome! What would you like to order?' },
-  directions: { mn: 'Сайн уу! Та хаашаа явж байна вэ? Би туслъя! 📍', en: 'Hello! Where are you going? I can help!' },
+  directions: { mn: 'Сайн уу! Та хаашаа явж байна вэ? 📍', en: 'Hello! Where are you going?' },
   friends: { mn: 'Эй! Яаж байна? Өнөөдөр юу хийсэн бэ? 😊', en: 'Hey! How are you? What did you do today?' },
 };
 
@@ -3828,12 +3846,8 @@ function clearConvo() {
   convoMessages = [];
   const el = document.getElementById('convo-messages');
   if (el) el.innerHTML = '';
-  // Add starter message
   const starter = SCENARIO_STARTERS[convoScenario];
-  if (starter) {
-    addConvoMessage('ai', starter.mn, starter.en, null);
-    doTTS(starter.mn);
-  }
+  if (starter) { addConvoMessage('ai', starter.mn, starter.en, null); doTTS(starter.mn); }
 }
 
 function addConvoMessage(role, mn, en, tip) {
@@ -3842,192 +3856,103 @@ function addConvoMessage(role, mn, en, tip) {
   const div = document.createElement('div');
   div.className = 'convo-msg ' + role;
   if (role === 'ai') {
-    div.innerHTML = `
-      <div class="msg-mn">${mn}</div>
-      ${en ? `<div class="msg-en">${en}</div>` : ''}
-      ${tip ? `<div class="msg-tip">💡 ${tip}</div>` : ''}
-      <button class="convo-hear-btn" onclick="doTTS('${mn.replace(/'/g,"\\'")}')">🔊 Hear</button>`;
-  } else {
-    div.textContent = mn;
-  }
+    div.innerHTML = `<div class="msg-mn">${mn}</div>${en?`<div class="msg-en">${en}</div>`:''} ${tip?`<div class="msg-tip">💡 ${tip}</div>`:''}<button class="convo-hear-btn" onclick="doTTS('${mn.replace(/'/g,"\\'")}')">🔊 Hear</button>`;
+  } else { div.textContent = mn; }
   el.appendChild(div);
   el.scrollTop = el.scrollHeight;
-
-  // Store in history for API context
-  convoMessages.push({ role: role === 'user' ? 'user' : 'assistant', content: mn + (en ? ' (' + en + ')' : '') });
+  convoMessages.push({ role: role==='user'?'user':'assistant', content: mn+(en?' ('+en+')':'') });
 }
 
 async function sendConvoMessage() {
   if (convoTyping) return;
-  const input = document.getElementById('convo-input');
-  const text = input.value.trim();
+  let text;
+  if (convoKbVisible) {
+    const disp = document.getElementById('convo-kb-text');
+    text = disp ? disp.textContent.trim() : '';
+    if (disp) disp.textContent = '';
+  } else {
+    const inp = document.getElementById('convo-input');
+    text = inp ? inp.value.trim() : '';
+    if (inp) inp.value = '';
+  }
   if (!text) return;
 
-  input.value = '';
-  input.style.height = 'auto';
   addConvoMessage('user', text, null, null);
-
-  // Show typing indicator
   convoTyping = true;
   const sendBtn = document.getElementById('convo-send-btn');
   if (sendBtn) sendBtn.disabled = true;
+
   const el = document.getElementById('convo-messages');
   const typingDiv = document.createElement('div');
-  typingDiv.className = 'convo-msg ai typing';
-  typingDiv.id = 'convo-typing';
-  typingDiv.textContent = 'Gobi is thinking...';
+  typingDiv.className = 'convo-msg ai'; typingDiv.id = 'convo-typing'; typingDiv.textContent = 'Gobi is thinking...';
   if (el) { el.appendChild(typingDiv); el.scrollTop = el.scrollHeight; }
 
   try {
-    const messages = [
-      { role: 'user', content: SCENARIO_PROMPTS[convoScenario] },
-      { role: 'assistant', content: 'Ойлголоо! Би тусална. (Understood! I will help.)' },
-      ...convoMessages.slice(-10), // last 10 messages for context
-      { role: 'user', content: text }
-    ];
-
     const apiKey = localStorage.getItem('mn_api_key') || '';
     if (!apiKey) {
-      const key = prompt('Enter your Anthropic API key to chat with Gobi:\n(Get one free at console.anthropic.com)');
-      if (!key) { typingDiv.remove(); convoTyping = false; if(sendBtn) sendBtn.disabled=false; return; }
+      const key = prompt('Enter your Anthropic API key:\n(console.anthropic.com)');
+      if (!key) { typingDiv.remove(); convoTyping=false; if(sendBtn) sendBtn.disabled=false; return; }
       localStorage.setItem('mn_api_key', key.trim());
     }
-    // Route through Cloudflare Worker proxy to avoid CORS
+    const msgs = convoMessages.filter(m=>m.role==='user'||m.role==='assistant').slice(-10);
+    if (msgs.length === 0 || msgs[0].role !== 'user') {
+      msgs.unshift({ role:'user', content: text });
+    } else {
+      msgs.push({ role:'user', content: text });
+    }
     const res = await fetch('https://gobi-chat.sawyervanrooyen.workers.dev', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': localStorage.getItem('mn_api_key'),
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 300,
-        system: SCENARIO_PROMPTS[convoScenario],
-        messages: convoMessages.filter(m => m.role === 'user' || m.role === 'assistant')
-          .slice(-10)
-          .filter((m, i, arr) => i === 0 ? m.role === 'user' : true)
-          .concat([{ role: 'user', content: text }])
-      })
+      headers: { 'Content-Type':'application/json', 'x-api-key': localStorage.getItem('mn_api_key'), 'anthropic-version':'2023-06-01' },
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:300, system: SCENARIO_PROMPTS[convoScenario], messages: msgs })
     });
-
     const data = await res.json();
-    console.log('API response:', JSON.stringify(data));
-    if (!res.ok) {
-      throw new Error('API error ' + res.status + ': ' + (data.error?.message || JSON.stringify(data)));
-    }
-    const reply = data.content?.map(c => c.text || '').join('') || '';
-    console.log('Reply:', reply);
-
+    if (!res.ok) throw new Error('API error '+res.status+': '+(data.error?.message||JSON.stringify(data)));
+    const reply = data.content?.map(c=>c.text||'').join('')||'';
     typingDiv.remove();
-    if (!reply) { addConvoMessage('ai', '...', 'No response received', null); return; }
-
-    // Try to parse Mongolian (English) 💡 tip format, fall back to showing full reply
-    const mnMatch = reply.match(/^([^(\n]+)/);
-    const enMatch = reply.match(/\(([^)]+)\)/);
-    const tipMatch = reply.match(/💡\s*(.+?)(?:\n|$)/);
-
-    const mn = mnMatch ? mnMatch[1].trim() : reply;
-    const en = enMatch ? enMatch[1].trim() : null;
-    const tip = tipMatch ? tipMatch[1].trim() : null;
-
-    addConvoMessage('ai', mn || reply, en, tip);
-    doTTS(mn);
-    playCorrect();
-
+    if (!reply) { addConvoMessage('ai','...','No response — check your API key in Settings.',null); }
+    else {
+      const mnMatch = reply.match(/^([^(\n]+)/);
+      const enMatch = reply.match(/\(([^)]+)\)/);
+      const tipMatch = null;
+      addConvoMessage('ai', mnMatch?mnMatch[1].trim():reply, enMatch?enMatch[1].trim():null, tipMatch?tipMatch[1].trim():null);
+      doTTS(mnMatch?mnMatch[1].trim():reply);
+      playCorrect();
+    }
   } catch(e) {
     typingDiv.remove();
-    const errMsg = e.message || String(e);
-    addConvoMessage('ai', 'Error: ' + errMsg, 'Check console for details. Make sure tts_server.py is running and your API key is set correctly in Settings.', null);
-    console.error('Convo error:', e);
+    addConvoMessage('ai','Error: '+e.message,'Make sure your API key is set in Settings.',null);
   }
-
-  convoTyping = false;
-  if (sendBtn) sendBtn.disabled = false;
-  input.focus();
+  convoTyping=false;
+  if(sendBtn) sendBtn.disabled=false;
 }
 
-function openConvoPractice() {
-  showScreen('screen-convo');
-  if (convoMessages.length === 0) clearConvo();
-}
+function openConvoPractice() { showScreen('screen-convo'); if(convoMessages.length===0) clearConvo(); }
 
-
-// ─── Convo Cyrillic Keyboard ───────────────────────────────────────────────
-let convoKbVisible = false;
-
+// Convo keyboard
+let convoKbBuilt = false;
 function buildConvoKeyboard() {
-  const KB_ROWS = [
-    ['й','ц','у','к','е','н','г','ш','щ','з','х'],
-    ['ф','ы','в','а','п','р','о','л','д','ж','э'],
-    ['я','ч','с','м','и','т','ь','б','ю','ө','ү'],
-  ];
-  KB_ROWS.forEach((row, i) => {
-    const el = document.getElementById('convo-kb-row-' + (i+1));
-    if (!el) return;
-    el.innerHTML = '';
-    row.forEach(letter => {
-      const btn = document.createElement('button');
-      btn.className = 'kb-key';
-      btn.textContent = letter.toUpperCase();
-      btn.addEventListener('click', () => { convoKbType(letter); playClick(); });
-      el.appendChild(btn);
-    });
+  if (convoKbBuilt) return;
+  const KB_ROWS = [['й','ц','у','к','е','н','г','ш','щ','з','х'],['ф','ы','в','а','п','р','о','л','д','ж','э'],['я','ч','с','м','и','т','ь','б','ю','ө','ү']];
+  KB_ROWS.forEach((row,i) => {
+    const el = document.getElementById('convo-kb-row-'+(i+1));
+    if (!el) return; el.innerHTML='';
+    row.forEach(l => { const btn=document.createElement('button'); btn.className='kb-key'; btn.textContent=l.toUpperCase(); btn.addEventListener('click',()=>{convoKbType(l);playClick();}); el.appendChild(btn); });
   });
+  convoKbBuilt = true;
 }
-
-function convoKbType(letter) {
-  const display = document.getElementById('convo-kb-text');
-  if (display) display.textContent = (display.textContent || '') + letter;
-}
-
-function convoKbDelete() {
-  const display = document.getElementById('convo-kb-text');
-  if (display) display.textContent = display.textContent.slice(0, -1);
-}
-
-function convoKbClear() {
-  const display = document.getElementById('convo-kb-text');
-  if (display) display.textContent = '';
-}
-
+function convoKbType(l) { const d=document.getElementById('convo-kb-text'); if(d) d.textContent=(d.textContent||'')+l; }
+function convoKbDelete() { const d=document.getElementById('convo-kb-text'); if(d) d.textContent=d.textContent.slice(0,-1); }
+function convoKbClear() { const d=document.getElementById('convo-kb-text'); if(d) d.textContent=''; }
 function toggleConvoKb() {
-  convoKbVisible = !convoKbVisible;
-  const wrap = document.getElementById('convo-kb-wrap');
-  const btn = document.getElementById('convo-kb-btn');
-  const input = document.getElementById('convo-input');
-  if (wrap) wrap.style.display = convoKbVisible ? 'block' : 'none';
-  if (btn) btn.style.borderColor = convoKbVisible ? '#7c6af7' : '#2a2a38';
-  if (convoKbVisible) {
-    if (input) input.style.display = 'none';
-    buildConvoKeyboard();
-  } else {
-    if (input) input.style.display = '';
-    input && input.focus();
-  }
+  convoKbVisible=!convoKbVisible;
+  const wrap=document.getElementById('convo-kb-wrap');
+  const btn=document.getElementById('convo-kb-btn');
+  const inp=document.getElementById('convo-input');
+  if(wrap) wrap.style.display=convoKbVisible?'block':'none';
+  if(btn) btn.style.borderColor=convoKbVisible?'#7c6af7':'#2a2a38';
+  if(inp) inp.style.display=convoKbVisible?'none':'';
+  if(convoKbVisible) buildConvoKeyboard();
 }
-
-// Override sendConvoMessage to pick up keyboard text when active
-const _origSendConvo = sendConvoMessage;
-sendConvoMessage = async function() {
-  if (convoKbVisible) {
-    const display = document.getElementById('convo-kb-text');
-    const input = document.getElementById('convo-input');
-    if (display && display.textContent.trim()) {
-      // Temporarily put kb text into input for sending
-      const kbText = display.textContent.trim();
-      display.textContent = '';
-      // Manually trigger with kb text
-      const inp = document.getElementById('convo-input');
-      const realVal = inp.value;
-      inp.value = kbText;
-      await _origSendConvo();
-      inp.value = realVal;
-      return;
-    }
-  }
-  await _origSendConvo();
-};
 
 // ─── Tab Navigation ────────────────────────────────────────────────────────
 let activeTab = 'home';
@@ -4121,17 +4046,6 @@ function renderSettingsPanel() {
       <div class="settings-row">
         <div><div class="settings-label" style="color:#f87171;">Clear personal words</div></div>
         <button class="settings-btn danger" onclick="clearPersonalWords()">Clear</button>
-      </div>
-    </div>
-    <div class="settings-section">
-      <h3>Help</h3>
-      <div class="settings-row">
-        <div><div class="settings-label">Tutorial</div><div class="settings-sub">Replay the intro with Gobi</div></div>
-        <button class="settings-btn neutral" onclick="localStorage.removeItem('mn_intro_done');showIntroIfNeeded();">Watch</button>
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-label">Anthropic API key</div><div class="settings-sub">Required for Gobi chat practice</div></div>
-        <button class="settings-btn neutral" onclick="const k=prompt('Enter your Anthropic API key:',localStorage.getItem('mn_api_key')||'');if(k)localStorage.setItem('mn_api_key',k.trim());">Set key</button>
       </div>
     </div>
   `;
@@ -4256,131 +4170,6 @@ const typeInputEl = document.getElementById('type-input');
 if (typeInputEl) typeInputEl.addEventListener('keydown', e => { if(e.key==='Enter') checkTyped(); });
 </script>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-const app = initializeApp({
-  apiKey: "AIzaSyCiQJzdJ8cmIrj8jFXyMtQFVjukaYH5nQE",
-  authDomain: "gobi-4b0fe.firebaseapp.com",
-  projectId: "gobi-4b0fe",
-  storageBucket: "gobi-4b0fe.firebasestorage.app",
-  messagingSenderId: "811483197997",
-  appId: "1:811483197997:web:61a4b0a154801f5a523ea4"
-});
-
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-let currentUser = null;
-let syncTimer = null;
-
-function updateBtn(user) {
-  const btn = document.getElementById('sync-btn');
-  if (!btn) return;
-  if (user) {
-    btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0];
-    btn.style.color = '#4ade80';
-    btn.style.borderColor = '#2a4a2a';
-  } else {
-    btn.textContent = '☁️ Sign in';
-    btn.style.color = '#888';
-    btn.style.borderColor = '#2a2a38';
-  }
-}
-
-function getBundle() {
-  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
-  const bundle = { updatedAt: Date.now() };
-  keys.forEach(k => {
-    try { bundle[k] = JSON.parse(localStorage.getItem(k) || 'null'); } catch(e) {}
-  });
-  return bundle;
-}
-
-function applyBundle(data) {
-  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
-  keys.forEach(k => {
-    if (data[k] !== undefined && data[k] !== null) {
-      try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
-    }
-  });
-  window.location.reload();
-}
-
-async function fbLoad(user) {
-  try {
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (data.updatedAt && data.updatedAt > localTime) {
-        if (confirm('Cloud data is newer than local. Load from cloud? (Your local progress will be replaced)')) {
-          localStorage.setItem('mn_last_sync', data.updatedAt);
-          applyBundle(data);
-        }
-      }
-    } else {
-      await fbSaveNow(user);
-    }
-  } catch(e) { console.error('Firebase load error:', e); }
-}
-
-async function fbSaveNow(user) {
-  const u = user || currentUser;
-  if (!u) return;
-  try {
-    const bundle = getBundle();
-    await setDoc(doc(db, 'users', u.uid), bundle, { merge: true });
-    localStorage.setItem('mn_last_sync', bundle.updatedAt);
-    console.log('Saved to Firebase');
-  } catch(e) { console.error('Firebase save error:', e); }
-}
-
-function scheduleSync() {
-  if (!currentUser) return;
-  if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => fbSaveNow(currentUser), 8000);
-}
-
-// Intercept localStorage writes to auto-sync
-const _orig = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(k, v) {
-  _orig(k, v);
-  if (k.startsWith('mn_') && k !== 'mn_last_sync') scheduleSync();
-};
-
-onAuthStateChanged(auth, user => {
-  currentUser = user;
-  updateBtn(user);
-  if (user) fbLoad(user);
-});
-
-window.fbSignIn = async () => {
-  if (currentUser) {
-    if (confirm('Sign out of ' + (currentUser.displayName || currentUser.email) + '?')) {
-      await signOut(auth);
-    }
-    return;
-  }
-  try { await signInWithPopup(auth, provider); }
-  catch(e) { alert('Sign in failed: ' + e.message); }
-};
-
-window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved to cloud! ☁️'));
-</script>
-
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(r => console.log('SW registered'))
-      .catch(e => console.log('SW failed:', e));
-  });
-}
-</script>
 <!-- CONVERSATION PRACTICE SCREEN -->
 <div class="screen" id="screen-convo">
   <div class="convo-screen-header">
@@ -4388,16 +4177,15 @@ if ('serviceWorker' in navigator) {
     <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Practice with Gobi</h2>
     <button class="convo-clear-btn" onclick="clearConvo()">Clear</button>
   </div>
-  <p style="font-size:12px;color:#555;margin-bottom:8px;">Pick a scenario or just start talking. Gobi will reply in Mongolian with corrections and tips.</p>
-  <div class="convo-scenario" id="convo-scenarios">
+  <p style="font-size:12px;color:#555;margin-bottom:8px;">Pick a scenario or just start talking. Gobi replies in Mongolian with corrections.</p>
+  <div class="convo-scenario">
     <button class="convo-scenario-btn active" onclick="setScenario('free',this)">💬 Free chat</button>
     <button class="convo-scenario-btn" onclick="setScenario('greet',this)">👋 Greetings</button>
-    <button class="convo-scenario-btn" onclick="setScenario('food',this)">🍖 Ordering food</button>
+    <button class="convo-scenario-btn" onclick="setScenario('food',this)">🍖 Food</button>
     <button class="convo-scenario-btn" onclick="setScenario('directions',this)">📍 Directions</button>
-    <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 With friends</button>
+    <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 Friends</button>
   </div>
   <div class="convo-messages" id="convo-messages"></div>
-  <!-- Cyrillic keyboard for chat -->
   <div id="convo-kb-wrap" style="display:none;width:100%;margin-bottom:8px;">
     <div class="kb-display" style="margin-bottom:6px;">
       <span id="convo-kb-text" style="font-size:16px;color:#e8e8f0;"></span>
@@ -4412,15 +4200,93 @@ if ('serviceWorker' in navigator) {
       <button class="kb-key submit-key" onclick="sendConvoMessage()">Send ✓</button>
     </div>
   </div>
-
   <div class="convo-input-wrap">
-    <button onclick="toggleConvoKb()" id="convo-kb-btn" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:16px;cursor:pointer;flex-shrink:0;" title="Toggle Mongolian keyboard">🇲🇳</button>
+    <button onclick="toggleConvoKb()" id="convo-kb-btn" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:16px;cursor:pointer;flex-shrink:0;">🇲🇳</button>
     <textarea class="convo-input" id="convo-input" placeholder="Type in Mongolian or English..." rows="1"
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvoMessage();}"></textarea>
     <button class="convo-send-btn" id="convo-send-btn" onclick="sendConvoMessage()">→</button>
   </div>
 </div>
 
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const app = initializeApp({
+  apiKey: "AIzaSyCiQJzdJ8cmIrj8jFXyMtQFVjukaYH5nQE",
+  authDomain: "gobi-4b0fe.firebaseapp.com",
+  projectId: "gobi-4b0fe",
+  storageBucket: "gobi-4b0fe.firebasestorage.app",
+  messagingSenderId: "811483197997",
+  appId: "1:811483197997:web:61a4b0a154801f5a523ea4"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+let currentUser = null;
+let syncTimer = null;
+
+function updateBtn(user) {
+  const btn = document.getElementById('sync-btn');
+  if (!btn) return;
+  if (user) { btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0]; btn.style.color='#4ade80'; btn.style.borderColor='#2a4a2a'; }
+  else { btn.textContent = '☁️ Sign in'; btn.style.color='#888'; btn.style.borderColor='#2a2a38'; }
+}
+
+function getBundle() {
+  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
+  const bundle = { updatedAt: Date.now() };
+  keys.forEach(k => { try { bundle[k] = JSON.parse(localStorage.getItem(k)||'null'); } catch(e) {} });
+  return bundle;
+}
+
+function applyBundle(data) {
+  ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'].forEach(k => {
+    if (data[k] != null) try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
+  });
+  window.location.reload();
+}
+
+async function fbLoad(user) {
+  try {
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
+      if (data.updatedAt && data.updatedAt > localTime) {
+        if (confirm('Cloud data is newer. Load from cloud?')) { localStorage.setItem('mn_last_sync', data.updatedAt); applyBundle(data); }
+      }
+    } else { await fbSaveNow(user); }
+  } catch(e) { console.error('Load error:',e); }
+}
+
+async function fbSaveNow(user) {
+  const u = user||currentUser; if(!u) return;
+  try {
+    const bundle = getBundle();
+    await setDoc(doc(db,'users',u.uid), bundle, {merge:true});
+    localStorage.setItem('mn_last_sync', bundle.updatedAt);
+  } catch(e) { console.error('Save error:',e); }
+}
+
+function scheduleSync() {
+  if (!currentUser) return;
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => fbSaveNow(currentUser), 8000);
+}
+
+const _orig = localStorage.setItem.bind(localStorage);
+localStorage.setItem = function(k,v) { _orig(k,v); if(k.startsWith('mn_')&&k!=='mn_last_sync') scheduleSync(); };
+
+onAuthStateChanged(auth, user => { currentUser=user; updateBtn(user); if(user) fbLoad(user); });
+
+window.fbSignIn = async () => {
+  if (currentUser) { if(confirm('Sign out of '+(currentUser.displayName||currentUser.email)+'?')) await signOut(auth); return; }
+  try { await signInWithPopup(auth,provider); } catch(e) { alert('Sign in failed: '+e.message); }
+};
+window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
+</script>
 
 </body>
 </html>  <div style="width:100%;display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -4602,131 +4468,6 @@ if ('serviceWorker' in navigator) {
 
 
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-const app = initializeApp({
-  apiKey: "AIzaSyCiQJzdJ8cmIrj8jFXyMtQFVjukaYH5nQE",
-  authDomain: "gobi-4b0fe.firebaseapp.com",
-  projectId: "gobi-4b0fe",
-  storageBucket: "gobi-4b0fe.firebasestorage.app",
-  messagingSenderId: "811483197997",
-  appId: "1:811483197997:web:61a4b0a154801f5a523ea4"
-});
-
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-let currentUser = null;
-let syncTimer = null;
-
-function updateBtn(user) {
-  const btn = document.getElementById('sync-btn');
-  if (!btn) return;
-  if (user) {
-    btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0];
-    btn.style.color = '#4ade80';
-    btn.style.borderColor = '#2a4a2a';
-  } else {
-    btn.textContent = '☁️ Sign in';
-    btn.style.color = '#888';
-    btn.style.borderColor = '#2a2a38';
-  }
-}
-
-function getBundle() {
-  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
-  const bundle = { updatedAt: Date.now() };
-  keys.forEach(k => {
-    try { bundle[k] = JSON.parse(localStorage.getItem(k) || 'null'); } catch(e) {}
-  });
-  return bundle;
-}
-
-function applyBundle(data) {
-  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
-  keys.forEach(k => {
-    if (data[k] !== undefined && data[k] !== null) {
-      try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
-    }
-  });
-  window.location.reload();
-}
-
-async function fbLoad(user) {
-  try {
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (data.updatedAt && data.updatedAt > localTime) {
-        if (confirm('Cloud data is newer than local. Load from cloud? (Your local progress will be replaced)')) {
-          localStorage.setItem('mn_last_sync', data.updatedAt);
-          applyBundle(data);
-        }
-      }
-    } else {
-      await fbSaveNow(user);
-    }
-  } catch(e) { console.error('Firebase load error:', e); }
-}
-
-async function fbSaveNow(user) {
-  const u = user || currentUser;
-  if (!u) return;
-  try {
-    const bundle = getBundle();
-    await setDoc(doc(db, 'users', u.uid), bundle, { merge: true });
-    localStorage.setItem('mn_last_sync', bundle.updatedAt);
-    console.log('Saved to Firebase');
-  } catch(e) { console.error('Firebase save error:', e); }
-}
-
-function scheduleSync() {
-  if (!currentUser) return;
-  if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => fbSaveNow(currentUser), 8000);
-}
-
-// Intercept localStorage writes to auto-sync
-const _orig = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(k, v) {
-  _orig(k, v);
-  if (k.startsWith('mn_') && k !== 'mn_last_sync') scheduleSync();
-};
-
-onAuthStateChanged(auth, user => {
-  currentUser = user;
-  updateBtn(user);
-  if (user) fbLoad(user);
-});
-
-window.fbSignIn = async () => {
-  if (currentUser) {
-    if (confirm('Sign out of ' + (currentUser.displayName || currentUser.email) + '?')) {
-      await signOut(auth);
-    }
-    return;
-  }
-  try { await signInWithPopup(auth, provider); }
-  catch(e) { alert('Sign in failed: ' + e.message); }
-};
-
-window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved to cloud! ☁️'));
-</script>
-
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(r => console.log('SW registered'))
-      .catch(e => console.log('SW failed:', e));
-  });
-}
-</script>
 <!-- CONVERSATION PRACTICE SCREEN -->
 <div class="screen" id="screen-convo">
   <div class="convo-screen-header">
@@ -4734,16 +4475,15 @@ if ('serviceWorker' in navigator) {
     <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Practice with Gobi</h2>
     <button class="convo-clear-btn" onclick="clearConvo()">Clear</button>
   </div>
-  <p style="font-size:12px;color:#555;margin-bottom:8px;">Pick a scenario or just start talking. Gobi will reply in Mongolian with corrections and tips.</p>
-  <div class="convo-scenario" id="convo-scenarios">
+  <p style="font-size:12px;color:#555;margin-bottom:8px;">Pick a scenario or just start talking. Gobi replies in Mongolian with corrections.</p>
+  <div class="convo-scenario">
     <button class="convo-scenario-btn active" onclick="setScenario('free',this)">💬 Free chat</button>
     <button class="convo-scenario-btn" onclick="setScenario('greet',this)">👋 Greetings</button>
-    <button class="convo-scenario-btn" onclick="setScenario('food',this)">🍖 Ordering food</button>
+    <button class="convo-scenario-btn" onclick="setScenario('food',this)">🍖 Food</button>
     <button class="convo-scenario-btn" onclick="setScenario('directions',this)">📍 Directions</button>
-    <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 With friends</button>
+    <button class="convo-scenario-btn" onclick="setScenario('friends',this)">👫 Friends</button>
   </div>
   <div class="convo-messages" id="convo-messages"></div>
-  <!-- Cyrillic keyboard for chat -->
   <div id="convo-kb-wrap" style="display:none;width:100%;margin-bottom:8px;">
     <div class="kb-display" style="margin-bottom:6px;">
       <span id="convo-kb-text" style="font-size:16px;color:#e8e8f0;"></span>
@@ -4758,15 +4498,93 @@ if ('serviceWorker' in navigator) {
       <button class="kb-key submit-key" onclick="sendConvoMessage()">Send ✓</button>
     </div>
   </div>
-
   <div class="convo-input-wrap">
-    <button onclick="toggleConvoKb()" id="convo-kb-btn" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:16px;cursor:pointer;flex-shrink:0;" title="Toggle Mongolian keyboard">🇲🇳</button>
+    <button onclick="toggleConvoKb()" id="convo-kb-btn" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:16px;cursor:pointer;flex-shrink:0;">🇲🇳</button>
     <textarea class="convo-input" id="convo-input" placeholder="Type in Mongolian or English..." rows="1"
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvoMessage();}"></textarea>
     <button class="convo-send-btn" id="convo-send-btn" onclick="sendConvoMessage()">→</button>
   </div>
 </div>
 
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const app = initializeApp({
+  apiKey: "AIzaSyCiQJzdJ8cmIrj8jFXyMtQFVjukaYH5nQE",
+  authDomain: "gobi-4b0fe.firebaseapp.com",
+  projectId: "gobi-4b0fe",
+  storageBucket: "gobi-4b0fe.firebasestorage.app",
+  messagingSenderId: "811483197997",
+  appId: "1:811483197997:web:61a4b0a154801f5a523ea4"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+let currentUser = null;
+let syncTimer = null;
+
+function updateBtn(user) {
+  const btn = document.getElementById('sync-btn');
+  if (!btn) return;
+  if (user) { btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0]; btn.style.color='#4ade80'; btn.style.borderColor='#2a4a2a'; }
+  else { btn.textContent = '☁️ Sign in'; btn.style.color='#888'; btn.style.borderColor='#2a2a38'; }
+}
+
+function getBundle() {
+  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
+  const bundle = { updatedAt: Date.now() };
+  keys.forEach(k => { try { bundle[k] = JSON.parse(localStorage.getItem(k)||'null'); } catch(e) {} });
+  return bundle;
+}
+
+function applyBundle(data) {
+  ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'].forEach(k => {
+    if (data[k] != null) try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
+  });
+  window.location.reload();
+}
+
+async function fbLoad(user) {
+  try {
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
+      if (data.updatedAt && data.updatedAt > localTime) {
+        if (confirm('Cloud data is newer. Load from cloud?')) { localStorage.setItem('mn_last_sync', data.updatedAt); applyBundle(data); }
+      }
+    } else { await fbSaveNow(user); }
+  } catch(e) { console.error('Load error:',e); }
+}
+
+async function fbSaveNow(user) {
+  const u = user||currentUser; if(!u) return;
+  try {
+    const bundle = getBundle();
+    await setDoc(doc(db,'users',u.uid), bundle, {merge:true});
+    localStorage.setItem('mn_last_sync', bundle.updatedAt);
+  } catch(e) { console.error('Save error:',e); }
+}
+
+function scheduleSync() {
+  if (!currentUser) return;
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => fbSaveNow(currentUser), 8000);
+}
+
+const _orig = localStorage.setItem.bind(localStorage);
+localStorage.setItem = function(k,v) { _orig(k,v); if(k.startsWith('mn_')&&k!=='mn_last_sync') scheduleSync(); };
+
+onAuthStateChanged(auth, user => { currentUser=user; updateBtn(user); if(user) fbLoad(user); });
+
+window.fbSignIn = async () => {
+  if (currentUser) { if(confirm('Sign out of '+(currentUser.displayName||currentUser.email)+'?')) await signOut(auth); return; }
+  try { await signInWithPopup(auth,provider); } catch(e) { alert('Sign in failed: '+e.message); }
+};
+window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
+</script>
 
 </body>
 </html>
