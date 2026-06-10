@@ -2157,14 +2157,15 @@ function buildPool() {
 
 function buildQuestions() {
   const pool = buildPool();
+  const total = appSettings.quizLength || TOTAL;
   if (selectedMode === 'weak') {
     const worst = pool
       .filter(q => getSRS(q.id).wrongCount > 0)
       .sort((a,b) => getSRS(b.id).wrongCount - getSRS(a.id).wrongCount)
-      .slice(0, TOTAL);
-    return worst.length ? worst : getSRSSorted(pool).slice(0, TOTAL);
+      .slice(0, total);
+    return worst.length ? worst : getSRSSorted(pool).slice(0, total);
   }
-  return getSRSSorted(pool).slice(0, Math.min(TOTAL, pool.length));
+  return getSRSSorted(pool).slice(0, Math.min(total, pool.length));
 }
 
 // ─── Quiz Flow ────────────────────────────────────────────────────────────
