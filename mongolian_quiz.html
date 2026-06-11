@@ -5969,11 +5969,11 @@ function renderSettingsPanel() {
       </div>
       <div class="settings-row">
         <div><div class="settings-label">Save to cloud</div><div class="settings-sub">Push your progress up now</div></div>
-        <button class="settings-btn neutral" onclick="window.fbSave&&window.fbSave()">Save</button>
+        <button class="settings-btn neutral" onclick="if(window.fbSave){window.fbSave();}else{alert('Not signed in to Firebase. Sign in first via the ☁️ button on the home screen.');}">Save</button>
       </div>
       <div class="settings-row">
         <div><div class="settings-label">Load from cloud</div><div class="settings-sub">Force pull cloud data to this device</div></div>
-        <button class="settings-btn neutral" onclick="window.fbForceLoad&&window.fbForceLoad()">Load</button>
+        <button class="settings-btn neutral" onclick="if(window.fbForceLoad){window.fbForceLoad();}else{alert('Not signed in to Firebase. Sign in first via the ☁️ button on the home screen.');}">Load</button>
       </div>
     </div>
     <div class="settings-section settings-danger">
