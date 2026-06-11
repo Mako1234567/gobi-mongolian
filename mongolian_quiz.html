@@ -6316,79 +6316,124 @@ const app = initializeApp({
   messagingSenderId: "811483197997",
   appId: "1:811483197997:web:61a4b0a154801f5a523ea4"
 });
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 let currentUser = null;
 let syncTimer = null;
+const SYNC_KEYS = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
 
 function updateBtn(user) {
   const btn = document.getElementById('sync-btn');
   if (!btn) return;
-  if (user) { btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0]; btn.style.color='#4ade80'; btn.style.borderColor='#2a4a2a'; }
-  else { btn.textContent = '☁️ Sign in'; btn.style.color='#888'; btn.style.borderColor='#2a2a38'; }
+  if (user) {
+    btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0];
+    btn.style.color = '#4ade80';
+    btn.style.borderColor = '#2a4a2a';
+  } else {
+    btn.textContent = '☁️ Sign in';
+    btn.style.color = '#888';
+    btn.style.borderColor = '#2a2a38';
+  }
 }
 
 function getBundle() {
-  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
   const bundle = { updatedAt: Date.now() };
-  keys.forEach(k => { try { bundle[k] = JSON.parse(localStorage.getItem(k)||'null'); } catch(e) {} });
+  SYNC_KEYS.forEach(k => {
+    try { bundle[k] = JSON.parse(localStorage.getItem(k)||'null'); } catch(e) {}
+  });
   return bundle;
 }
 
 function applyBundle(data) {
-  ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'].forEach(k => {
-    if (data[k] != null) try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
+  // Apply cloud data to localStorage WITHOUT reloading
+  SYNC_KEYS.forEach(k => {
+    if (data[k] != null) {
+      try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
+    }
   });
-  window.location.reload();
+  // Update the in-memory state by calling the app's own load functions
+  try {
+    if (typeof srsData !== 'undefined') {
+      srsData = JSON.parse(localStorage.getItem('mn_srs')||'{}');
+    }
+    if (typeof streakData !== 'undefined') {
+      streakData = JSON.parse(localStorage.getItem('mn_streak')||'{}');
+    }
+    if (typeof globalStats !== 'undefined') {
+      globalStats = JSON.parse(localStorage.getItem('mn_stats')||'{}');
+    }
+    if (typeof renderAll === 'function') renderAll();
+  } catch(e) {
+    console.log('Applied bundle, reloading to pick up changes');
+    window.location.reload();
+  }
+}
+
+async function fbSaveNow(user) {
+  const u = user || currentUser;
+  if (!u) return;
+  try {
+    const bundle = getBundle();
+    await setDoc(doc(db, 'users', u.uid), bundle, { merge: true });
+    localStorage.setItem('mn_last_sync', bundle.updatedAt);
+    console.log('Saved to cloud at', new Date(bundle.updatedAt).toLocaleTimeString());
+  } catch(e) { console.error('Save error:', e); }
 }
 
 async function fbLoad(user) {
   try {
-    const snap = await getDoc(doc(db,'users',user.uid));
+    const snap = await getDoc(doc(db, 'users', user.uid));
     if (snap.exists()) {
       const data = snap.data();
       const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
+      console.log('Cloud updatedAt:', new Date(data.updatedAt||0).toLocaleTimeString(), 'Local sync:', new Date(localTime).toLocaleTimeString());
       if (data.updatedAt && data.updatedAt > localTime) {
-        // Cloud is newer — silently load it (personal app, no need to ask)
+        console.log('Cloud is newer — loading');
         localStorage.setItem('mn_last_sync', data.updatedAt);
         applyBundle(data);
       } else {
-        // Local is newer or same — push local up to cloud
+        console.log('Local is newer or same — pushing to cloud');
         await fbSaveNow(user);
       }
     } else {
-      // No cloud data yet — push local up
       await fbSaveNow(user);
     }
-  } catch(e) { console.error('Load error:',e); }
-}
-
-async function fbSaveNow(user) {
-  const u = user||currentUser; if(!u) return;
-  try {
-    const bundle = getBundle();
-    await setDoc(doc(db,'users',u.uid), bundle, {merge:true});
-    localStorage.setItem('mn_last_sync', bundle.updatedAt);
-  } catch(e) { console.error('Save error:',e); }
+  } catch(e) { console.error('Load error:', e); }
 }
 
 function scheduleSync() {
   if (!currentUser) return;
   if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => fbSaveNow(currentUser), 8000);
+  syncTimer = setTimeout(() => fbSaveNow(currentUser), 5000);
 }
 
+// Intercept localStorage writes to trigger sync
 const _orig = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(k,v) { _orig(k,v); if(k.startsWith('mn_')&&k!=='mn_last_sync') scheduleSync(); };
+localStorage.setItem = function(k, v) {
+  _orig(k, v);
+  if (k.startsWith('mn_') && k !== 'mn_last_sync') scheduleSync();
+};
 
-onAuthStateChanged(auth, user => { currentUser=user; updateBtn(user); if(user) fbLoad(user); });
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  updateBtn(user);
+  if (user) fbLoad(user);
+});
 
 window.fbSignIn = async () => {
-  if (currentUser) { if(confirm('Sign out of '+(currentUser.displayName||currentUser.email)+'?')) await signOut(auth); return; }
-  try { await signInWithPopup(auth,provider); } catch(e) { alert('Sign in failed: '+e.message); }
+  if (currentUser) {
+    if (confirm('Sign out of ' + (currentUser.displayName||currentUser.email) + '?')) {
+      await signOut(auth);
+    }
+    return;
+  }
+  try { await signInWithPopup(auth, provider); }
+  catch(e) { alert('Sign in failed: ' + e.message); }
 };
-window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
+
+window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved to cloud! ☁️'));
 </script>
 
 <!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
