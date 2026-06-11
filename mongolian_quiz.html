@@ -6002,6 +6002,17 @@ function renderSettingsPanel() {
         <button class="settings-btn danger" onclick="clearPersonalWords()">Clear</button>
       </div>
     </div>
+    <div class="settings-section">
+      <h3>Help</h3>
+      <div class="settings-row">
+        <div><div class="settings-label">Anthropic API key</div><div class="settings-sub">Required for Gobi AI chat</div></div>
+        <button class="settings-btn neutral" onclick="const k=prompt('Enter your Anthropic API key:',localStorage.getItem('mn_api_key')||'');if(k!=null&&k.trim())localStorage.setItem('mn_api_key',k.trim());">Set key</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Tutorial</div><div class="settings-sub">Replay the intro with Gobi</div></div>
+        <button class="settings-btn neutral" onclick="localStorage.removeItem('mn_intro_done');showIntroIfNeeded();">Watch</button>
+      </div>
+    </div>
   `;
 }
 
