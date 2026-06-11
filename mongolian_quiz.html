@@ -5961,6 +5961,21 @@ function renderSettingsPanel() {
         <button class="toggle ${appSettings['grammarTips']?'on':'off'}" id="toggle-grammar-tips" onclick="toggleSetting('grammar-tips')"></button>
       </div>
     </div>
+    <div class="settings-section">
+      <h3>Sync</h3>
+      <div class="settings-row">
+        <div><div class="settings-label">Account</div><div class="settings-sub" id="sync-status-sub">Sign in to sync across devices</div></div>
+        <button class="settings-btn neutral" onclick="window.fbSignIn&&window.fbSignIn()" id="sync-signin-btn">Sign in</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Save to cloud</div><div class="settings-sub">Push your progress up now</div></div>
+        <button class="settings-btn neutral" onclick="window.fbSave&&window.fbSave()">Save</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Load from cloud</div><div class="settings-sub">Force pull cloud data to this device</div></div>
+        <button class="settings-btn neutral" onclick="window.fbForceLoad&&window.fbForceLoad()">Load</button>
+      </div>
+    </div>
     <div class="settings-section settings-danger">
       <h3>Danger zone</h3>
       <div class="settings-row">
@@ -6898,93 +6913,7 @@ window.fbForceLoad = async () => {
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const app = initializeApp({
-  apiKey: "AIzaSyCiQJzdJ8cmIrj8jFXyMtQFVjukaYH5nQE",
-  authDomain: "gobi-4b0fe.firebaseapp.com",
-  projectId: "gobi-4b0fe",
-  storageBucket: "gobi-4b0fe.firebasestorage.app",
-  messagingSenderId: "811483197997",
-  appId: "1:811483197997:web:61a4b0a154801f5a523ea4"
-});
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-let currentUser = null;
-let syncTimer = null;
-
-function updateBtn(user) {
-  const btn = document.getElementById('sync-btn');
-  if (!btn) return;
-  if (user) { btn.textContent = '☁️ ' + (user.displayName||'Synced').split(' ')[0]; btn.style.color='#4ade80'; btn.style.borderColor='#2a4a2a'; }
-  else { btn.textContent = '☁️ Sign in'; btn.style.color='#888'; btn.style.borderColor='#2a2a38'; }
-}
-
-function getBundle() {
-  const keys = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
-  const bundle = { updatedAt: Date.now() };
-  keys.forEach(k => { try { bundle[k] = JSON.parse(localStorage.getItem(k)||'null'); } catch(e) {} });
-  return bundle;
-}
-
-function applyBundle(data) {
-  ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'].forEach(k => {
-    if (data[k] != null) try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
-  });
-  window.location.reload();
-}
-
-async function fbLoad(user) {
-  try {
-    const snap = await getDoc(doc(db,'users',user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (data.updatedAt && data.updatedAt > localTime) {
-        // Cloud is newer — silently load it (personal app, no need to ask)
-        localStorage.setItem('mn_last_sync', data.updatedAt);
-        applyBundle(data);
-      } else {
-        // Local is newer or same — push local up to cloud
-        await fbSaveNow(user);
-      }
-    } else {
-      // No cloud data yet — push local up
-      await fbSaveNow(user);
-    }
-  } catch(e) { console.error('Load error:',e); }
-}
-
-async function fbSaveNow(user) {
-  const u = user||currentUser; if(!u) return;
-  try {
-    const bundle = getBundle();
-    await setDoc(doc(db,'users',u.uid), bundle, {merge:true});
-    localStorage.setItem('mn_last_sync', bundle.updatedAt);
-  } catch(e) { console.error('Save error:',e); }
-}
-
-function scheduleSync() {
-  if (!currentUser) return;
-  if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => fbSaveNow(currentUser), 8000);
-}
-
-const _orig = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(k,v) { _orig(k,v); if(k.startsWith('mn_')&&k!=='mn_last_sync') scheduleSync(); };
-
-onAuthStateChanged(auth, user => { currentUser=user; updateBtn(user); if(user) fbLoad(user); });
-
-window.fbSignIn = async () => {
-  if (currentUser) { if(confirm('Sign out of '+(currentUser.displayName||currentUser.email)+'?')) await signOut(auth); return; }
-  try { await signInWithPopup(auth,provider); } catch(e) { alert('Sign in failed: '+e.message); }
-};
-window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved! ☁️'));
-</script>
 
 <!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
 <div class="screen" id="screen-production">
