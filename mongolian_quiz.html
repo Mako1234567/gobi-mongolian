@@ -6381,19 +6381,12 @@ function applyBundle(data) {
 
 async function fbSaveNow(user) {
   const u = user || currentUser;
-  console.log('fbSaveNow called, user:', u ? u.email : 'null');
-  if (!u) { console.error('No user!'); return; }
+  if (!u) return;
   try {
     const bundle = getBundle();
-    console.log('Bundle keys:', Object.keys(bundle), 'updatedAt:', bundle.updatedAt);
     await setDoc(doc(db, 'users', u.uid), bundle, { merge: true });
     localStorage.setItem('mn_last_sync', bundle.updatedAt);
-    console.log('Saved successfully!');
-    alert('Saved to cloud! ☁️');
-  } catch(e) { 
-    console.error('Save error:', e);
-    alert('Save failed: ' + e.message);
-  }
+  } catch(e) { console.error('Save error:', e); }
 }
 
 async function fbLoad(user) {
@@ -6456,7 +6449,7 @@ window.fbSignIn = async () => {
   catch(e) { alert('Sign in failed: ' + e.message); }
 };
 
-window.fbSave = () => fbSaveNow(currentUser);
+window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved to cloud! ☁️'));
 
 window.fbForceLoad = async () => {
   if (!currentUser) { alert('Sign in first!'); return; }
