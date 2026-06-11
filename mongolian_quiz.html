@@ -3119,7 +3119,6 @@ const SENTENCES = [
     options: ['дүүнэр', 'хамтрагч', 'хөршүүд'],
     grammar: '💡 "-ууд" is one way to make a plural in Mongolian — найз (friend) → найзууд (friends)'
   },
-  ,
   { id:'s16', mn:['Би','өлсөж','байна','.'], blank:'өлсөж', en:'I am hungry.', options:['ундаасаж','ядарч','унтаж'], grammar:null },
   { id:'s17', mn:['Энэ','хоол','амттай','байна','.'], blank:'амттай', en:'This food is delicious.', options:['гашуун','давслаг','хүйтэн'], grammar:null },
   { id:'s18', mn:['Би','цай','уух','хүсч','байна','.'], blank:'цай', en:'I want to drink tea.', options:['ус','сүү','хоол'], grammar:null },
@@ -6010,7 +6009,6 @@ openProgressMap = function() { showScreen('screen-home'); switchTab('journey'); 
 function renderAll() {
   // Tab-based nav — just render current tab
   renderDailyWord();
-  try{renderDailyLesson();}catch(e){}
   try { renderDailyLesson(); } catch(e) {}
   renderStreakBanner();
   renderStatsBar();
@@ -6123,7 +6121,7 @@ var DAILY_LESSONS=[
 function getTodaysLesson(){if(!DAILY_LESSONS||!DAILY_LESSONS.length)return{words:[],sentences:[],theme:'Loading...'};return DAILY_LESSONS[Math.floor(Date.now()/86400000)%DAILY_LESSONS.length];}
 function getDailyProgress(){const t=new Date().toDateString();try{const s=JSON.parse(localStorage.getItem('mn_daily_progress')||'{}');if(s.date!==t)return{date:t,words:[],sentences:[],grammar:false};return s;}catch(e){return{date:t,words:[],sentences:[],grammar:false};}}
 function saveDailyProgress(p){try{localStorage.setItem('mn_daily_progress',JSON.stringify(p));}catch(e){}}
-function markDailyWord(id){const p=getDailyProgress();if(!p.words.includes(id)){p.words.push(id);saveDailyProgress(p);renderDailyLesson();}}
+function markDailyWord(id){if(!id)return;const p=getDailyProgress();if(!p.words.includes(id)){p.words.push(id);saveDailyProgress(p);renderDailyLesson();}}
 function markDailySentence(id){const p=getDailyProgress();if(!p.sentences.includes(id)){p.sentences.push(id);saveDailyProgress(p);renderDailyLesson();}}
 function markDailyGrammar(){const p=getDailyProgress();p.grammar=true;saveDailyProgress(p);renderDailyLesson();}
 
@@ -6132,11 +6130,16 @@ function renderDailyLesson(){
   if(!el)return;
   try{
     const lesson=getTodaysLesson();
+    console.log('lesson:',lesson);
     const progress=getDailyProgress();
     const aw=Object.values(WORD_BANK).flatMap(g=>g.words||[]).filter(w=>w&&w.id);
-    const lw=(lesson.words||[]).map(id=>aw.find(x=>x.id===id)).filter(w=>w&&w.id&&w.mn);
-    const ls=(lesson.sentences||[]).map(id=>SENTENCES.find(x=>x.id===id)).filter(s=>s&&s.id);
-    const pw=progress.words||[],ps=progress.sentences||[];
+    const lw=(lesson.words||[]).map(id=>{const found=aw.find(x=>x.id===id);if(!found)console.warn('Daily lesson: word not found:',id);return found;}).filter(w=>w&&w.id&&w.mn);
+    console.log('lw resolved:',lw.map(w=>w.id));
+    const ls=(lesson.sentences||[]).map(id=>{const found=SENTENCES.find(x=>x.id===id);if(!found)console.warn('sentence not found:',id);return found;}).filter(s=>s&&s.id&&s.mn);
+    console.log('ls resolved:',ls.map(s=>s.id));
+    const pw=Array.isArray(progress.words)?progress.words:[];
+    const ps=Array.isArray(progress.sentences)?progress.sentences:[];
+    console.log('pw:',pw,'ps:',ps);
     const total=lw.length+ls.length+1;
     const done2=pw.length+ps.length+(progress.grammar?1:0);
     const pct=total>0?Math.round(done2/total*100):0;
@@ -6157,6 +6160,7 @@ function renderDailyLesson(){
     wrap.appendChild(pb);
     const addL=t=>{const p2=document.createElement('p');p2.style.cssText='font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;margin-top:8px;';p2.textContent=t;wrap.appendChild(p2);};
     addL('📖 5 Words to learn');
+    console.log('about to forEach lw, length:',lw.length);
     lw.forEach(w=>{
       const d=pw.includes(w.id);
       const r=document.createElement('div');
@@ -6252,6 +6256,13 @@ function answerQ(qi,oi,correct,btn){
 function toggleTranslation(){const el=document.getElementById('reading-translation'),btn=document.getElementById('show-trans-btn');if(el.style.display==='none'){el.style.display='block';btn.textContent='🙈 Hide';}else{el.style.display='none';btn.textContent='👁 Show translation';}}
 function nextReading(){readingIdx=(readingIdx+1)%READING_PASSAGES.length;readingAnswers={};renderReading();}
 function prevReading(){readingIdx=(readingIdx-1+READING_PASSAGES.length)%READING_PASSAGES.length;readingAnswers={};renderReading();}
+
+// Render daily lesson now that DAILY_LESSONS is defined
+document.addEventListener('DOMContentLoaded', function() {
+  try { renderDailyLesson(); } catch(e) { console.error('daily init:', e); }
+});
+// Also call immediately in case DOM is already ready
+try { if (document.readyState !== 'loading') renderDailyLesson(); } catch(e) {}
 </script>
 
 <!-- CONVERSATION PRACTICE SCREEN -->
@@ -6332,26 +6343,24 @@ function applyBundle(data) {
   window.location.reload();
 }
 
-let cloudPromptShown = false;
 async function fbLoad(user) {
   try {
     const snap = await getDoc(doc(db,'users',user.uid));
     if (snap.exists()) {
       const data = snap.data();
       const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (!cloudPromptShown && data.updatedAt && data.updatedAt > localTime + 60000) {
-        cloudPromptShown = true;
-        if (confirm('Cloud save is newer. Load from cloud?')) {
-          localStorage.setItem('mn_last_sync', data.updatedAt);
-          applyBundle(data);
-        } else {
-          localStorage.setItem('mn_last_sync', data.updatedAt);
-        }
-      } else if (!localTime) {
-        localStorage.setItem('mn_last_sync', data.updatedAt || Date.now());
+      if (data.updatedAt && data.updatedAt > localTime) {
+        // Cloud is newer — silently load it (personal app, no need to ask)
+        localStorage.setItem('mn_last_sync', data.updatedAt);
         applyBundle(data);
+      } else {
+        // Local is newer or same — push local up to cloud
+        await fbSaveNow(user);
       }
-    } else { await fbSaveNow(user); }
+    } else {
+      // No cloud data yet — push local up
+      await fbSaveNow(user);
+    }
   } catch(e) { console.error('Load error:',e); }
 }
 
@@ -6866,26 +6875,24 @@ function applyBundle(data) {
   window.location.reload();
 }
 
-let cloudPromptShown = false;
 async function fbLoad(user) {
   try {
     const snap = await getDoc(doc(db,'users',user.uid));
     if (snap.exists()) {
       const data = snap.data();
       const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      if (!cloudPromptShown && data.updatedAt && data.updatedAt > localTime + 60000) {
-        cloudPromptShown = true;
-        if (confirm('Cloud save is newer. Load from cloud?')) {
-          localStorage.setItem('mn_last_sync', data.updatedAt);
-          applyBundle(data);
-        } else {
-          localStorage.setItem('mn_last_sync', data.updatedAt);
-        }
-      } else if (!localTime) {
-        localStorage.setItem('mn_last_sync', data.updatedAt || Date.now());
+      if (data.updatedAt && data.updatedAt > localTime) {
+        // Cloud is newer — silently load it (personal app, no need to ask)
+        localStorage.setItem('mn_last_sync', data.updatedAt);
         applyBundle(data);
+      } else {
+        // Local is newer or same — push local up to cloud
+        await fbSaveNow(user);
       }
-    } else { await fbSaveNow(user); }
+    } else {
+      // No cloud data yet — push local up
+      await fbSaveNow(user);
+    }
   } catch(e) { console.error('Load error:',e); }
 }
 
