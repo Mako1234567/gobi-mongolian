@@ -6280,7 +6280,7 @@ document.addEventListener('DOMContentLoaded', function() {
 try { if (document.readyState !== 'loading') renderDailyLesson(); } catch(e) {}
 
 // ─── Firebase sync wrappers ──────────────────────────────────────────────
-function syncSave() { alert('syncSave called! fbSave exists: ' + !!window.fbSave); if(window.fbSave) window.fbSave(); }
+function syncSave() { if(window.fbSave) window.fbSave(); else alert('Sign in first!'); }
 function syncLoad() { if(window.fbForceLoad) window.fbForceLoad(); else alert('Sign in first!'); }
 function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
 </script>
@@ -6381,13 +6381,19 @@ function applyBundle(data) {
 
 async function fbSaveNow(user) {
   const u = user || currentUser;
-  if (!u) return;
+  console.log('fbSaveNow called, user:', u ? u.email : 'null');
+  if (!u) { console.error('No user!'); return; }
   try {
     const bundle = getBundle();
+    console.log('Bundle keys:', Object.keys(bundle), 'updatedAt:', bundle.updatedAt);
     await setDoc(doc(db, 'users', u.uid), bundle, { merge: true });
     localStorage.setItem('mn_last_sync', bundle.updatedAt);
-    console.log('Saved to cloud at', new Date(bundle.updatedAt).toLocaleTimeString());
-  } catch(e) { console.error('Save error:', e); }
+    console.log('Saved successfully!');
+    alert('Saved to cloud! ☁️');
+  } catch(e) { 
+    console.error('Save error:', e);
+    alert('Save failed: ' + e.message);
+  }
 }
 
 async function fbLoad(user) {
@@ -6450,7 +6456,7 @@ window.fbSignIn = async () => {
   catch(e) { alert('Sign in failed: ' + e.message); }
 };
 
-window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved to cloud! ☁️'));
+window.fbSave = () => fbSaveNow(currentUser);
 
 window.fbForceLoad = async () => {
   if (!currentUser) { alert('Sign in first!'); return; }
