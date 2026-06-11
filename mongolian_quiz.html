@@ -6278,6 +6278,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 // Also call immediately in case DOM is already ready
 try { if (document.readyState !== 'loading') renderDailyLesson(); } catch(e) {}
+
+// ─── Firebase sync wrappers ──────────────────────────────────────────────
+function syncSave() { if(window.fbSave) window.fbSave(); else alert('Sign in first!'); }
+function syncLoad() { if(window.fbForceLoad) window.fbForceLoad(); else alert('Sign in first!'); }
+function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
 </script>
 
 <!-- CONVERSATION PRACTICE SCREEN -->
@@ -6465,10 +6470,7 @@ window.fbForceLoad = async () => {
   } catch(e) { alert('Error: ' + e.message); }
 };
 
-// ─── Firebase sync wrappers ────────────────────────────────────────────────
-function syncSave() { if(window.fbSave) window.fbSave(); else alert('Sign in first!'); }
-function syncLoad() { if(window.fbForceLoad) window.fbForceLoad(); else alert('Sign in first!'); }
-function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
+
 </script>
 
 <!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
