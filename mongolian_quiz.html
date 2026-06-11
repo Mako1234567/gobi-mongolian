@@ -6337,7 +6337,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 let currentUser = null;
 let syncTimer = null;
-const SYNC_KEYS = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases'];
+const SYNC_KEYS = ['mn_srs','mn_streak','mn_stats','mn_personal_words','mn_settings','mn_quiz_history','mn_fav_phrases','mn_daily_progress','mn_wrong_sentences'];
 
 function updateBtn(user) {
   const btn = document.getElementById('sync-btn');
@@ -6362,28 +6362,16 @@ function getBundle() {
 }
 
 function applyBundle(data) {
-  // Apply cloud data to localStorage WITHOUT reloading
+  // Apply cloud data to localStorage
   SYNC_KEYS.forEach(k => {
     if (data[k] != null) {
       try { localStorage.setItem(k, JSON.stringify(data[k])); } catch(e) {}
     }
   });
-  // Update the in-memory state by calling the app's own load functions
-  try {
-    if (typeof srsData !== 'undefined') {
-      srsData = JSON.parse(localStorage.getItem('mn_srs')||'{}');
-    }
-    if (typeof streakData !== 'undefined') {
-      streakData = JSON.parse(localStorage.getItem('mn_streak')||'{}');
-    }
-    if (typeof globalStats !== 'undefined') {
-      globalStats = JSON.parse(localStorage.getItem('mn_stats')||'{}');
-    }
-    if (typeof renderAll === 'function') renderAll();
-  } catch(e) {
-    console.log('Applied bundle, reloading to pick up changes');
-    window.location.reload();
-  }
+  // Reload page once to pick up all changes cleanly
+  // Set a flag so we don't loop
+  sessionStorage.setItem('just_synced', '1');
+  window.location.reload();
 }
 
 async function fbSaveNow(user) {
@@ -6434,7 +6422,16 @@ localStorage.setItem = function(k, v) {
 onAuthStateChanged(auth, user => {
   currentUser = user;
   updateBtn(user);
-  if (user) fbLoad(user);
+  if (user) {
+    // Don't re-load if we just reloaded from a sync
+    if (sessionStorage.getItem('just_synced')) {
+      sessionStorage.removeItem('just_synced');
+      // We're up to date — just push any local changes
+      setTimeout(() => fbSaveNow(user), 3000);
+    } else {
+      fbLoad(user);
+    }
+  }
 });
 
 window.fbSignIn = async () => {
