@@ -948,9 +948,10 @@ async function checkServer() {
     const r = await fetch('http://localhost:5050/health', { signal: AbortSignal.timeout(800) });
     if (r.ok) { activeTtsServer = 'http://localhost:5050/tts'; serverAvailable = true; return true; }
   } catch(e) {}
-  // Try Render remote
+  // Assume Render is available (Cloudflare blocks our health check but TTS requests work)
+  // Test with actual TTS request
   try {
-    const r = await fetch('https://gobi-mongolian.onrender.com/health', { signal: AbortSignal.timeout(5000) });
+    const r = await fetch('https://gobi-mongolian.onrender.com/tts?text=test', { signal: AbortSignal.timeout(8000) });
     if (r.ok) { activeTtsServer = 'https://gobi-mongolian.onrender.com/tts'; serverAvailable = true; return true; }
   } catch(e) {}
   // Fall back to browser TTS
