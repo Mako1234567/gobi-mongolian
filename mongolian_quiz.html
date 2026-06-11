@@ -6280,7 +6280,7 @@ document.addEventListener('DOMContentLoaded', function() {
 try { if (document.readyState !== 'loading') renderDailyLesson(); } catch(e) {}
 
 // ─── Firebase sync wrappers ──────────────────────────────────────────────
-function syncSave() { if(window.fbSave) window.fbSave(); else alert('Sign in first!'); }
+function syncSave() { alert('syncSave called! fbSave exists: ' + !!window.fbSave); if(window.fbSave) window.fbSave(); }
 function syncLoad() { if(window.fbForceLoad) window.fbForceLoad(); else alert('Sign in first!'); }
 function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
 </script>
