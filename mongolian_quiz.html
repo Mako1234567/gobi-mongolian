@@ -6434,6 +6434,24 @@ window.fbSignIn = async () => {
 };
 
 window.fbSave = () => fbSaveNow(currentUser).then(() => alert('Saved to cloud! ☁️'));
+
+window.fbForceLoad = async () => {
+  if (!currentUser) { alert('Sign in first!'); return; }
+  try {
+    const snap = await getDoc(doc(db, 'users', currentUser.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      if (!data.updatedAt) { alert('No cloud data found!'); return; }
+      const cloudTime = new Date(data.updatedAt).toLocaleString();
+      const localTime = new Date(parseInt(localStorage.getItem('mn_last_sync')||0)).toLocaleString();
+      alert('Cloud: ' + cloudTime + '\nLocal: ' + localTime + '\n\nForce loading cloud data...');
+      localStorage.setItem('mn_last_sync', data.updatedAt);
+      applyBundle(data);
+    } else {
+      alert('No cloud save found. Try saving from the other device first.');
+    }
+  } catch(e) { alert('Error: ' + e.message); }
+};
 </script>
 
 <!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
