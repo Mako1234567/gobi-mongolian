@@ -5965,15 +5965,15 @@ function renderSettingsPanel() {
       <h3>Sync</h3>
       <div class="settings-row">
         <div><div class="settings-label">Account</div><div class="settings-sub" id="sync-status-sub">Sign in to sync across devices</div></div>
-        <button class="settings-btn neutral" onclick="window.fbSignIn&&window.fbSignIn()" id="sync-signin-btn">Sign in</button>
+        <button class="settings-btn neutral" onclick="syncSignIn()">Sign in</button>
       </div>
       <div class="settings-row">
         <div><div class="settings-label">Save to cloud</div><div class="settings-sub">Push your progress up now</div></div>
-        <button class="settings-btn neutral" onclick="if(window.fbSave){window.fbSave();}else{alert('Not signed in to Firebase. Sign in first via the ☁️ button on the home screen.');}">Save</button>
+        <button class="settings-btn neutral" onclick="syncSave()">Save</button>
       </div>
       <div class="settings-row">
         <div><div class="settings-label">Load from cloud</div><div class="settings-sub">Force pull cloud data to this device</div></div>
-        <button class="settings-btn neutral" onclick="if(window.fbForceLoad){window.fbForceLoad();}else{alert('Not signed in to Firebase. Sign in first via the ☁️ button on the home screen.');}">Load</button>
+        <button class="settings-btn neutral" onclick="syncLoad()">Load</button>
       </div>
     </div>
     <div class="settings-section settings-danger">
@@ -6464,6 +6464,11 @@ window.fbForceLoad = async () => {
     }
   } catch(e) { alert('Error: ' + e.message); }
 };
+
+// ─── Firebase sync wrappers ────────────────────────────────────────────────
+function syncSave() { if(window.fbSave) window.fbSave(); else alert('Sign in first!'); }
+function syncLoad() { if(window.fbForceLoad) window.fbForceLoad(); else alert('Sign in first!'); }
+function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
 </script>
 
 <!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
