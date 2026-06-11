@@ -5159,7 +5159,12 @@ function loadProductionQuestion() {
 
   // Show English + image (NO Mongolian shown — that's the point!)
   document.getElementById('prod-english').textContent = w.en;
-  document.getElementById('prod-image').innerHTML = getWordImage(w.img);
+  // For production mode, don't show Mongolian text cards — just show emoji or a blank
+  const imgSvg = getWordImage(w.img);
+  const isTextOnly = imgSvg.includes('background:#1a1830');
+  document.getElementById('prod-image').innerHTML = isTextOnly 
+    ? '<div style="font-size:48px;text-align:center;padding:10px;">🤔</div>'
+    : imgSvg;
   document.getElementById('prod-hint').textContent = w.rom ? 'Romanization hint available after answering' : '';
 
   // Enable keyboard keys
@@ -6375,7 +6380,7 @@ function applyBundle(data) {
   });
   // Reload page once to pick up all changes cleanly
   // Set a flag so we don't loop
-  sessionStorage.setItem('just_synced', '1');
+  localStorage.setItem('mn_just_synced', Date.now());
   window.location.reload();
 }
 
@@ -6395,13 +6400,10 @@ async function fbLoad(user) {
     if (snap.exists()) {
       const data = snap.data();
       const localTime = parseInt(localStorage.getItem('mn_last_sync')||'0');
-      console.log('Cloud updatedAt:', new Date(data.updatedAt||0).toLocaleTimeString(), 'Local sync:', new Date(localTime).toLocaleTimeString());
       if (data.updatedAt && data.updatedAt > localTime) {
-        console.log('Cloud is newer — loading');
         localStorage.setItem('mn_last_sync', data.updatedAt);
         applyBundle(data);
       } else {
-        console.log('Local is newer or same — pushing to cloud');
         await fbSaveNow(user);
       }
     } else {
@@ -6428,8 +6430,9 @@ onAuthStateChanged(auth, user => {
   updateBtn(user);
   if (user) {
     // Don't re-load if we just reloaded from a sync
-    if (sessionStorage.getItem('just_synced')) {
-      sessionStorage.removeItem('just_synced');
+    const justSynced = parseInt(localStorage.getItem('mn_just_synced')||'0');
+    if (Date.now() - justSynced < 10000) {
+      localStorage.removeItem('mn_just_synced');
       // We're up to date — just push any local changes
       setTimeout(() => fbSaveNow(user), 3000);
     } else {
