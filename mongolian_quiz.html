@@ -717,6 +717,14 @@
 
   <!-- Type mode input -->
   <div id="type-area" style="display:none; width:100%">
+    <div id="special-chars" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+      <button onclick="insertChar('ö')" style="padding:6px 14px;background:#1e1e2a;border:1px solid #2a2a38;border-radius:8px;font-size:15px;color:#e8e8f0;cursor:pointer;font-family:inherit;">ö</button>
+      <button onclick="insertChar('ü')" style="padding:6px 14px;background:#1e1e2a;border:1px solid #2a2a38;border-radius:8px;font-size:15px;color:#e8e8f0;cursor:pointer;font-family:inherit;">ü</button>
+      <button onclick="insertChar('kh')" style="padding:6px 12px;background:#1e1e2a;border:1px solid #2a2a38;border-radius:8px;font-size:13px;color:#e8e8f0;cursor:pointer;font-family:inherit;">kh</button>
+      <button onclick="insertChar('sh')" style="padding:6px 12px;background:#1e1e2a;border:1px solid #2a2a38;border-radius:8px;font-size:13px;color:#e8e8f0;cursor:pointer;font-family:inherit;">sh</button>
+      <button onclick="insertChar('ch')" style="padding:6px 12px;background:#1e1e2a;border:1px solid #2a2a38;border-radius:8px;font-size:13px;color:#e8e8f0;cursor:pointer;font-family:inherit;">ch</button>
+      <button onclick="insertChar('ts')" style="padding:6px 12px;background:#1e1e2a;border:1px solid #2a2a38;border-radius:8px;font-size:13px;color:#e8e8f0;cursor:pointer;font-family:inherit;">ts</button>
+    </div>
     <div class="kb-mode-toggle">
       <button class="kb-mode-btn active" id="kb-mode-cyrillic" onclick="setKbMode('cyrillic')">🇲🇳 Mongolian</button>
       <button class="kb-mode-btn" id="kb-mode-roman" onclick="setKbMode('roman')">Romanization</button>
@@ -2066,8 +2074,9 @@ function updateSRS(id, correct) {
     c.reps++;
   } else {
     c.wrongCount++;
-    c.reps = 0; c.interval = 1;
-    c.ease = Math.max(1.3, c.ease - 0.2);
+    c.reps = Math.max(0, c.reps - 1); // lose one rep but not all progress
+    c.interval = Math.max(1, Math.round(c.interval * 0.5));
+    c.ease = Math.max(1.3, c.ease - 0.15);
   }
   c.due = Date.now() + c.interval * 86400000;
   saveSRS();
@@ -2077,9 +2086,10 @@ function saveSRS() { try { localStorage.setItem('mn_srs', JSON.stringify(srsData
 function getMastery(id) {
   const s = getSRS(id);
   if (s.seenCount === 0) return 'new';
-  if (s.reps >= 4 && s.wrongCount === 0) return 'mastered';
+  if (s.reps >= 3) return 'mastered';
   if (s.reps >= 2) return 'familiar';
-  return 'learning';
+  if (s.reps >= 1) return 'learning';
+  return 'new';
 }
 
 function getSRSSorted(pool) {
@@ -2333,11 +2343,26 @@ function loadType(q) {
   document.getElementById('type-input').focus();
 }
 
+function insertChar(ch) {
+  const inp = document.getElementById('type-input');
+  if (!inp) return;
+  const start = inp.selectionStart, end = inp.selectionEnd;
+  inp.value = inp.value.slice(0, start) + ch + inp.value.slice(end);
+  inp.selectionStart = inp.selectionEnd = start + ch.length;
+  inp.focus();
+}
+
+function normalizeRoman(s) {
+  return s.toLowerCase()
+    .replace(/ö/g,'o').replace(/ü/g,'u')
+    .replace(/oe/g,'o').replace(/ue/g,'u').trim();
+}
+
 function checkTyped() {
   const q = questions[current];
   const val = document.getElementById('type-input').value.trim().toLowerCase();
   const correct_ans = (q.type==='word'||q.type==='phrase') ? q.sound.toLowerCase() : q.answer.toLowerCase();
-  const isCorrect = val===correct_ans || val===q.answer.toLowerCase();
+  const isCorrect = val===correct_ans || val===q.answer.toLowerCase() || normalizeRoman(val)===normalizeRoman(correct_ans);
   const hb = document.getElementById('hear-btn');
   if (hb) hb.style.display = 'inline-block';
   speak(q.letter);
