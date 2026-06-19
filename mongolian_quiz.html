@@ -6455,36 +6455,6 @@ function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
 // ─── Session Tracking ─────────────────────────────────────────────────────
 var sessionStartTime = null;
 
-function startSession() {
-  sessionStartTime = Date.now();
-  try {
-    const stats = JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0,"lastDate":"","lastWeek":""}');
-    const today = new Date().toISOString().slice(0,10);
-    const week = getWeekStr();
-    if (stats.lastDate !== today) { stats.todayTime = 0; stats.lastDate = today; }
-    if (stats.lastWeek !== week) { stats.weekTime = 0; stats.lastWeek = week; }
-    localStorage.setItem('mn_session_stats', JSON.stringify(stats));
-  } catch(e) {}
-}
-
-function endSession() {
-  if (!sessionStartTime) return;
-  const elapsed = Math.round((Date.now() - sessionStartTime) / 1000); // seconds
-  if (elapsed < 10) return; // ignore accidental opens
-  try {
-    const stats = JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0,"lastDate":"","lastWeek":""}');
-    const today = new Date().toISOString().slice(0,10);
-    const week = getWeekStr();
-    if (stats.lastDate !== today) { stats.todayTime = 0; stats.lastDate = today; }
-    if (stats.lastWeek !== week) { stats.weekTime = 0; stats.lastWeek = week; }
-    stats.todayTime += elapsed;
-    stats.weekTime += elapsed;
-    stats.totalTime = (stats.totalTime||0) + elapsed;
-    localStorage.setItem('mn_session_stats', JSON.stringify(stats));
-  } catch(e) {}
-  sessionStartTime = null;
-}
-
 function getWeekStr() {
   const d = new Date();
   const day = d.getDay();
@@ -6493,24 +6463,8 @@ function getWeekStr() {
   return mon.toISOString().slice(0,10);
 }
 
-var getSessionStats = function() {
-  try { return JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0}'); }
-  catch(e) { return {todayTime:0,weekTime:0,totalTime:0}; }
-}
-
-var formatTime = function(seconds) {
-  if (seconds < 60) return seconds + 's';
-  if (seconds < 3600) return Math.floor(seconds/60) + 'm';
-  const h = Math.floor(seconds/3600);
-  const m = Math.floor((seconds%3600)/60);
-  return h + 'h ' + (m>0?m+'m':'');
-}
-
 // Auto-save session on page hide/unload
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) endSession();
-  else startSession();
-});
+
 window.addEventListener('beforeunload', endSession);
 window.addEventListener('pagehide', endSession);
 </script>
