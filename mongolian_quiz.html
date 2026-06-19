@@ -2239,6 +2239,7 @@ function buildQuestions() {
 
 // ─── Quiz Flow ────────────────────────────────────────────────────────────
 function startQuiz() {
+  startSession();
   if (selectedCats.length === 0) { alert('Pick at least one category!'); return; }
   questions = buildQuestions();
   if (questions.length === 0) { alert('No cards available! Try a different category.'); return; }
@@ -3427,6 +3428,7 @@ const KNOWN_WORD_IDS = new Set(
 let smSentences = [], smCurrent = 0, smScore = 0, smCorrect = 0, smAnswered = false;
 
 function startSentenceMode() {
+  startSession();
   smSentences = [...SENTENCES].sort(() => Math.random() - 0.5).slice(0, 10);
   smCurrent = 0; smScore = 0; smCorrect = 0; smAnswered = false;
   showScreen('screen-sentence');
@@ -4525,6 +4527,7 @@ function setLMKbMode(mode) {
 }
 
 function startListeningMode() {
+  startSession();
   const pool = [...(ALL_QUESTIONS.vowels||[]), ...(ALL_QUESTIONS.consonants||[]),
     ...Object.values(WORD_BANK).flatMap(g => g.words.map(w => ({
       id: w.id, letter: w.mn, answer: w.mn, sound: w.en, type: 'word'
@@ -4918,7 +4921,8 @@ async function sendConvoMessage() {
   if(sendBtn) sendBtn.disabled=false;
 }
 
-function openConvoPractice() { showScreen('screen-convo'); if(convoMessages.length===0) clearConvo(); setTimeout(addMicToConvo, 100); }
+function openConvoPractice() {
+  startSession(); showScreen('screen-convo'); if(convoMessages.length===0) clearConvo(); setTimeout(addMicToConvo, 100); }
 
 // Convo keyboard
 let convoKbBuilt = false;
@@ -5169,6 +5173,7 @@ let prodWords = [], prodCurrent = 0, prodScore = 0, prodCorrect = 0;
 let prodAnswered = false, prodMode = 'kb', prodKbBuilt = false;
 
 function startProductionMode(groupKey) {
+  startSession();
   const group = WORD_BANK[groupKey];
   if (!group) return;
   // Randomize order, SRS-prioritize
@@ -5821,6 +5826,7 @@ function openWrongSentences() {
 let ldSentences = [], ldCurrent = 0, ldScore = 0, ldCorrect = 0, ldAnswered = false;
 
 function startListeningDictation() {
+  startSession();
   ldSentences = [...SENTENCES].sort(()=>Math.random()-0.5).slice(0, appSettings.quizLength||15);
   ldCurrent=0; ldScore=0; ldCorrect=0; ldAnswered=false;
   showScreen('screen-dictation');
@@ -6114,7 +6120,6 @@ openProgressMap = function() { showScreen('screen-home'); switchTab('journey'); 
 function renderAll() {
   // Tab-based nav — just render current tab
   checkStreakOnOpen();
-  startSession();
   renderDailyWord();
   try { renderDailyLesson(); } catch(e) {}
   updateTimeToday();
@@ -6349,7 +6354,8 @@ var READING_PASSAGES=[
 ];
 
 let readingIdx=0,readingAnswers={};
-function startReadingPractice(i){readingIdx=i||0;readingAnswers={};showScreen('screen-reading');renderReading();}
+function startReadingPractice(i){
+  startSession();readingIdx=i||0;readingAnswers={};showScreen('screen-reading');renderReading();}
 function renderReading(){
   const p=READING_PASSAGES[readingIdx];if(!p)return;
   document.getElementById('reading-title').textContent=p.title;
