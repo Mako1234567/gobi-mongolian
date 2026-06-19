@@ -2115,24 +2115,63 @@ function checkAndUpdateStreak() {
   const today = getTodayStr();
   const wasStreak = streakData.streak;
   const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+
   if (streakData.lastDate === today) return; // already done today
+
   if (streakData.lastDate === yesterday) {
+    // Consecutive day — extend streak
     streakData.streak++;
-  } else if (streakData.lastDate === '' || streakData.lastDate < yesterday) {
-    // missed a day — check freeze
-    if (streakData.freezes > 0 && streakData.lastDate === new Date(Date.now()-172800000).toISOString().slice(0,10)) {
-      streakData.freezes--;
+  } else if (!streakData.lastDate) {
+    // First ever session
+    streakData.streak = 1;
+  } else {
+    // Missed one or more days — use freezes to cover gaps
+    const lastDate = new Date(streakData.lastDate + 'T00:00:00');
+    const todayDate = new Date(today + 'T00:00:00');
+    const missedDays = Math.round((todayDate - lastDate) / 86400000) - 1;
+    if (missedDays > 0 && streakData.freezes >= missedDays) {
+      // Have enough freezes to cover all missed days
+      streakData.freezes -= missedDays;
       streakData.streak++;
-    } else if (streakData.lastDate !== '') {
-      streakData.streak = 1; // reset
+    } else if (missedDays > 0 && streakData.freezes > 0) {
+      // Partial freeze — not enough, streak breaks
+      streakData.freezes = 0;
+      streakData.streak = 1;
     } else {
+      // No freezes — streak breaks
       streakData.streak = 1;
     }
   }
+
   streakData.lastDate = today;
-  if (streakData.streak > streakData.longestStreak) streakData.longestStreak = streakData.streak;
+  if (streakData.streak > (streakData.longestStreak||0)) streakData.longestStreak = streakData.streak;
   saveStreak();
   if (streakData.streak > wasStreak) { setTimeout(playDailyStreak, 400); setTimeout(checkStreakMilestone, 800); }
+}
+
+// Called on app open — check if streak should be broken (missed yesterday, no freeze)
+function checkStreakOnOpen() {
+  const today = getTodayStr();
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if (!streakData.lastDate || streakData.lastDate === today || streakData.lastDate === yesterday) return;
+  // Last session was 2+ days ago — check if freeze covers it
+  const lastDate = new Date(streakData.lastDate + 'T00:00:00');
+  const todayDate = new Date(today + 'T00:00:00');
+  const missedDays = Math.round((todayDate - lastDate) / 86400000) - 1;
+  if (streakData.freezes < missedDays) {
+    // Streak is broken
+    const oldStreak = streakData.streak;
+    streakData.freezes = 0;
+    streakData.streak = 0;
+    saveStreak();
+    if (oldStreak > 0) {
+      // Show broken streak message
+      setTimeout(() => {
+        const banner = document.getElementById('streak-banner');
+        if (banner) banner.innerHTML = '<span style="font-size:20px;">💔</span> <span style="font-size:14px;color:#f87171;">Streak lost — missed ' + missedDays + ' day' + (missedDays>1?'s':'') + '. Start a new one today!</span>';
+      }, 1000);
+    }
+  }
 }
 
 function earnFreeze() {
@@ -6074,8 +6113,11 @@ openProgressMap = function() { showScreen('screen-home'); switchTab('journey'); 
 
 function renderAll() {
   // Tab-based nav — just render current tab
+  checkStreakOnOpen();
+  startSession();
   renderDailyWord();
   try { renderDailyLesson(); } catch(e) {}
+  updateTimeToday();
   renderStreakBanner();
   renderStatsBar();
   const [mood, msg] = getMascotMoodForStreak();
@@ -6102,6 +6144,14 @@ function renderStreakBanner() {
     </div>`;
 }
 
+function updateTimeToday() {
+  const el = document.getElementById('stat-time-today');
+  if (!el) return;
+  const sStats = getSessionStats();
+  const activeTime = sessionStartTime ? Math.round((Date.now()-sessionStartTime)/1000) : 0;
+  el.textContent = formatTime((sStats.todayTime||0) + activeTime);
+}
+
 function renderStatsBar() {
   const el = document.getElementById('stats-bar');
   if (!el) return;
@@ -6126,6 +6176,10 @@ function renderStatsBar() {
       <div style="flex:1;min-width:70px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px;text-align:center;">
         <div style="font-size:20px;font-weight:700;color:#60a5fa;">${due}</div>
         <div style="font-size:10px;color:#555;margin-top:2px;">Due today</div>
+      </div>
+      <div style="flex:1;min-width:70px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:700;color:#a78bfa;" id="stat-time-today">0m</div>
+        <div style="font-size:10px;color:#555;margin-top:2px;">Time today</div>
       </div>
     </div>`;
 }
@@ -6334,6 +6388,68 @@ try { if (document.readyState !== 'loading') renderDailyLesson(); } catch(e) {}
 function syncSave() { if(window.fbSave) window.fbSave(); else alert('Sign in first!'); }
 function syncLoad() { if(window.fbForceLoad) window.fbForceLoad(); else alert('Sign in first!'); }
 function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
+
+// ─── Session Tracking ─────────────────────────────────────────────────────
+var sessionStartTime = null;
+
+function startSession() {
+  sessionStartTime = Date.now();
+  try {
+    const stats = JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0,"lastDate":"","lastWeek":""}');
+    const today = new Date().toISOString().slice(0,10);
+    const week = getWeekStr();
+    if (stats.lastDate !== today) { stats.todayTime = 0; stats.lastDate = today; }
+    if (stats.lastWeek !== week) { stats.weekTime = 0; stats.lastWeek = week; }
+    localStorage.setItem('mn_session_stats', JSON.stringify(stats));
+  } catch(e) {}
+}
+
+function endSession() {
+  if (!sessionStartTime) return;
+  const elapsed = Math.round((Date.now() - sessionStartTime) / 1000); // seconds
+  if (elapsed < 10) return; // ignore accidental opens
+  try {
+    const stats = JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0,"lastDate":"","lastWeek":""}');
+    const today = new Date().toISOString().slice(0,10);
+    const week = getWeekStr();
+    if (stats.lastDate !== today) { stats.todayTime = 0; stats.lastDate = today; }
+    if (stats.lastWeek !== week) { stats.weekTime = 0; stats.lastWeek = week; }
+    stats.todayTime += elapsed;
+    stats.weekTime += elapsed;
+    stats.totalTime = (stats.totalTime||0) + elapsed;
+    localStorage.setItem('mn_session_stats', JSON.stringify(stats));
+  } catch(e) {}
+  sessionStartTime = null;
+}
+
+function getWeekStr() {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day===0?-6:1);
+  const mon = new Date(d.setDate(diff));
+  return mon.toISOString().slice(0,10);
+}
+
+var getSessionStats = function() {
+  try { return JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0}'); }
+  catch(e) { return {todayTime:0,weekTime:0,totalTime:0}; }
+}
+
+var formatTime = function(seconds) {
+  if (seconds < 60) return seconds + 's';
+  if (seconds < 3600) return Math.floor(seconds/60) + 'm';
+  const h = Math.floor(seconds/3600);
+  const m = Math.floor((seconds%3600)/60);
+  return h + 'h ' + (m>0?m+'m':'');
+}
+
+// Auto-save session on page hide/unload
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) endSession();
+  else startSession();
+});
+window.addEventListener('beforeunload', endSession);
+window.addEventListener('pagehide', endSession);
 </script>
 
 <!-- CONVERSATION PRACTICE SCREEN -->
@@ -6519,6 +6635,9 @@ window.fbForceLoad = async () => {
 };
 
 
+
+// Update time display every 30 seconds
+setInterval(() => { updateTimeToday(); }, 30000);
 </script>
 
 <!-- PRODUCTION MODE SCREEN (English → type/speak Mongolian) -->
