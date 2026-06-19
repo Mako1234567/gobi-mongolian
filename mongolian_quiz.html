@@ -6149,6 +6149,63 @@ function renderStreakBanner() {
     </div>`;
 }
 
+
+// ─── Session Tracking ─────────────────────────────────────────────────────
+var sessionStartTime = null;
+
+function getWeekStr() {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day===0?-6:1);
+  const mon = new Date(new Date().setDate(diff));
+  return mon.toISOString().slice(0,10);
+}
+
+function getSessionStats() {
+  try { return JSON.parse(localStorage.getItem('mn_session_stats')||'{"todayTime":0,"weekTime":0,"totalTime":0}'); }
+  catch(e) { return {todayTime:0,weekTime:0,totalTime:0}; }
+}
+
+function formatTime(seconds) {
+  if (!seconds || seconds < 1) return '0m';
+  if (seconds < 60) return seconds + 's';
+  if (seconds < 3600) return Math.floor(seconds/60) + 'm';
+  const h = Math.floor(seconds/3600);
+  const m = Math.floor((seconds%3600)/60);
+  return h + 'h' + (m>0?' '+m+'m':'');
+}
+
+function startSession() {
+  if (sessionStartTime) return; // already running
+  sessionStartTime = Date.now();
+  console.log('Session started');
+}
+
+function endSession() {
+  if (!sessionStartTime) return;
+  const elapsed = Math.round((Date.now() - sessionStartTime) / 1000);
+  sessionStartTime = null;
+  if (elapsed < 10) return; // ignore accidental opens
+  try {
+    const stats = getSessionStats();
+    const today = new Date().toISOString().slice(0,10);
+    const week = getWeekStr();
+    if (stats.lastDate !== today) { stats.todayTime = 0; stats.lastDate = today; }
+    if (stats.lastWeek !== week) { stats.weekTime = 0; stats.lastWeek = week; }
+    stats.todayTime = (stats.todayTime||0) + elapsed;
+    stats.weekTime = (stats.weekTime||0) + elapsed;
+    stats.totalTime = (stats.totalTime||0) + elapsed;
+    localStorage.setItem('mn_session_stats', JSON.stringify(stats));
+    updateTimeToday();
+  } catch(e) { console.error('endSession error:', e); }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) endSession(); else if (sessionStartTime===null) {} // don't auto-start on show
+});
+window.addEventListener('beforeunload', endSession);
+window.addEventListener('pagehide', endSession);
+
 function updateTimeToday() {
   const el = document.getElementById('stat-time-today');
   if (!el) return;
