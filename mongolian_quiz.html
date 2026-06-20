@@ -4062,34 +4062,46 @@ const MAP_STAGES = [
   {
     id:'sentences', icon:'💬', label:'Sentences', sub:'200 real Mongolian sentences', color:'#7c6af7',
     getProgress: () => {
-      const sessions = globalStats.totalSessions||0;
-      const done = Math.min(sessions*3, SENTENCES.length);
-      return {done, total:SENTENCES.length, pct:Math.round(done/SENTENCES.length*100)};
+      // Track unique sentences seen in sentence mode via SRS
+      const seen = SENTENCES.filter(s => {
+        const srs = getSRS('sent_' + s.id);
+        return srs && srs.seenCount > 0;
+      }).length;
+      return {done:seen, total:SENTENCES.length, pct:Math.round(seen/SENTENCES.length*100)};
     }, detail:null
   },
   {
-    id:'production', icon:'🧩', label:'Production', sub:'Build sentences from English', color:'#f97316',
+    id:'production', icon:'🧩', label:'Production', sub:'Type Mongolian from English', color:'#f97316',
     getProgress: () => {
-      const allWords = Object.values(WORD_BANK).flatMap(g=>g.words);
+      // Based on word bank mastery — same as overall words
+      const allWords = Object.values(WORD_BANK).flatMap(g=>g.words).filter(w=>w&&w.id);
       const mastered = allWords.filter(w=>getMastery(w.id)==='mastered').length;
-      const pct = Math.round(mastered/allWords.length*100);
-      return {done:mastered, total:allWords.length, pct};
+      return {done:mastered, total:allWords.length, pct:Math.round(mastered/allWords.length*100)};
     }, detail:null
   },
   {
     id:'listening', icon:'👂', label:'Listening', sub:'Hear and transcribe Mongolian', color:'#60a5fa',
     getProgress: () => {
-      const sessions = globalStats.totalSessions||0;
-      const done = Math.min(sessions, 50);
-      return {done, total:50, pct:Math.round(done/50*100)};
+      // Based on letter + word mastery combined
+      const letters = [...(ALL_QUESTIONS.vowels||[]),...(ALL_QUESTIONS.consonants||[])];
+      const masteredLetters = letters.filter(q=>getMastery(q.id)==='mastered').length;
+      const allWords = Object.values(WORD_BANK).flatMap(g=>g.words).filter(w=>w&&w.id);
+      const masteredWords = allWords.filter(w=>getMastery(w.id)==='mastered').length;
+      const done = masteredLetters + masteredWords;
+      const total = letters.length + allWords.length;
+      return {done, total, pct:Math.round(done/total*100)};
     }, detail:null
   },
   {
     id:'conversation', icon:'🗣️', label:'Conversation', sub:'Speak freely with Gobi and friends', color:'#facc15',
     getProgress: () => {
-      const allWords = Object.values(WORD_BANK).flatMap(g=>g.words);
-      const mastered = allWords.filter(w=>getMastery(w.id)==='mastered').length;
-      return {done:mastered, total:allWords.length, pct:Math.round(mastered/allWords.length*100)};
+      // Based on total word + sentence mastery — the hardest stage
+      const allWords = Object.values(WORD_BANK).flatMap(g=>g.words).filter(w=>w&&w.id);
+      const masteredWords = allWords.filter(w=>getMastery(w.id)==='mastered').length;
+      const seenSentences = SENTENCES.filter(s=>{const r=getSRS('sent_'+s.id);return r&&r.seenCount>0;}).length;
+      const total = allWords.length + SENTENCES.length;
+      const done = masteredWords + seenSentences;
+      return {done, total, pct:Math.round(done/total*100)};
     }, detail:null
   },
 ];
