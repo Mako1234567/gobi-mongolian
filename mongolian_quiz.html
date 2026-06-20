@@ -6152,6 +6152,7 @@ function renderStreakBanner() {
 
 // ─── Session Tracking ─────────────────────────────────────────────────────
 var sessionStartTime = null;
+var sessionWasActive = false;
 
 function getWeekStr() {
   const d = new Date();
@@ -6176,16 +6177,15 @@ function formatTime(seconds) {
 }
 
 function startSession() {
-  if (sessionStartTime) return; // already running
   sessionStartTime = Date.now();
-  console.log('Session started');
+  sessionWasActive = true;
 }
 
 function endSession() {
   if (!sessionStartTime) return;
   const elapsed = Math.round((Date.now() - sessionStartTime) / 1000);
   sessionStartTime = null;
-  if (elapsed < 10) return; // ignore accidental opens
+  if (elapsed < 10) return;
   try {
     const stats = getSessionStats();
     const today = new Date().toISOString().slice(0,10);
@@ -6201,7 +6201,12 @@ function endSession() {
 }
 
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) endSession(); else if (sessionStartTime===null) {} // don't auto-start on show
+  if (document.hidden) {
+    endSession();
+  } else {
+    // App came back to foreground - if we were in a study session, restart timer
+    if (sessionWasActive) startSession();
+  }
 });
 window.addEventListener('beforeunload', endSession);
 window.addEventListener('pagehide', endSession);
@@ -6454,6 +6459,7 @@ function syncSignIn() { if(window.fbSignIn) window.fbSignIn(); }
 
 // ─── Session Tracking ─────────────────────────────────────────────────────
 var sessionStartTime = null;
+var sessionWasActive = false;
 
 function getWeekStr() {
   const d = new Date();
