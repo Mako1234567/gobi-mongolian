@@ -1868,6 +1868,911 @@ const WORD_BANK = {
       { id:'wb_g28', mn:"Дахиад уулзацгаая", en:"Let us meet again", rom:"Dakhiad uulzatsagaaya", img:"meetagain" },
     ]
   }
+  ,
+
+  // ── Essential Phrases as Words ───────────────────────────────────────────
+  phrases_core: {
+    label: "Essential Phrases", unlockAfter: "greetings", emoji: "💬",
+    words: [
+      { id:'wb_ep1', mn:"Миний нэр ... юм", en:"My name is ...", rom:"Minii ner ... yum", img:"name" },
+      { id:'wb_ep2', mn:"Таны нэр хэн бэ?", en:"What is your name?", rom:"Tany ner khen be?", img:"question" },
+      { id:'wb_ep3', mn:"Та хэрхэн байна вэ?", en:"How are you? (formal)", rom:"Ta kherkhen baina ve?", img:"howareyou" },
+      { id:'wb_ep4', mn:"Сайн байна, баярлалаа", en:"I am well, thank you", rom:"Sain baina, bayarlalaa", img:"reply" },
+      { id:'wb_ep5', mn:"Та хаанаас ирсэн бэ?", en:"Where are you from?", rom:"Ta khaanaas irsen be?", img:"from" },
+      { id:'wb_ep6', mn:"Би Америкаас ирсэн", en:"I am from America", rom:"Bi Amerikaas irsen", img:"america" },
+      { id:'wb_ep7', mn:"Та хэдэн настай вэ?", en:"How old are you?", rom:"Ta kheden nastai ve?", img:"age" },
+      { id:'wb_ep8', mn:"Би ... настай", en:"I am ... years old", rom:"Bi ... nastai", img:"age2" },
+      { id:'wb_ep9', mn:"Таны утасны дугаар хэд вэ?", en:"What is your phone number?", rom:"Tany utasny dugaar khed ve?", img:"phone2" },
+      { id:'wb_ep10', mn:"Уулзаж баяртай байна", en:"Nice to meet you", rom:"Uulzaj bayartai baina", img:"meet" },
+    ]
+  },
+
+  // ── At the Restaurant ─────────────────────────────────────────────────────
+  restaurant: {
+    label: "At the Restaurant", unlockAfter: "food", emoji: "🍽️",
+    words: [
+      { id:'wb_re1', mn:"Цэс авчирна уу", en:"Please bring the menu", rom:"Tses avchirnaa uu", img:"menu" },
+      { id:'wb_re2', mn:"Би ... захиалъя", en:"I will order ...", rom:"Bi ... zakhiaalya", img:"order" },
+      { id:'wb_re3', mn:"Энэ хэдэн төгрөг вэ?", en:"How much is this?", rom:"Ene kheden togrog ve?", img:"price3" },
+      { id:'wb_re4', mn:"Маш амттай байна", en:"It is very delicious", rom:"Mash amttai baina", img:"delicious" },
+      { id:'wb_re5', mn:"Нэмж авчирна уу", en:"Please bring more", rom:"Nemj avchirnaa uu", img:"more" },
+      { id:'wb_re6', mn:"Тооцоо хийнэ үү", en:"Please give me the bill", rom:"Totsoo hiinee uu", img:"bill" },
+      { id:'wb_re7', mn:"Усны лонх авчирна уу", en:"Please bring a bottle of water", rom:"Usny lonkh avchirnaa uu", img:"water2" },
+      { id:'wb_re8', mn:"Халуун цай өгнө үү", en:"Please give me hot tea", rom:"Khaluun tsai ognoo uu", img:"hotteа" },
+      { id:'wb_re9', mn:"Гахайн мах идэхгүй", en:"I do not eat pork", rom:"Gakhainy makh idekhgui", img:"nopork" },
+      { id:'wb_re10', mn:"Маш сайн хоол байна", en:"The food is excellent", rom:"Mash sain khool baina", img:"excellent" },
+    ]
+  },
+
+  // ── At the Market / Shopping ──────────────────────────────────────────────
+  shopping2: {
+    label: "Shopping Phrases", unlockAfter: "money", emoji: "🛒",
+    words: [
+      { id:'wb_sh1', mn:"Энэ хэдэн вэ?", en:"How much is this?", rom:"Ene kheden ve?", img:"howmuch" },
+      { id:'wb_sh2', mn:"Хэтэрхий үнэтэй", en:"Too expensive", rom:"Khetertkhii unetei", img:"tooexp" },
+      { id:'wb_sh3', mn:"Хямдруулна уу", en:"Please give a discount", rom:"Khyamdruulnaa uu", img:"disc2" },
+      { id:'wb_sh4', mn:"Өөр өнгө байна уу?", en:"Do you have another color?", rom:"Ooor ongu baina uu?", img:"color2" },
+      { id:'wb_sh5', mn:"Надад таарна", en:"It fits me", rom:"Nadad taarna", img:"fits" },
+      { id:'wb_sh6', mn:"Надад таарахгүй", en:"It does not fit me", rom:"Nadad taarakhgui", img:"notfit" },
+      { id:'wb_sh7', mn:"Авъя", en:"I will take it", rom:"Avya", img:"takeit" },
+      { id:'wb_sh8', mn:"Авахгүй", en:"I will not take it", rom:"Avakhgui", img:"notake" },
+      { id:'wb_sh9', mn:"Жижиг хэмжээ байна уу?", en:"Do you have a small size?", rom:"Jijig khemjee baina uu?", img:"small2" },
+      { id:'wb_sh10', mn:"Том хэмжээ байна уу?", en:"Do you have a large size?", rom:"Tom khemjee baina uu?", img:"large" },
+    ]
+  },
+
+  // ── Getting Around / Directions ───────────────────────────────────────────
+  directions2: {
+    label: "Getting Around", unlockAfter: "transport", emoji: "🗺️",
+    words: [
+      { id:'wb_dr1', mn:"... хаана байдаг вэ?", en:"Where is ...?", rom:"... khaana baidag ve?", img:"where2" },
+      { id:'wb_dr2', mn:"Хэрхэн явах вэ?", en:"How do I get there?", rom:"Kherkhen yavakh ve?", img:"howto" },
+      { id:'wb_dr3', mn:"Зүүн тийш эргэнэ үү", en:"Please turn left", rom:"Zuun tiish ergene uu", img:"turnleft" },
+      { id:'wb_dr4', mn:"Баруун тийш эргэнэ үү", en:"Please turn right", rom:"Baruun tiish ergene uu", img:"turnright" },
+      { id:'wb_dr5', mn:"Шулуун яв", en:"Go straight", rom:"Shuluun yav", img:"straight" },
+      { id:'wb_dr6', mn:"Хол байна уу?", en:"Is it far?", rom:"Khol baina uu?", img:"far2" },
+      { id:'wb_dr7', mn:"Ойрхон байна уу?", en:"Is it close?", rom:"Oirkhon baina uu?", img:"close2" },
+      { id:'wb_dr8', mn:"Алдсан", en:"I am lost", rom:"Aldsan", img:"lost" },
+      { id:'wb_dr9', mn:"Газрын зураг байна уу?", en:"Do you have a map?", rom:"Gazryn zurag baina uu?", img:"map" },
+      { id:'wb_dr10', mn:"Такси дуудна уу", en:"Please call a taxi", rom:"Taksi duudnaa uu", img:"calltaxi" },
+    ]
+  },
+
+  // ── Feelings & States ─────────────────────────────────────────────────────
+  states: {
+    label: "Feelings & States", unlockAfter: "emotions", emoji: "🧘",
+    words: [
+      { id:'wb_st1', mn:"Би өлссөн", en:"I am hungry", rom:"Bi olsson", img:"hungry" },
+      { id:'wb_st2', mn:"Би цангасан", en:"I am thirsty", rom:"Bi tsangasan", img:"thirsty" },
+      { id:'wb_st3', mn:"Би ядарсан", en:"I am tired", rom:"Bi yadarsan", img:"tired2" },
+      { id:'wb_st4', mn:"Би нойрссон", en:"I am sleepy", rom:"Bi noirsson", img:"sleepy" },
+      { id:'wb_st5', mn:"Би халуурч байна", en:"I have a fever", rom:"Bi khaluurch baina", img:"fever2" },
+      { id:'wb_st6', mn:"Би хүйтэрч байна", en:"I am cold", rom:"Bi khuitorch baina", img:"coldsick" },
+      { id:'wb_st7', mn:"Би жаргалтай", en:"I am happy", rom:"Bi jargaltai", img:"happy" },
+      { id:'wb_st8', mn:"Би гунигтай", en:"I am sad", rom:"Bi gunigtai", img:"sad2" },
+      { id:'wb_st9', mn:"Би айж байна", en:"I am scared", rom:"Bi aij baina", img:"scared" },
+      { id:'wb_st10', mn:"Би санаа зовж байна", en:"I am worried", rom:"Bi sanaa zovj baina", img:"worried" },
+      { id:'wb_st11', mn:"Би завгүй байна", en:"I am busy", rom:"Bi zavgui baina", img:"busy" },
+      { id:'wb_st12', mn:"Би чөлөөтэй байна", en:"I am free / available", rom:"Bi chuluutei baina", img:"free" },
+    ]
+  },
+
+  // ── Family Extended ───────────────────────────────────────────────────────
+  family2: {
+    label: "More Family", unlockAfter: "people", emoji: "👨‍👩‍👧‍👦",
+    words: [
+      { id:'wb_fa1', mn:"Гэрлэсэн", en:"Married", rom:"Gerlesen", img:"married" },
+      { id:'wb_fa2', mn:"Гэрлээгүй", en:"Not married / single", rom:"Gerleegui", img:"single" },
+      { id:'wb_fa3', mn:"Хүүхэдтэй", en:"Has children", rom:"Khuukhedtei", img:"haschildren" },
+      { id:'wb_fa4', mn:"Хүүхэдгүй", en:"No children", rom:"Khuukhedgui", img:"nochildren" },
+      { id:'wb_fa5', mn:"Ах дүү", en:"Siblings", rom:"Akh duu", img:"siblings" },
+      { id:'wb_fa6', mn:"Төрсөн өдөр", en:"Birthday", rom:"Turson odor", img:"birthday" },
+      { id:'wb_fa7', mn:"Хамаатан садан", en:"Relatives", rom:"Khamaatan sadan", img:"relatives" },
+      { id:'wb_fa8', mn:"Найз залуу", en:"Boyfriend", rom:"Naiz zaluu", img:"boyfriend" },
+      { id:'wb_fa9', mn:"Найз охин", en:"Girlfriend", rom:"Naiz okhin", img:"girlfriend" },
+      { id:'wb_fa10', mn:"Гэр бүл болох", en:"To get married / start a family", rom:"Ger bul bolokh", img:"getmarried" },
+    ]
+  },
+
+  // ── Work & Study Life ─────────────────────────────────────────────────────
+  work2: {
+    label: "Work & Study", unlockAfter: "school", emoji: "💼",
+    words: [
+      { id:'wb_wk1', mn:"Та юу хийдэг вэ?", en:"What do you do?", rom:"Ta yuu khiideg ve?", img:"whatdoyoudo" },
+      { id:'wb_wk2', mn:"Би оюутан", en:"I am a student", rom:"Bi oyuutan", img:"iam_student" },
+      { id:'wb_wk3', mn:"Би ажилтан", en:"I am a worker / employee", rom:"Bi ajiltan", img:"employee" },
+      { id:'wb_wk4', mn:"Би програмист", en:"I am a programmer", rom:"Bi programist", img:"programmer" },
+      { id:'wb_wk5', mn:"Би зураач", en:"I am an artist", rom:"Bi zuraach", img:"artist" },
+      { id:'wb_wk6', mn:"Их сургууль", en:"University", rom:"Ikh surguul", img:"university" },
+      { id:'wb_wk7', mn:"Бакалавр", en:"Bachelor's degree", rom:"Bakalavr", img:"degree" },
+      { id:'wb_wk8', mn:"Шалгалт", en:"Exam / test", rom:"Shalgalt", img:"exam" },
+      { id:'wb_wk9', mn:"Даалгавар", en:"Assignment / homework", rom:"Daalgavar", img:"homework" },
+      { id:'wb_wk10', mn:"Амралт", en:"Vacation / rest", rom:"Amralt", img:"vacation" },
+      { id:'wb_wk11', mn:"Ажлаа дуусгах", en:"To finish work", rom:"Ajilaa duusgakh", img:"finishwork" },
+      { id:'wb_wk12', mn:"Хурлд орох", en:"To attend a meeting", rom:"Khurald oroh", img:"meeting2" },
+    ]
+  },
+
+  // ── Hobbies & Free Time ───────────────────────────────────────────────────
+  hobbies: {
+    label: "Hobbies", unlockAfter: "sports", emoji: "🎮",
+    words: [
+      { id:'wb_ho1', mn:"Хобби", en:"Hobby", rom:"Hobbi", img:"hobby" },
+      { id:'wb_ho2', mn:"Ном уншдаг", en:"I like reading", rom:"Nom unshdaг", img:"reading" },
+      { id:'wb_ho3', mn:"Хөгжим сонсдог", en:"I listen to music", rom:"Khogjim sonsdoг", img:"music" },
+      { id:'wb_ho4', mn:"Зурдаг", en:"I draw / paint", rom:"Zurdaг", img:"drawing" },
+      { id:'wb_ho5', mn:"Тоглоом тоглодог", en:"I play games", rom:"Togloom toglodog", img:"gaming" },
+      { id:'wb_ho6', mn:"Аялдаг", en:"I travel", rom:"Ayaldag", img:"travel" },
+      { id:'wb_ho7', mn:"Хоол хийдэг", en:"I cook", rom:"Khool khiideg", img:"cooking" },
+      { id:'wb_ho8', mn:"Дуу дуулдаг", en:"I sing", rom:"Duu duuldag", img:"singing" },
+      { id:'wb_ho9', mn:"Бүжигладаг", en:"I dance", rom:"Bujiglаdag", img:"dancing" },
+      { id:'wb_ho10', mn:"Зураг авдаг", en:"I take photos", rom:"Zurag avdag", img:"photography" },
+      { id:'wb_ho11', mn:"Загас агнадаг", en:"I fish", rom:"Zagas agnаdag", img:"fishing" },
+      { id:'wb_ho12', mn:"Байгальд явдаг", en:"I go to nature", rom:"Baigald yavdag", img:"nature3" },
+    ]
+  },
+
+  // ── Weather Extended ──────────────────────────────────────────────────────
+  weather2: {
+    label: "Weather Phrases", unlockAfter: "weather", emoji: "🌦️",
+    words: [
+      { id:'wb_we1', mn:"Өнөөдөр ямар цаг байна?", en:"What is the weather today?", rom:"Onoodor yamar tsag baina?", img:"weatherq" },
+      { id:'wb_we2', mn:"Их халуун байна", en:"It is very hot", rom:"Ikh khaluun baina", img:"veryhot" },
+      { id:'wb_we3', mn:"Их хүйтэн байна", en:"It is very cold", rom:"Ikh khiiteen baina", img:"verycold" },
+      { id:'wb_we4', mn:"Бороо орж байна", en:"It is raining", rom:"Boroo orj baina", img:"raining" },
+      { id:'wb_we5', mn:"Цас орж байна", en:"It is snowing", rom:"Tsas orj baina", img:"snowing" },
+      { id:'wb_we6', mn:"Нартай байна", en:"It is sunny", rom:"Nartai baina", img:"sunny" },
+      { id:'wb_we7', mn:"Салхитай байна", en:"It is windy", rom:"Salkhitai baina", img:"windy" },
+      { id:'wb_we8', mn:"Үүлтэй байна", en:"It is cloudy", rom:"Uultei baina", img:"cloudy" },
+      { id:'wb_we9', mn:"Маргааш хэрхэн байх вэ?", en:"What will the weather be tomorrow?", rom:"Margaash kherkhen baiikh ve?", img:"tomorrow2" },
+      { id:'wb_we10', mn:"Температур", en:"Temperature", rom:"Temperatur", img:"temp" },
+    ]
+  },
+
+  // ── Useful Verbs ─────────────────────────────────────────────────────────
+  verbs3: {
+    label: "Useful Verbs", unlockAfter: "verbs2", emoji: "⚡",
+    words: [
+      { id:'wb_v31', mn:"Тусалда", en:"To help", rom:"Tusalakh", img:"help" },
+      { id:'wb_v32', mn:"Хүлээх", en:"To wait", rom:"Khuulekh", img:"wait" },
+      { id:'wb_v33', mn:"Орохыг зөвшөөрнө үү", en:"May I come in?", rom:"Orokhyg zovshooornoo uu", img:"comein" },
+      { id:'wb_v34', mn:"Нээх", en:"To open", rom:"Neekh", img:"open" },
+      { id:'wb_v35', mn:"Хаах", en:"To close", rom:"Khaakh", img:"close3" },
+      { id:'wb_v36', mn:"Дуудах", en:"To call / summon", rom:"Duudakh", img:"call2" },
+      { id:'wb_v37', mn:"Илгээх", en:"To send", rom:"Ilgeekh", img:"send" },
+      { id:'wb_v38', mn:"Хүлээн авах", en:"To receive", rom:"Khuulgen avakh", img:"receive" },
+      { id:'wb_v39', mn:"Ойлгох", en:"To understand", rom:"Oilgokh", img:"understand" },
+      { id:'wb_v40', mn:"Тайлбарлах", en:"To explain", rom:"Tailbarlakh", img:"explain" },
+      { id:'wb_v41', mn:"Асуух", en:"To ask", rom:"Asuukh", img:"ask" },
+      { id:'wb_v42', mn:"Хариулах", en:"To answer / reply", rom:"Khariulakh", img:"answer2" },
+      { id:'wb_v43', mn:"Зогсох", en:"To stop", rom:"Zogsokh", img:"stop" },
+      { id:'wb_v44', mn:"Эхлэх", en:"To start / begin", rom:"Ekhlekh", img:"start" },
+      { id:'wb_v45', mn:"Дуусах", en:"To finish / end", rom:"Duusakh", img:"finish" },
+    ]
+  },
+
+  // ── Numbers Extended ──────────────────────────────────────────────────────
+  numbers2: {
+    label: "More Numbers", unlockAfter: "numbers", emoji: "🔢",
+    words: [
+      { id:'wb_nu1', mn:"Арван нэг", en:"Eleven", rom:"Arvan neg", img:"eleven" },
+      { id:'wb_nu2', mn:"Арван хоёр", en:"Twelve", rom:"Arvan khoyor", img:"twelve" },
+      { id:'wb_nu3', mn:"Хорь", en:"Twenty", rom:"Khor", img:"twenty" },
+      { id:'wb_nu4', mn:"Гуч", en:"Thirty", rom:"Guch", img:"thirty" },
+      { id:'wb_nu5', mn:"Дөч", en:"Forty", rom:"Doch", img:"forty" },
+      { id:'wb_nu6', mn:"Тавь", en:"Fifty", rom:"Tav", img:"fifty" },
+      { id:'wb_nu7', mn:"Жар", en:"Sixty", rom:"Jar", img:"sixty" },
+      { id:'wb_nu8', mn:"Дал", en:"Seventy", rom:"Dal", img:"seventy" },
+      { id:'wb_nu9', mn:"Ная", en:"Eighty", rom:"Naya", img:"eighty" },
+      { id:'wb_nu10', mn:"Ер", en:"Ninety", rom:"Yer", img:"ninety" },
+      { id:'wb_nu11', mn:"Зуу", en:"One hundred", rom:"Zuu", img:"hundred" },
+      { id:'wb_nu12', mn:"Мянга", en:"One thousand", rom:"Myanga", img:"thousand" },
+      { id:'wb_nu13', mn:"Сая", en:"One million", rom:"Saya", img:"million" },
+      { id:'wb_nu14', mn:"Хэд вэ?", en:"How many?", rom:"Khed ve?", img:"howmany" },
+      { id:'wb_nu15', mn:"Хэдэн?", en:"How much / how many?", rom:"Kheden?", img:"howmuch2" },
+    ]
+  },
+
+  // ── Time Phrases ──────────────────────────────────────────────────────────
+  time2: {
+    label: "Time Phrases", unlockAfter: "time", emoji: "⏰",
+    words: [
+      { id:'wb_ti1', mn:"Хэдэн цагт?", en:"At what time?", rom:"Kheden tsagt?", img:"whattime" },
+      { id:'wb_ti2', mn:"Хэзээ?", en:"When?", rom:"Khezee?", img:"when2" },
+      { id:'wb_ti3', mn:"Аль болох хурдан", en:"As soon as possible", rom:"Al bolokh khurdan", img:"asap" },
+      { id:'wb_ti4', mn:"Удахгүй", en:"Soon", rom:"Udakhgui", img:"soon" },
+      { id:'wb_ti5', mn:"Аль хэдийнэ", en:"Already", rom:"Al khediine", img:"already" },
+      { id:'wb_ti6', mn:"Бас", en:"Still / yet", rom:"Bas", img:"still" },
+      { id:'wb_ti7', mn:"Үргэлж", en:"Always", rom:"Urgulj", img:"always" },
+      { id:'wb_ti8', mn:"Хэзээ ч", en:"Never", rom:"Khezee ch", img:"never" },
+      { id:'wb_ti9', mn:"Заримдаа", en:"Sometimes", rom:"Zarimdaa", img:"sometimes" },
+      { id:'wb_ti10', mn:"Ихэнхдээ", en:"Usually / mostly", rom:"Ikhenkhde", img:"usually" },
+      { id:'wb_ti11', mn:"Өглөө нь", en:"In the morning", rom:"Ogloo n", img:"inmorning" },
+      { id:'wb_ti12', mn:"Орой нь", en:"In the evening", rom:"Oroi n", img:"inevening" },
+    ]
+  },
+
+  // ── Around the House ──────────────────────────────────────────────────────
+  house2: {
+    label: "Around the House", unlockAfter: "home", emoji: "🏡",
+    words: [
+      { id:'wb_hs1', mn:"Утас", en:"Telephone", rom:"Utas", img:"telephone" },
+      { id:'wb_hs2', mn:"Зурагт", en:"TV / television", rom:"Zuragt", img:"television" },
+      { id:'wb_hs3', mn:"Хөргөгч", en:"Refrigerator", rom:"Khorgogch", img:"fridge" },
+      { id:'wb_hs4', mn:"Зуух", en:"Stove / oven", rom:"Zuukh", img:"stove" },
+      { id:'wb_hs5', mn:"Угаалтуур", en:"Washing machine", rom:"Ugaaltuур", img:"washer" },
+      { id:'wb_hs6', mn:"Шүүгээ", en:"Cabinet / wardrobe", rom:"Shuugee", img:"cabinet" },
+      { id:'wb_hs7', mn:"Дэвсгэр", en:"Carpet / rug", rom:"Devsgur", img:"carpet" },
+      { id:'wb_hs8', mn:"Гэрэл", en:"Light / lamp", rom:"Gerel", img:"lamp" },
+      { id:'wb_hs9', mn:"Халаагч", en:"Heater", rom:"Khalaagch", img:"heater" },
+      { id:'wb_hs10', mn:"Цонхны хуудас", en:"Window frame", rom:"Tsonkhny khuudas", img:"windowframe" },
+      { id:'wb_hs11', mn:"Шат", en:"Stairs / ladder", rom:"Shat", img:"stairs" },
+      { id:'wb_hs12', mn:"Хана", en:"Wall", rom:"Khana", img:"wall" },
+    ]
+  },
+
+  // ── Nature & Environment ──────────────────────────────────────────────────
+  nature3: {
+    label: "Nature Extended", unlockAfter: "nature2", emoji: "🌍",
+    words: [
+      { id:'wb_na1', mn:"Хавар", en:"Spring (season)", rom:"Khavar", img:"spring" },
+      { id:'wb_na2', mn:"Зун", en:"Summer", rom:"Zun", img:"summer" },
+      { id:'wb_na3', mn:"Намар", en:"Autumn / fall", rom:"Namar", img:"autumn" },
+      { id:'wb_na4', mn:"Өвөл", en:"Winter", rom:"Ovol", img:"winter" },
+      { id:'wb_na5', mn:"Ургамал", en:"Plant / vegetation", rom:"Urgamal", img:"plant" },
+      { id:'wb_na6', mn:"Мод", en:"Tree / wood", rom:"Mod", img:"tree" },
+      { id:'wb_na7', mn:"Нуга", en:"Meadow", rom:"Nuga", img:"meadow" },
+      { id:'wb_na8', mn:"Хавцал", en:"Canyon / gorge", rom:"Khavtsal", img:"canyon" },
+      { id:'wb_na9', mn:"Эрэг", en:"Shore / bank", rom:"Ereg", img:"shore" },
+      { id:'wb_na10', mn:"Хөндий", en:"Valley", rom:"Khondii", img:"valley" },
+      { id:'wb_na11', mn:"Хад чулуу", en:"Rocky cliff", rom:"Khad chuluu", img:"rocky" },
+      { id:'wb_na12', mn:"Ой мод", en:"Forest / woodland", rom:"Oi mod", img:"woodland" },
+      { id:'wb_na13', mn:"Голын ус", en:"River water", rom:"Golyn us", img:"riverwater" },
+      { id:'wb_na14', mn:"Тэнгис", en:"Sea / ocean", rom:"Tengis", img:"sea" },
+      { id:'wb_na15', mn:"Уур амьсгал", en:"Climate", rom:"Uur amsgal", img:"climate" },
+    ]
+  },
+
+  // ── Animals Extended ─────────────────────────────────────────────────────
+  animals3: {
+    label: "More Animals", unlockAfter: "animals2", emoji: "🦅",
+    words: [
+      { id:'wb_an31', mn:"Бүргэд", en:"Eagle", rom:"Burged", img:"eagle" },
+      { id:'wb_an32', mn:"Хэрэм", en:"Squirrel", rom:"Kherem", img:"squirrel" },
+      { id:'wb_an33', mn:"Минж", en:"Beaver", rom:"Minj", img:"beaver" },
+      { id:'wb_an34', mn:"Зараа", en:"Hedgehog", rom:"Zaraa", img:"hedgehog" },
+      { id:'wb_an35', mn:"Тарвага", en:"Marmot", rom:"Tarvaga", img:"marmot" },
+      { id:'wb_an36', mn:"Харцага", en:"Falcon", rom:"Khartsaga", img:"falcon" },
+      { id:'wb_an37', mn:"Тогруу", en:"Crane (bird)", rom:"Togruu", img:"crane" },
+      { id:'wb_an38', mn:"Хонь", en:"Sheep", rom:"Khon", img:"sheep2" },
+      { id:'wb_an39', mn:"Ямаа", en:"Goat", rom:"Yamaa", img:"goat2" },
+      { id:'wb_an40', mn:"Хүлэг морь", en:"Steed / noble horse", rom:"Khuleg mori", img:"steed" },
+      { id:'wb_an41', mn:"Шувуу", en:"Bird (general)", rom:"Shuvu", img:"bird2" },
+      { id:'wb_an42', mn:"Загас", en:"Fish (general)", rom:"Zagas", img:"fish2" },
+      { id:'wb_an43', mn:"Мэлхий", en:"Frog", rom:"Melkhii", img:"frog2" },
+      { id:'wb_an44', mn:"Зөгий", en:"Bee", rom:"Zogii", img:"bee" },
+      { id:'wb_an45', mn:"Эрвээхэй", en:"Butterfly", rom:"Erveekhai", img:"butterfly" },
+    ]
+  },
+
+  // ── Mongolian Life & Culture 2 ────────────────────────────────────────────
+  culture2: {
+    label: "Mongolian Life", unlockAfter: "culture", emoji: "🏕️",
+    words: [
+      { id:'wb_cu21', mn:"Нүүдэлчин", en:"Nomad", rom:"Nuudelchin", img:"nomad" },
+      { id:'wb_cu22', mn:"Малчин", en:"Herder / livestock farmer", rom:"Malchin", img:"herder" },
+      { id:'wb_cu23', mn:"Хот", en:"City / town", rom:"Khot", img:"city" },
+      { id:'wb_cu24', mn:"Хөдөө", en:"Countryside / rural", rom:"Khodoo", img:"countryside" },
+      { id:'wb_cu25', mn:"Айл", en:"Household / family camp", rom:"Ail", img:"household" },
+      { id:'wb_cu26', mn:"Овог", en:"Clan / surname", rom:"Ovog", img:"clan" },
+      { id:'wb_cu27', mn:"Бэлэг", en:"Gift / present", rom:"Beleg", img:"gift" },
+      { id:'wb_cu28', mn:"Найр", en:"Feast / party", rom:"Nair", img:"feast" },
+      { id:'wb_cu29', mn:"Уламжлал", en:"Tradition", rom:"Ulamjlal", img:"tradition" },
+      { id:'wb_cu30', mn:"Ард түмэн", en:"People / folk / nation", rom:"Ard tumen", img:"people2" },
+      { id:'wb_cu31', mn:"Хэл", en:"Language", rom:"Khel", img:"language" },
+      { id:'wb_cu32', mn:"Аялал жуулчлал", en:"Tourism / travel", rom:"Ayalal juulchlal", img:"tourism" },
+      { id:'wb_cu33', mn:"Монгол бичиг", en:"Traditional Mongolian script", rom:"Mongol bichig", img:"script" },
+      { id:'wb_cu34', mn:"Тамга", en:"Seal / stamp / brand", rom:"Tamga", img:"seal" },
+      { id:'wb_cu35', mn:"Буддын шашин", en:"Buddhism", rom:"Buddyn shashin", img:"buddhism" },
+    ]
+  },
+
+  // ── Health Extended ───────────────────────────────────────────────────────
+  health2: {
+    label: "Health Phrases", unlockAfter: "health", emoji: "💊",
+    words: [
+      { id:'wb_he21', mn:"Эмийн сан", en:"Pharmacy", rom:"Emiin san", img:"pharmacy" },
+      { id:'wb_he22', mn:"Эмч рүү явах хэрэгтэй", en:"I need to go to the doctor", rom:"Emch ruu yavakh kheregdei", img:"seedoctor" },
+      { id:'wb_he23', mn:"Халдварт өвчин", en:"Infectious disease", rom:"Khaldvart ovchin", img:"infection" },
+      { id:'wb_he24', mn:"Хагалгаанд орох", en:"To have surgery", rom:"Khagalgaand orokh", img:"surgery2" },
+      { id:'wb_he25', mn:"Цус", en:"Blood", rom:"Tsus", img:"blood" },
+      { id:'wb_he26', mn:"Яс", en:"Bone", rom:"Yas", img:"bone" },
+      { id:'wb_he27', mn:"Гэмтэл", en:"Injury / wound", rom:"Gemtel", img:"injury" },
+      { id:'wb_he28', mn:"Татгалзах", en:"To refuse / decline (medicine)", rom:"Tatgalzakh", img:"refuse" },
+      { id:'wb_he29', mn:"Амьсгал", en:"Breath / breathing", rom:"Amsgal", img:"breath" },
+      { id:'wb_he30', mn:"Даралт", en:"Blood pressure", rom:"Daralt", img:"pressure" },
+    ]
+  },
+
+  // ── Education ─────────────────────────────────────────────────────────────
+  education: {
+    label: "Education", unlockAfter: "school", emoji: "🎓",
+    words: [
+      { id:'wb_ed1', mn:"Ангийн дарга", en:"Class president / leader", rom:"Angiin darga", img:"classpres" },
+      { id:'wb_ed2', mn:"Сурлага", en:"Studies / academic performance", rom:"Surlaga", img:"studies" },
+      { id:'wb_ed3', mn:"Дүн", en:"Grade / score", rom:"Dun", img:"grade" },
+      { id:'wb_ed4', mn:"Шалгалт өгөх", en:"To take an exam", rom:"Shalgalt ogokh", img:"takeexam" },
+      { id:'wb_ed5', mn:"Тэнцэх", en:"To pass (exam)", rom:"Tentsekh", img:"pass" },
+      { id:'wb_ed6', mn:"Тэнцэхгүй", en:"To fail (exam)", rom:"Tentsekkhgui", img:"fail" },
+      { id:'wb_ed7', mn:"Математик", en:"Mathematics", rom:"Matematik", img:"math" },
+      { id:'wb_ed8', mn:"Шинжлэх ухаан", en:"Science", rom:"Shinjlekh ukhaan", img:"science" },
+      { id:'wb_ed9', mn:"Түүх", en:"History", rom:"Tuukh", img:"history2" },
+      { id:'wb_ed10', mn:"Дүрслэх урлаг", en:"Art / visual arts", rom:"Durslekh urlag", img:"art" },
+      { id:'wb_ed11', mn:"Хөгжим", en:"Music (subject)", rom:"Khogjim", img:"musicclass" },
+      { id:'wb_ed12', mn:"Биеийн тамир", en:"Physical education / PE", rom:"Bieiin tamir", img:"pe" },
+    ]
+  }
+  ,
+
+  // ── Personality & Character ───────────────────────────────────────────────
+  personality: {
+    label: "Personality", unlockAfter: "adjectives", emoji: "🧠",
+    words: [
+      { id:'wb_pe1', mn:"Дайрчлагч", en:"Brave / bold", rom:"Dairchlagch", img:"brave" },
+      { id:'wb_pe2', mn:"Ухаалаг", en:"Smart / intelligent", rom:"Ukhaalag", img:"smart" },
+      { id:'wb_pe3', mn:"Тэнэг", en:"Stupid / foolish", rom:"Teneg", img:"foolish" },
+      { id:'wb_pe4', mn:"Нинжин", en:"Kind / gentle", rom:"Ninjin", img:"kind" },
+      { id:'wb_pe5', mn:"Харгис", en:"Cruel / harsh", rom:"Khargis", img:"cruel" },
+      { id:'wb_pe6', mn:"Шударга", en:"Honest / fair", rom:"Shudarga", img:"honest" },
+      { id:'wb_pe7', mn:"Худлаач", en:"Liar", rom:"Khudlaach", img:"liar" },
+      { id:'wb_pe8', mn:"Зоримог", en:"Courageous", rom:"Zorimog", img:"courageous" },
+      { id:'wb_pe9', mn:"Даруу", en:"Humble / modest", rom:"Daruu", img:"humble" },
+      { id:'wb_pe10', mn:"Тэвчээртэй", en:"Patient", rom:"Tevcheerтei", img:"patient2" },
+      { id:'wb_pe11', mn:"Тэвчээргүй", en:"Impatient", rom:"Tevcheerгui", img:"impatient" },
+      { id:'wb_pe12', mn:"Өхөөрдөм", en:"Cute / adorable", rom:"Okhoordom", img:"cute" },
+      { id:'wb_pe13', mn:"Дорд", en:"Lazy / sluggish", rom:"Dord", img:"lazy2" },
+      { id:'wb_pe14', mn:"Хичээнгүй", en:"Hardworking / diligent", rom:"Khicheengui", img:"hardworking" },
+      { id:'wb_pe15', mn:"Нийгэмч", en:"Sociable / friendly", rom:"Niigench", img:"sociable" },
+    ]
+  },
+
+  // ── Food & Cooking Extended ───────────────────────────────────────────────
+  food3: {
+    label: "Cooking & Food", unlockAfter: "food2", emoji: "🧑‍🍳",
+    words: [
+      { id:'wb_fo1', mn:"Чанах", en:"To boil / cook", rom:"Chanakh", img:"boil" },
+      { id:'wb_fo2', mn:"Шарах", en:"To fry / roast", rom:"Sharakh", img:"fry" },
+      { id:'wb_fo3', mn:"Жигнэх", en:"To steam", rom:"Jignekh", img:"steam" },
+      { id:'wb_fo4', mn:"Зүсэх", en:"To cut / slice", rom:"Zusekh", img:"cut" },
+      { id:'wb_fo5', mn:"Холих", en:"To mix", rom:"Kholikj", img:"mix" },
+      { id:'wb_fo6', mn:"Амт", en:"Taste / flavor", rom:"Amt", img:"taste" },
+      { id:'wb_fo7', mn:"Амттай", en:"Delicious / tasty", rom:"Amttai", img:"tasty" },
+      { id:'wb_fo8', mn:"Гашуун", en:"Bitter", rom:"Gashuun", img:"bitter" },
+      { id:'wb_fo9', mn:"Хурц", en:"Spicy / sharp", rom:"Khurts", img:"spicy" },
+      { id:'wb_fo10', mn:"Чихэрлэг", en:"Sweet", rom:"Chikherlug", img:"sweet" },
+      { id:'wb_fo11', mn:"Исгэлэн", en:"Sour", rom:"Isgelen", img:"sour" },
+      { id:'wb_fo12', mn:"Гурил", en:"Flour", rom:"Guril", img:"flour" },
+      { id:'wb_fo13', mn:"Тос", en:"Butter / fat / oil", rom:"Tos", img:"butter" },
+      { id:'wb_fo14', mn:"Өндөг", en:"Egg", rom:"Ondug", img:"egg2" },
+      { id:'wb_fo15', mn:"Лууван", en:"Carrot", rom:"Luuvan", img:"carrot2" },
+    ]
+  },
+
+  // ── City Life ─────────────────────────────────────────────────────────────
+  citylife: {
+    label: "City Life", unlockAfter: "places", emoji: "🏙️",
+    words: [
+      { id:'wb_ci1', mn:"Гэрэлт дохио", en:"Traffic light", rom:"Gerelt dokhio", img:"trafficlight" },
+      { id:'wb_ci2', mn:"Зогсоол", en:"Parking lot", rom:"Zogsool", img:"parking" },
+      { id:'wb_ci3', mn:"Дэлгүүрийн төв", en:"Shopping mall", rom:"Delguuriin tov", img:"mall" },
+      { id:'wb_ci4', mn:"Тоглоомын талбай", en:"Playground", rom:"Togloomyn talbai", img:"playground" },
+      { id:'wb_ci5', mn:"Гудамжны гэрэл", en:"Street light", rom:"Gudamjny gerel", img:"streetlight" },
+      { id:'wb_ci6', mn:"Захиргаа", en:"Government / administration", rom:"Zakhirgaa", img:"government" },
+      { id:'wb_ci7', mn:"Шуудан", en:"Post office / mail", rom:"Shuudan", img:"postoffice" },
+      { id:'wb_ci8', mn:"Цагдаа", en:"Police", rom:"Tsagdaa", img:"police" },
+      { id:'wb_ci9', mn:"Галын станц", en:"Fire station", rom:"Galyn stants", img:"firestation" },
+      { id:'wb_ci10', mn:"Зочид буудал", en:"Hotel", rom:"Zochiid buudal", img:"hotel2" },
+      { id:'wb_ci11', mn:"Музей", en:"Museum", rom:"Muzei", img:"museum" },
+      { id:'wb_ci12', mn:"Театр", en:"Theatre", rom:"Teatr", img:"theatre" },
+    ]
+  },
+
+  // ── Sports Extended ───────────────────────────────────────────────────────
+  sports2: {
+    label: "More Sports", unlockAfter: "sports", emoji: "🏅",
+    words: [
+      { id:'wb_sp21', mn:"Тамирчин", en:"Athlete / sportsperson", rom:"Tamirchin", img:"athlete" },
+      { id:'wb_sp22', mn:"Дасгалжуулагч", en:"Coach / trainer", rom:"Dasgaljuulagch", img:"coach" },
+      { id:'wb_sp23', mn:"Баг", en:"Team", rom:"Bag", img:"team2" },
+      { id:'wb_sp24', mn:"Тоглолт", en:"Match / game", rom:"Togloolt", img:"match" },
+      { id:'wb_sp25', mn:"Гол оруулах", en:"To score a goal", rom:"Gol oruulakh", img:"goal2" },
+      { id:'wb_sp26', mn:"Ялах", en:"To win", rom:"Yalakh", img:"win" },
+      { id:'wb_sp27', mn:"Ялагдах", en:"To lose", rom:"Yalagdakh", img:"lose" },
+      { id:'wb_sp28', mn:"Тэнцэх", en:"To draw / tie", rom:"Tentsekh", img:"draw" },
+      { id:'wb_sp29', mn:"Дасгал хийх", en:"To exercise / train", rom:"Dasgal khiikh", img:"train2" },
+      { id:'wb_sp30', mn:"Уралдаан", en:"Race / competition", rom:"Uraldaan", img:"race" },
+    ]
+  },
+
+  // ── Media & Technology Extended ───────────────────────────────────────────
+  media: {
+    label: "Media & Internet", unlockAfter: "tech", emoji: "📱",
+    words: [
+      { id:'wb_me1', mn:"Сошиал медиа", en:"Social media", rom:"Sosial media", img:"socialmedia" },
+      { id:'wb_me2', mn:"Хаяг", en:"Address / account name", rom:"Khayag", img:"address" },
+      { id:'wb_me3', mn:"Татаж авах", en:"To download", rom:"Tataj avakh", img:"download" },
+      { id:'wb_me4', mn:"Байршуулах", en:"To upload", rom:"Bairsuulakh", img:"upload" },
+      { id:'wb_me5', mn:"Хайх", en:"To search", rom:"Khaikj", img:"search" },
+      { id:'wb_me6', mn:"Дэлгэц", en:"Screen", rom:"Delgets", img:"screen" },
+      { id:'wb_me7', mn:"Тоглоом", en:"Game", rom:"Togloom", img:"game" },
+      { id:'wb_me8', mn:"Кино", en:"Movie / film", rom:"Kino", img:"movie" },
+      { id:'wb_me9', mn:"Дуу", en:"Song / sound", rom:"Duu", img:"song" },
+      { id:'wb_me10', mn:"Цувралт", en:"TV series / show", rom:"Tsuvralт", img:"series" },
+      { id:'wb_me11', mn:"Мэдээ", en:"News", rom:"Medee", img:"news2" },
+      { id:'wb_me12', mn:"Нийтлэл", en:"Post / article", rom:"Niitlel", img:"post" },
+    ]
+  },
+
+  // ── Travel & Tourism ─────────────────────────────────────────────────────
+  travel: {
+    label: "Travel", unlockAfter: "transport", emoji: "✈️",
+    words: [
+      { id:'wb_tr21', mn:"Паспорт", en:"Passport", rom:"Pasport", img:"passport" },
+      { id:'wb_tr22', mn:"Виз", en:"Visa", rom:"Viz", img:"visa" },
+      { id:'wb_tr23', mn:"Тийз", en:"Ticket", rom:"Tiiz", img:"ticket" },
+      { id:'wb_tr24', mn:"Гааль", en:"Customs", rom:"Gaali", img:"customs" },
+      { id:'wb_tr25', mn:"Нисэх онгоцны буудал", en:"Airport", rom:"Nisekh ongosny buudal", img:"airport2" },
+      { id:'wb_tr26', mn:"Буух", en:"To land / get off", rom:"Buukh", img:"land" },
+      { id:'wb_tr27', mn:"Хөөрөх", en:"To take off / depart", rom:"Khoorokh", img:"takeoff" },
+      { id:'wb_tr28', mn:"Аялал", en:"Trip / journey", rom:"Ayalal", img:"trip" },
+      { id:'wb_tr29', mn:"Жуулчин", en:"Tourist", rom:"Juulchin", img:"tourist" },
+      { id:'wb_tr30', mn:"Баг тоног", en:"Luggage / baggage", rom:"Bag tonog", img:"luggage" },
+      { id:'wb_tr31', mn:"Зочид буудал", en:"Hotel / guesthouse", rom:"Zochid buudal", img:"guesthouse" },
+      { id:'wb_tr32', mn:"Буудлын өрөө", en:"Hotel room", rom:"Buudlyn oroo", img:"hotelroom" },
+    ]
+  },
+
+  // ── Money & Finance ───────────────────────────────────────────────────────
+  finance: {
+    label: "Money & Finance", unlockAfter: "money", emoji: "💸",
+    words: [
+      { id:'wb_fi1', mn:"Данс", en:"Bank account", rom:"Dans", img:"account" },
+      { id:'wb_fi2', mn:"Гүйлгээ", en:"Transaction", rom:"Guilgee", img:"transaction" },
+      { id:'wb_fi3', mn:"Хүү", en:"Interest rate", rom:"Khuu", img:"interest" },
+      { id:'wb_fi4', mn:"Зээл", en:"Loan", rom:"Zeel", img:"loan" },
+      { id:'wb_fi5', mn:"Татвар", en:"Tax", rom:"Tatvar", img:"tax" },
+      { id:'wb_fi6', mn:"Үнийн дүн", en:"Total price / amount", rom:"Uniin dun", img:"total" },
+      { id:'wb_fi7', mn:"Хэмнэх", en:"To save (money)", rom:"Khemnekh", img:"save2" },
+      { id:'wb_fi8', mn:"Зарцуулах", en:"To spend", rom:"Zartsуulakh", img:"spend" },
+      { id:'wb_fi9', mn:"Ханш", en:"Exchange rate", rom:"Khansh", img:"exchange" },
+      { id:'wb_fi10', mn:"Доллар", en:"Dollar", rom:"Dollar", img:"dollar" },
+    ]
+  },
+
+  // ── Communication ─────────────────────────────────────────────────────────
+  communication: {
+    label: "Communication", unlockAfter: "conversation", emoji: "🗣️",
+    words: [
+      { id:'wb_cm1', mn:"Утсаар ярих", en:"To talk on the phone", rom:"Utsaar yarikh", img:"phonecall" },
+      { id:'wb_cm2', mn:"Имэйл илгээх", en:"To send an email", rom:"Email ilgeekh", img:"sendemail" },
+      { id:'wb_cm3', mn:"Мессеж илгээх", en:"To send a message", rom:"Messej ilgeekh", img:"sendmsg" },
+      { id:'wb_cm4', mn:"Хариу өгөх", en:"To reply / respond", rom:"Khariuu ogokh", img:"reply2" },
+      { id:'wb_cm5', mn:"Дуудлага хийх", en:"To make a call", rom:"Duudlaga khiikh", img:"makecall" },
+      { id:'wb_cm6', mn:"Уулзалт товлох", en:"To schedule a meeting", rom:"Uulzalt tovlokh", img:"schedule" },
+      { id:'wb_cm7', mn:"Тайлбарлах", en:"To explain", rom:"Tailbarlakh", img:"explain2" },
+      { id:'wb_cm8', mn:"Батлах", en:"To confirm", rom:"Batlakh", img:"confirm" },
+      { id:'wb_cm9', mn:"Цуцлах", en:"To cancel", rom:"Tsуtsalakh", img:"cancel" },
+      { id:'wb_cm10', mn:"Санал болгох", en:"To suggest / recommend", rom:"Sanal bolgokh", img:"suggest" },
+      { id:'wb_cm11', mn:"Зөвшөөрөх", en:"To agree / approve", rom:"Zovshourokh", img:"agree" },
+      { id:'wb_cm12', mn:"Татгалзах", en:"To refuse / disagree", rom:"Tatgalzakh", img:"refuse2" },
+    ]
+  },
+
+  // ── Useful Adjectives 2 ───────────────────────────────────────────────────
+  adjectives2: {
+    label: "More Adjectives", unlockAfter: "adjectives", emoji: "✨",
+    words: [
+      { id:'wb_ad1', mn:"Чухал", en:"Important", rom:"Chukhаl", img:"important" },
+      { id:'wb_ad2', mn:"Хэрэггүй", en:"Unnecessary / useless", rom:"Khereggui", img:"useless" },
+      { id:'wb_ad3', mn:"Хялбар", en:"Easy / simple", rom:"Khyalbar", img:"easy" },
+      { id:'wb_ad4', mn:"Хэцүү", en:"Difficult / hard", rom:"Khetsuu", img:"hard" },
+      { id:'wb_ad5', mn:"Бохир", en:"Dirty", rom:"Bokhir", img:"dirty" },
+      { id:'wb_ad6', mn:"Цэвэр", en:"Clean", rom:"Tsever", img:"clean" },
+      { id:'wb_ad7', mn:"Аюултай", en:"Dangerous", rom:"Ayuultai", img:"dangerous" },
+      { id:'wb_ad8', mn:"Аюулгүй", en:"Safe", rom:"Ayuulgui", img:"safe" },
+      { id:'wb_ad9', mn:"Тохиромжтой", en:"Convenient / suitable", rom:"Tokhiromjtoi", img:"convenient" },
+      { id:'wb_ad10', mn:"Тохиромжгүй", en:"Inconvenient", rom:"Tokhiromjgui", img:"inconvenient" },
+      { id:'wb_ad11', mn:"Сонирхолтой", en:"Interesting", rom:"Sonikholтoi", img:"interesting" },
+      { id:'wb_ad12', mn:"Уйтгартай", en:"Boring", rom:"Uitgartai", img:"boring" },
+      { id:'wb_ad13', mn:"Гэнэтийн", en:"Surprising / unexpected", rom:"Genetiin", img:"unexpected" },
+      { id:'wb_ad14', mn:"Тодорхой", en:"Clear / definite", rom:"Todorhoi", img:"clear" },
+      { id:'wb_ad15', mn:"Тодорхойгүй", en:"Unclear / vague", rom:"Todorhоigui", img:"unclear" },
+    ]
+  },
+
+  // ── Asking Questions ─────────────────────────────────────────────────────
+  questions: {
+    label: "Asking Questions", unlockAfter: "conversation", emoji: "❓",
+    words: [
+      { id:'wb_qu1', mn:"Яагаад тийм вэ?", en:"Why is that?", rom:"Yaagaad tiim ve?", img:"whyso" },
+      { id:'wb_qu2', mn:"Үнэхээр үү?", en:"Really? Is that true?", rom:"Unekheer uu?", img:"really" },
+      { id:'wb_qu3', mn:"Яаж хэлэх вэ?", en:"How do you say ...?", rom:"Yaaj khelekh ve?", img:"howsay" },
+      { id:'wb_qu4', mn:"Монголоор хэрхэн хэлэх вэ?", en:"How do you say it in Mongolian?", rom:"Mongoloor kherkhen khelekh ve?", img:"inmongolian" },
+      { id:'wb_qu5', mn:"Ойлголоо уу?", en:"Did you understand?", rom:"Oilogloo uu?", img:"understand2" },
+      { id:'wb_qu6', mn:"Дахин хэлнэ үү", en:"Please say it again", rom:"Dakhin khelnee uu", img:"again" },
+      { id:'wb_qu7', mn:"Удаан хэлнэ үү", en:"Please speak slowly", rom:"Udaan khelnee uu", img:"slowly" },
+      { id:'wb_qu8', mn:"Бичнэ үү", en:"Please write it", rom:"Bichnee uu", img:"writeplease" },
+      { id:'wb_qu9', mn:"Та Монгол хэл мэдэх үү?", en:"Do you know Mongolian?", rom:"Ta Mongol khel medekh uu?", img:"knowmongolian" },
+      { id:'wb_qu10', mn:"Би Монгол хэл сурч байна", en:"I am learning Mongolian", rom:"Bi Mongol khel surch baina", img:"learningmn" },
+      { id:'wb_qu11', mn:"Та Англи хэл мэдэх үү?", en:"Do you know English?", rom:"Ta Angli khel medekh uu?", img:"knowenglish" },
+      { id:'wb_qu12', mn:"Орчуулагч хэрэгтэй", en:"I need a translator", rom:"Orchuulagch kheregdei", img:"translator" },
+    ]
+  },
+
+  // ── Opinions & Agreement ─────────────────────────────────────────────────
+  opinions: {
+    label: "Opinions", unlockAfter: "conversation", emoji: "💭",
+    words: [
+      { id:'wb_op1', mn:"Миний бодлоор", en:"In my opinion", rom:"Minii bodloor", img:"opinion" },
+      { id:'wb_op2', mn:"Би санал нийлж байна", en:"I agree", rom:"Bi sanal niilj baina", img:"iagree" },
+      { id:'wb_op3', mn:"Би санал нийлэхгүй байна", en:"I disagree", rom:"Bi sanal niilelkhgui baina", img:"idisagree" },
+      { id:'wb_op4', mn:"Чи зөв", en:"You are right", rom:"Chi zuv", img:"youright" },
+      { id:'wb_op5', mn:"Чи буруу", en:"You are wrong", rom:"Chi buruu", img:"youwrong" },
+      { id:'wb_op6', mn:"Магадгүй", en:"Maybe / perhaps", rom:"Magadgui", img:"maybe" },
+      { id:'wb_op7', mn:"Мэдэхгүй", en:"I don't know", rom:"Medekhgui", img:"dontknow" },
+      { id:'wb_op8', mn:"Ойлгохгүй байна", en:"I don't understand", rom:"Oilgohkgui baina", img:"dontunderstand" },
+      { id:'wb_op9', mn:"Надад хамаагүй", en:"I don't mind / it doesn't matter", rom:"Nadad khamaagui", img:"dontmind" },
+      { id:'wb_op10', mn:"Тийм байж магадгүй", en:"That might be true", rom:"Tiim baij magadgui", img:"mightbe" },
+      { id:'wb_op11', mn:"Гайхалтай!", en:"Amazing! / Wonderful!", rom:"Gaikhaltai!", img:"amazing" },
+      { id:'wb_op12', mn:"Харамсалтай", en:"Unfortunately / sadly", rom:"Kharamsaltai", img:"unfortunately" },
+    ]
+  },
+
+  // ── Mongolian Grammar Words ───────────────────────────────────────────────
+  grammar_words: {
+    label: "Grammar Words", unlockAfter: "connectors", emoji: "📐",
+    words: [
+      { id:'wb_gw1', mn:"Байна", en:"Is / am / are (present)", rom:"Baina", img:"is" },
+      { id:'wb_gw2', mn:"Байдаг", en:"Usually is (habitual)", rom:"Baidag", img:"usually2" },
+      { id:'wb_gw3', mn:"Байсан", en:"Was (past)", rom:"Baisan", img:"was" },
+      { id:'wb_gw4', mn:"Байх", en:"Will be (future)", rom:"Baikh", img:"willbe" },
+      { id:'wb_gw5', mn:"Биш", en:"Is not / no (negation)", rom:"Bish", img:"isnot" },
+      { id:'wb_gw6', mn:"Ч", en:"Even / also (particle)", rom:"Ch", img:"even" },
+      { id:'wb_gw7', mn:"Нь", en:"Possessive / topic marker", rom:"N", img:"possessive" },
+      { id:'wb_gw8', mn:"Руу / рүү", en:"To / toward (direction)", rom:"Ruu / ruu", img:"toward" },
+      { id:'wb_gw9', mn:"Дээр", en:"On / at (locative)", rom:"Deer", img:"on" },
+      { id:'wb_gw10', mn:"Доор", en:"Under / below", rom:"Door", img:"under" },
+      { id:'wb_gw11', mn:"Өмнө", en:"Before / in front of", rom:"Omno", img:"before" },
+      { id:'wb_gw12', mn:"Хойно", en:"After / behind", rom:"Khoino", img:"after" },
+      { id:'wb_gw13', mn:"Дотор", en:"Inside / within", rom:"Dotor", img:"inside2" },
+      { id:'wb_gw14', mn:"Гадна", en:"Outside / exterior", rom:"Gadna", img:"outside2" },
+      { id:'wb_gw15', mn:"Хамт", en:"Together / with", rom:"Khamт", img:"together" },
+    ]
+  },
+
+  // ── Emergency & Safety ────────────────────────────────────────────────────
+  emergency: {
+    label: "Emergency", unlockAfter: "health", emoji: "🚨",
+    words: [
+      { id:'wb_em1', mn:"Тусал!", en:"Help!", rom:"Tusal!", img:"helpme" },
+      { id:'wb_em2', mn:"Гал гарлаа!", en:"Fire!", rom:"Gal garlaa!", img:"fire2" },
+      { id:'wb_em3', mn:"Яаралтай тусламж", en:"Emergency / ambulance", rom:"Yaaraltai tusalamj", img:"ambulance" },
+      { id:'wb_em4', mn:"Цагдаа дуудаарай", en:"Call the police!", rom:"Tsagdaa duudaarai", img:"callpolice" },
+      { id:'wb_em5', mn:"Эмнэлэг хаана байдаг вэ?", en:"Where is the hospital?", rom:"Emnelug khaana baidag ve?", img:"wherehospital" },
+      { id:'wb_em6', mn:"Осол гарлаа", en:"There was an accident", rom:"Osol garlaa", img:"accident" },
+      { id:'wb_em7', mn:"Гэмтсэн", en:"Injured / hurt", rom:"Gemtsen", img:"hurt" },
+      { id:'wb_em8', mn:"Аврах", en:"To rescue / save", rom:"Avrakh", img:"rescue" },
+      { id:'wb_em9', mn:"Аюул", en:"Danger", rom:"Ayuul", img:"danger" },
+      { id:'wb_em10', mn:"Тайван бай", en:"Stay calm", rom:"Taivan bai", img:"calm" },
+    ]
+  },
+
+  // ── Days & Months ─────────────────────────────────────────────────────────
+  calendar: {
+    label: "Days & Months", unlockAfter: "time", emoji: "📅",
+    words: [
+      { id:'wb_ca1', mn:"Мягмар", en:"Tuesday", rom:"Myagmar", img:"tuesday" },
+      { id:'wb_ca2', mn:"Лхагва", en:"Wednesday", rom:"Lkhagva", img:"wednesday" },
+      { id:'wb_ca3', mn:"Пүрэв", en:"Thursday", rom:"Purev", img:"thursday" },
+      { id:'wb_ca4', mn:"Баасан", en:"Friday", rom:"Baasan", img:"friday" },
+      { id:'wb_ca5', mn:"Нэгдүгээр сар", en:"January", rom:"Nugdugeer sar", img:"january" },
+      { id:'wb_ca6', mn:"Хоёрдугаар сар", en:"February", rom:"Khoyordugaar sar", img:"february" },
+      { id:'wb_ca7', mn:"Гуравдугаар сар", en:"March", rom:"Guravdugaar sar", img:"march" },
+      { id:'wb_ca8', mn:"Дөрөвдүгээр сар", en:"April", rom:"Dorovdugeer sar", img:"april" },
+      { id:'wb_ca9', mn:"Тавдугаар сар", en:"May", rom:"Tavdugaar sar", img:"may" },
+      { id:'wb_ca10', mn:"Зургадугаар сар", en:"June", rom:"Zurgadugaar sar", img:"june" },
+      { id:'wb_ca11', mn:"Наймдугаар сар", en:"August", rom:"Naimdugaar sar", img:"august" },
+      { id:'wb_ca12', mn:"Аравдугаар сар", en:"October", rom:"Aravdugaar sar", img:"october" },
+      { id:'wb_ca13', mn:"Арваннэгдүгээр сар", en:"November", rom:"Aravnugdugeer sar", img:"november" },
+      { id:'wb_ca14', mn:"Арвандхоёрдугаар сар", en:"December", rom:"Aravndkhoyordugaar sar", img:"december" },
+      { id:'wb_ca15', mn:"Ой тэмдэглэх", en:"Anniversary / commemoration", rom:"Oi temdeglegkh", img:"anniversary" },
+    ]
+  },
+
+  // ── Mongolian Food Extended ───────────────────────────────────────────────
+  food4: {
+    label: "Mongolian Food", unlockAfter: "food2", emoji: "🥩",
+    words: [
+      { id:'wb_mf1', mn:"Шөл", en:"Soup / broth", rom:"Shol", img:"soup" },
+      { id:'wb_mf2', mn:"Тавган хоол", en:"Dish / plated food", rom:"Tavgan khool", img:"dish" },
+      { id:'wb_mf3', mn:"Гурилтай шөл", en:"Noodle soup", rom:"Guriltai shol", img:"noodlesoup" },
+      { id:'wb_mf4', mn:"Цагаан идээ", en:"Dairy products (white food)", rom:"Tsagaan idee", img:"dairy" },
+      { id:'wb_mf5', mn:"Улаан идээ", en:"Meat dishes (red food)", rom:"Ulaan idee", img:"meat2" },
+      { id:'wb_mf6', mn:"Боодог", en:"Boodog (whole animal BBQ)", rom:"Boodog", img:"boodog" },
+      { id:'wb_mf7', mn:"Хорхог", en:"Khorkhog (hot stone BBQ)", rom:"Khorkhog", img:"khorkhog" },
+      { id:'wb_mf8', mn:"Уурал", en:"Uurga (whipped mare's cream)", rom:"Uural", img:"uural" },
+      { id:'wb_mf9', mn:"Арц", en:"Arkhi (Mongolian vodka)", rom:"Arts", img:"arkhi" },
+      { id:'wb_mf10', mn:"Хатуу чихэр", en:"Hard candy", rom:"Khatuu chikher", img:"hardcandy" },
+    ]
+  },
+
+  // ── Prepositions & Particles ──────────────────────────────────────────────
+  prepositions: {
+    label: "Prepositions", unlockAfter: "grammar_words", emoji: "🔗",
+    words: [
+      { id:'wb_pr1', mn:"Тухай", en:"About / regarding", rom:"Tukhаi", img:"about" },
+      { id:'wb_pr2', mn:"Учир", en:"Because of / due to", rom:"Uchir", img:"because2" },
+      { id:'wb_pr3', mn:"Хамт", en:"With / together with", rom:"Khaмt", img:"with" },
+      { id:'wb_pr4', mn:"Эсрэг", en:"Against / opposite", rom:"Esreg", img:"against" },
+      { id:'wb_pr5', mn:"Зориулан", en:"For / dedicated to", rom:"Zoriulan", img:"for" },
+      { id:'wb_pr6', mn:"Дамжуулан", en:"Through / via", rom:"Damjuulan", img:"through" },
+      { id:'wb_pr7', mn:"Хооронд", en:"Between / among", rom:"Khorond", img:"between2" },
+      { id:'wb_pr8', mn:"Талаар", en:"About / on the topic of", rom:"Talaar", img:"about2" },
+      { id:'wb_pr9', mn:"Оролцуулан", en:"Including", rom:"Oroltsuulan", img:"including" },
+      { id:'wb_pr10', mn:"Үл тоомсорлон", en:"Despite / regardless", rom:"Ul toomsoorlon", img:"despite" },
+    ]
+  }
+  ,
+
+  // ── Body Language & Gestures ──────────────────────────────────────────────
+  body2: {
+    label: "Body Language", unlockAfter: "body", emoji: "👋",
+    words: [
+      { id:'wb_bl1', mn:"Инээх", en:"To smile / laugh", rom:"Ineekh", img:"smile" },
+      { id:'wb_bl2', mn:"Уйлах", en:"To cry", rom:"Uилakh", img:"cry" },
+      { id:'wb_bl3', mn:"Тольтой харах", en:"To stare", rom:"Toltoi kharakh", img:"stare" },
+      { id:'wb_bl4', mn:"Толгой дохих", en:"To nod", rom:"Tolgoi dokhikh", img:"nod" },
+      { id:'wb_bl5', mn:"Толгой сэгсрэх", en:"To shake head", rom:"Tolgoi segsrekh", img:"headshake" },
+      { id:'wb_bl6', mn:"Мэхлэх", en:"To wave (hand)", rom:"Mekhlekh", img:"wave" },
+      { id:'wb_bl7', mn:"Тэврэх", en:"To hug", rom:"Tevrekh", img:"hug" },
+      { id:'wb_bl8', mn:"Гараа өгөх", en:"To shake hands", rom:"Garaa ogokh", img:"handshake" },
+      { id:'wb_bl9', mn:"Зогсоох", en:"To stop someone", rom:"Zogsookh", img:"stop2" },
+      { id:'wb_bl10', mn:"Дохио өгөх", en:"To signal / gesture", rom:"Dokhio ogokh", img:"signal" },
+    ]
+  },
+
+  // ── Countryside & Nomadic Life ────────────────────────────────────────────
+  nomadic: {
+    label: "Nomadic Life", unlockAfter: "culture2", emoji: "🏕️",
+    words: [
+      { id:'wb_no1', mn:"Сүрэг", en:"Herd / flock", rom:"Surug", img:"herd" },
+      { id:'wb_no2', mn:"Бэлчээр", en:"Pasture / grazing land", rom:"Belcheer", img:"pasture" },
+      { id:'wb_no3', mn:"Нүүх", en:"To move / relocate", rom:"Nuukh", img:"relocate" },
+      { id:'wb_no4', mn:"Тэрэг", en:"Cart / wagon", rom:"Tereg", img:"cart" },
+      { id:'wb_no5', mn:"Тогоо", en:"Pot / cauldron", rom:"Togoo", img:"pot" },
+      { id:'wb_no6', mn:"Аргаль", en:"Argali wild sheep", rom:"Argal", img:"argali" },
+      { id:'wb_no7', mn:"Өвс тэжээл", en:"Fodder / animal feed", rom:"Ovs tejeel", img:"fodder" },
+      { id:'wb_no8', mn:"Саах", en:"To milk (an animal)", rom:"Saakh", img:"milk2" },
+      { id:'wb_no9', mn:"Унаа", en:"Mount / ride animal", rom:"Unaa", img:"mount" },
+      { id:'wb_no10', mn:"Суурь", en:"Base / foundation / camp", rom:"Suur", img:"camp" },
+    ]
+  },
+
+  // ── Clothing Extended ─────────────────────────────────────────────────────
+  clothing2: {
+    label: "More Clothing", unlockAfter: "clothing", emoji: "👗",
+    words: [
+      { id:'wb_cl21', mn:"Оймс", en:"Socks / stockings", rom:"Oims", img:"socks2" },
+      { id:'wb_cl22', mn:"Дотуур хувцас", en:"Underwear", rom:"Dotuур khuvtsas", img:"underwear" },
+      { id:'wb_cl23', mn:"Жижиг малгай", en:"Cap / beanie", rom:"Jijig malgai", img:"cap" },
+      { id:'wb_cl24', mn:"Үзэсгэлэнт малгай", en:"Fancy hat", rom:"Uzusgulunt malgai", img:"fancyhat" },
+      { id:'wb_cl25', mn:"Хушуут гутал", en:"Pointed boots (traditional)", rom:"Khushuut gutal", img:"boots" },
+      { id:'wb_cl26', mn:"Бүс", en:"Belt", rom:"Bus", img:"belt" },
+      { id:'wb_cl27', mn:"Зүүлт", en:"Necklace / jewelry", rom:"Zuult", img:"necklace" },
+      { id:'wb_cl28', mn:"Бөгж", en:"Ring", rom:"Bogj", img:"ring" },
+      { id:'wb_cl29', mn:"Ээмэг", en:"Earring", rom:"Eemug", img:"earring" },
+      { id:'wb_cl30', mn:"Цүнх", en:"Bag / purse", rom:"Tsunh", img:"purse" },
+    ]
+  },
+
+  // ── Verbs of Motion ───────────────────────────────────────────────────────
+  verbs_motion: {
+    label: "Verbs of Motion", unlockAfter: "verbs3", emoji: "🏃",
+    words: [
+      { id:'wb_vm1', mn:"Явах", en:"To go", rom:"Yavakh", img:"go2" },
+      { id:'wb_vm2', mn:"Ирэх", en:"To come", rom:"Irekh", img:"come2" },
+      { id:'wb_vm3', mn:"Гүйх", en:"To run", rom:"Guikh", img:"run" },
+      { id:'wb_vm4', mn:"Алхах", en:"To walk", rom:"Alkhakh", img:"walk" },
+      { id:'wb_vm5', mn:"Дэгдэх", en:"To jump", rom:"Degdekh", img:"jump" },
+      { id:'wb_vm6', mn:"Авирах", en:"To climb", rom:"Avirakh", img:"climb" },
+      { id:'wb_vm7', mn:"Буух", en:"To descend / get off", rom:"Buukh", img:"descend" },
+      { id:'wb_vm8', mn:"Эргэх", en:"To turn / rotate", rom:"Ergekh", img:"turn" },
+      { id:'wb_vm9', mn:"Орох", en:"To enter", rom:"Orokh", img:"enter" },
+      { id:'wb_vm10', mn:"Гарах", en:"To exit / leave", rom:"Garakh", img:"exit2" },
+      { id:'wb_vm11', mn:"Дайрах", en:"To pass by", rom:"Dairakh", img:"passby" },
+      { id:'wb_vm12', mn:"Зогсох", en:"To stop", rom:"Zogsokh", img:"halt" },
+    ]
+  },
+
+  // ── Social Situations ─────────────────────────────────────────────────────
+  social2: {
+    label: "Social Situations", unlockAfter: "social", emoji: "🤝",
+    words: [
+      { id:'wb_ss1', mn:"Уучлаарай", en:"Sorry / excuse me", rom:"Uuchlaarai", img:"sorry2" },
+      { id:'wb_ss2', mn:"Болоо", en:"Okay / alright / done", rom:"Boloo", img:"alright" },
+      { id:'wb_ss3', mn:"Болохгүй", en:"Not okay / can't", rom:"Bolokhgui", img:"cantdo" },
+      { id:'wb_ss4', mn:"Зохиол байна уу", en:"It's okay / no problem", rom:"Zokhiol baina uu", img:"noproblem" },
+      { id:'wb_ss5', mn:"Баярлалаа шүү", en:"Thank you very much", rom:"Bayarlalaa shuu", img:"thankyou2" },
+      { id:'wb_ss6', mn:"Хамаагүй", en:"Never mind / you're welcome", rom:"Khamaagui", img:"welcome" },
+      { id:'wb_ss7', mn:"Амжилт хүсье", en:"Good luck!", rom:"Amjilt khusie", img:"goodluck" },
+      { id:'wb_ss8', mn:"Эрүүл мэндийг хүсье", en:"Wishing you good health", rom:"Eruul mendiiig khusie", img:"goodhealth" },
+      { id:'wb_ss9', mn:"Баяр хүргэе", en:"Congratulations!", rom:"Bayar khurgue", img:"congrats" },
+      { id:'wb_ss10', mn:"Аз жаргал хүсье", en:"Wishing you happiness", rom:"Az jargal khusie", img:"happiness" },
+      { id:'wb_ss11', mn:"Нас баясаарай", en:"Happy birthday!", rom:"Nas bayasaarai", img:"happybday" },
+      { id:'wb_ss12', mn:"Сайн яваарай", en:"Have a good trip / take care", rom:"Sain yavaаrai", img:"takecare" },
+    ]
+  },
+
+  // ── Abstract Concepts ─────────────────────────────────────────────────────
+  abstract: {
+    label: "Abstract Concepts", unlockAfter: "concepts", emoji: "🔮",
+    words: [
+      { id:'wb_ab1', mn:"Хүч", en:"Power / strength / force", rom:"Khuch", img:"power" },
+      { id:'wb_ab2', mn:"Эрх", en:"Right / authority", rom:"Erkh", img:"right2" },
+      { id:'wb_ab3', mn:"Хариуцлага", en:"Responsibility", rom:"Khariutslagas", img:"responsibility" },
+      { id:'wb_ab4', mn:"Чөлөө", en:"Freedom / free time", rom:"Cholo", img:"freedom" },
+      { id:'wb_ab5', mn:"Энх тайван", en:"Peace", rom:"Enkh taivan", img:"peace2" },
+      { id:'wb_ab6', mn:"Дайн", en:"War", rom:"Dain", img:"war" },
+      { id:'wb_ab7', mn:"Хууль", en:"Law", rom:"Khuul", img:"law" },
+      { id:'wb_ab8', mn:"Шударга ёс", en:"Justice", rom:"Shudarga yos", img:"justice" },
+      { id:'wb_ab9', mn:"Нийгэм", en:"Society", rom:"Niigem", img:"society" },
+      { id:'wb_ab10', mn:"Ард түмэн", en:"The people / nation", rom:"Ard tumen", img:"nation" },
+      { id:'wb_ab11', mn:"Байгаль", en:"Nature / environment", rom:"Baigal", img:"environment" },
+      { id:'wb_ab12', mn:"Хувь тавилан", en:"Fate / destiny", rom:"Khuvv tavilan", img:"fate" },
+      { id:'wb_ab13', mn:"Шашин", en:"Religion / faith", rom:"Shashin", img:"religion" },
+      { id:'wb_ab14', mn:"Гоо сайхан", en:"Beauty", rom:"Goo saikhan", img:"beauty" },
+      { id:'wb_ab15', mn:"Үнэн", en:"Truth", rom:"Unen", img:"truth" },
+    ]
+  }
+  ,
+
+  // ── Science & Technology ─────────────────────────────────────────────────
+  science: {
+    label: "Science & Tech", unlockAfter: "tech", emoji: "🔬",
+    words: [
+      { id:'wb_sc21', mn:"Шинжлэх ухаан", en:"Science", rom:"Shinjlekh ukhaan", img:"science2" },
+      { id:'wb_sc22', mn:"Технологи", en:"Technology", rom:"Tekhnologi", img:"tech2" },
+      { id:'wb_sc23', mn:"Судалгаа", en:"Research", rom:"Sudalgaa", img:"research" },
+      { id:'wb_sc24', mn:"Туршилт", en:"Experiment", rom:"Turshilt", img:"experiment" },
+      { id:'wb_sc25', mn:"Дэвшил", en:"Progress / advancement", rom:"Devshil", img:"progress" },
+      { id:'wb_sc26', mn:"Хиймэл оюун ухаан", en:"Artificial intelligence", rom:"Khiimel oyuun ukhaan", img:"ai" },
+      { id:'wb_sc27', mn:"Робот", en:"Robot", rom:"Robot", img:"robot" },
+      { id:'wb_sc28', mn:"Цахим", en:"Digital / electronic", rom:"Tsakhim", img:"digital" },
+      { id:'wb_sc29', mn:"Өгөгдөл", en:"Data", rom:"Ogogdol", img:"data" },
+      { id:'wb_sc30', mn:"Алгоритм", en:"Algorithm", rom:"Algoritm", img:"algorithm" },
+    ]
+  },
+
+  // ── Feelings Extended ─────────────────────────────────────────────────────
+  feelings2: {
+    label: "More Feelings", unlockAfter: "emotions", emoji: "💗",
+    words: [
+      { id:'wb_fl1', mn:"Дурласан", en:"In love", rom:"Durlasan", img:"inlove" },
+      { id:'wb_fl2', mn:"Атаархах", en:"To be jealous", rom:"Ataarkakh", img:"jealous" },
+      { id:'wb_fl3', mn:"Их сэтгэлтэй", en:"Emotional / passionate", rom:"Ikh setgeltei", img:"emotional" },
+      { id:'wb_fl4', mn:"Тайван", en:"Calm / peaceful", rom:"Taivan", img:"calm2" },
+      { id:'wb_fl5', mn:"Сэтгэл дундуур", en:"Dissatisfied / unhappy", rom:"Setgel dunduур", img:"dissatisfied" },
+      { id:'wb_fl6', mn:"Гайхсан", en:"Surprised / amazed", rom:"Gaikhsan", img:"amazed" },
+      { id:'wb_fl7', mn:"Харамссан", en:"Regretful / sorry", rom:"Kharamssan", img:"regret" },
+      { id:'wb_fl8', mn:"Урам зориг", en:"Motivation / inspiration", rom:"Uram zorig", img:"motivation" },
+      { id:'wb_fl9', mn:"Зовлон", en:"Suffering / pain", rom:"Zovlon", img:"suffering" },
+      { id:'wb_fl10', mn:"Баяр хөөр", en:"Joy / elation", rom:"Bayar khoor", img:"elation" },
+    ]
+  },
+
+  // ── Nature Phenomena ──────────────────────────────────────────────────────
+  phenomena: {
+    label: "Nature Phenomena", unlockAfter: "weather2", emoji: "⚡",
+    words: [
+      { id:'wb_ph1', mn:"Газар хөдлөлт", en:"Earthquake", rom:"Gazar khodlolt", img:"earthquake" },
+      { id:'wb_ph2', mn:"Үер", en:"Flood", rom:"Uer", img:"flood" },
+      { id:'wb_ph3', mn:"Цасан шуурга", en:"Blizzard / snowstorm", rom:"Tsasan shuurga", img:"blizzard" },
+      { id:'wb_ph4', mn:"Зуд", en:"Dzud (severe winter disaster)", rom:"Zud", img:"dzud" },
+      { id:'wb_ph5', mn:"Гал түймэр", en:"Wildfire / fire disaster", rom:"Gal tuimer", img:"wildfire" },
+      { id:'wb_ph6', mn:"Гантай", en:"Drought", rom:"Gantai", img:"drought" },
+      { id:'wb_ph7', mn:"Солонго", en:"Rainbow", rom:"Solongo", img:"rainbow" },
+      { id:'wb_ph8', mn:"Сарны гэрэл", en:"Moonlight", rom:"Sarny gerel", img:"moonlight" },
+      { id:'wb_ph9', mn:"Наранд жаргах", en:"Sunset", rom:"Narand jargakh", img:"sunset" },
+      { id:'wb_ph10', mn:"Нар мандах", en:"Sunrise", rom:"Nar mandakh", img:"sunrise" },
+    ]
+  },
+
+  // ── Relationships Extended ────────────────────────────────────────────────
+  relationships: {
+    label: "Relationships", unlockAfter: "social", emoji: "❤️",
+    words: [
+      { id:'wb_rl1', mn:"Нөхөрлөл", en:"Friendship", rom:"Nokhlorol", img:"friendship" },
+      { id:'wb_rl2', mn:"Хайрлах", en:"To love", rom:"Khairlakh", img:"love2" },
+      { id:'wb_rl3', mn:"Үнэнч", en:"Faithful / loyal", rom:"Unench", img:"loyal" },
+      { id:'wb_rl4', mn:"Итгэлтэй", en:"Trustworthy", rom:"Itgeltei", img:"trustworthy" },
+      { id:'wb_rl5', mn:"Урвагч", en:"Traitor / betrayer", rom:"Urvagch", img:"traitor" },
+      { id:'wb_rl6', mn:"Дэмжих", en:"To support", rom:"Demjikh", img:"support" },
+      { id:'wb_rl7', mn:"Санаа тавих", en:"To care for / worry about", rom:"Sanaa tavikh", img:"carefor" },
+      { id:'wb_rl8', mn:"Уучлах", en:"To forgive", rom:"Uuchlakh", img:"forgive" },
+      { id:'wb_rl9', mn:"Маргалдах", en:"To argue", rom:"Margaldakh", img:"argue" },
+      { id:'wb_rl10', mn:"Эвлэрэх", en:"To make up / reconcile", rom:"Evlurekh", img:"reconcile" },
+    ]
+  },
+
+  // ── Common Expressions ────────────────────────────────────────────────────
+  expressions: {
+    label: "Common Expressions", unlockAfter: "greetings2", emoji: "💬",
+    words: [
+      { id:'wb_ex1', mn:"За тэгвэл", en:"Well then / okay then", rom:"Za tegvel", img:"wellthen" },
+      { id:'wb_ex2', mn:"Ер нь", en:"Actually / in fact", rom:"Yer n", img:"actually" },
+      { id:'wb_ex3', mn:"Яахав", en:"Oh well / whatever", rom:"Yaakhav", img:"ohwell" },
+      { id:'wb_ex4', mn:"Гайхамшигтай", en:"Wonderful / marvelous", rom:"Gaikhamshigtai", img:"wonderful" },
+      { id:'wb_ex5', mn:"Харин тэгнэ дээ", en:"That's right / exactly", rom:"Kharin tegne dee", img:"exactly" },
+      { id:'wb_ex6', mn:"Болоо дой", en:"Enough / that's enough", rom:"Boloo doi", img:"enough" },
+      { id:'wb_ex7', mn:"Яасан юм бэ?", en:"What happened?", rom:"Yaasan yum be?", img:"whathappened" },
+      { id:'wb_ex8', mn:"Юу болоо вэ?", en:"What's going on?", rom:"Yuu boloo ve?", img:"whatsup" },
+      { id:'wb_ex9', mn:"Хэрэггүй", en:"No need / don't bother", rom:"Khereggui", img:"noneed" },
+      { id:'wb_ex10', mn:"Гайхалтай байна", en:"That's amazing", rom:"Gaikhaltai baina", img:"amazing2" },
+      { id:'wb_ex11', mn:"Тэгж болохгүй", en:"That's not okay / you can't do that", rom:"Tegj bolokhgui", img:"notokay" },
+      { id:'wb_ex12', mn:"Яг тийм", en:"Exactly / that's right", rom:"Yag tiim", img:"exactly2" },
+    ]
+  },
+
+  // ── At School ────────────────────────────────────────────────────────────
+  atschool: {
+    label: "At School", unlockAfter: "education", emoji: "🏫",
+    words: [
+      { id:'wb_as1', mn:"Анги", en:"Classroom / grade", rom:"Angi", img:"classroom" },
+      { id:'wb_as2', mn:"Самбар", en:"Blackboard / whiteboard", rom:"Sambar", img:"blackboard" },
+      { id:'wb_as3', mn:"Сандал ширээ", en:"Desk and chair", rom:"Sandal shiree", img:"desk" },
+      { id:'wb_as4', mn:"Хичээл эхлэх", en:"Class starts", rom:"Khicheel ekhlekh", img:"classstart" },
+      { id:'wb_as5', mn:"Хичээл дуусах", en:"Class ends", rom:"Khicheel duusakh", img:"classend" },
+      { id:'wb_as6', mn:"Завсарлага", en:"Break time / recess", rom:"Zavsarlaga", img:"recess" },
+      { id:'wb_as7', mn:"Гэрийн даалгавар", en:"Homework", rom:"Geriin daalgavar", img:"homework2" },
+      { id:'wb_as8', mn:"Тэтгэлэг", en:"Scholarship", rom:"Tetgeleg", img:"scholarship" },
+      { id:'wb_as9', mn:"Элсэлт", en:"Enrollment / admission", rom:"Elsuult", img:"enrollment" },
+      { id:'wb_as10', mn:"Төгсөлт", en:"Graduation", rom:"Togsolt", img:"graduation" },
+    ]
+  },
+
+  // ── Comparing Things ─────────────────────────────────────────────────────
+  comparing: {
+    label: "Comparing", unlockAfter: "adjectives2", emoji: "⚖️",
+    words: [
+      { id:'wb_co21', mn:"Илүү", en:"More / better", rom:"Iluu", img:"more2" },
+      { id:'wb_co22', mn:"Бага", en:"Less / fewer", rom:"Baga", img:"less" },
+      { id:'wb_co23', mn:"Хамгийн", en:"Most / -est (superlative)", rom:"Khamgiin", img:"most" },
+      { id:'wb_co24', mn:"Адил", en:"Same / equal", rom:"Adil", img:"equal" },
+      { id:'wb_co25', mn:"Ялгаатай", en:"Different", rom:"Yalgaatai", img:"different" },
+      { id:'wb_co26', mn:"Дээр", en:"Better / superior", rom:"Deer", img:"better" },
+      { id:'wb_co27', mn:"Дор", en:"Worse / inferior", rom:"Dor", img:"worse" },
+      { id:'wb_co28', mn:"Том", en:"Big / large", rom:"Tom", img:"big2" },
+      { id:'wb_co29', mn:"Жижиг", en:"Small / little", rom:"Jijig", img:"small3" },
+      { id:'wb_co30', mn:"Дунд", en:"Medium / middle", rom:"Dund", img:"medium" },
+    ]
+  },
+
+  // ── Around Ulaanbaatar ────────────────────────────────────────────────────
+  ulaanbaatar: {
+    label: "Ulaanbaatar", unlockAfter: "citylife", emoji: "🏙️",
+    words: [
+      { id:'wb_ub1', mn:"Сүхбаатар талбай", en:"Sukhbaatar Square", rom:"Sukhbaatar talbai", img:"square" },
+      { id:'wb_ub2', mn:"Чингис хааны хөшөө", en:"Chinggis Khan statue", rom:"Chinggis khaany khushoo", img:"chinggis" },
+      { id:'wb_ub3', mn:"Богд хан уул", en:"Bogd Khan Mountain", rom:"Bogd Khan uul", img:"bogdkhan" },
+      { id:'wb_ub4', mn:"Орон нутаг", en:"Local area / region", rom:"Oron nutag", img:"region" },
+      { id:'wb_ub5', mn:"Нийслэл", en:"Capital city", rom:"Niislel", img:"capital" },
+      { id:'wb_ub6', mn:"Дүүрэг", en:"District", rom:"Duurug", img:"district" },
+      { id:'wb_ub7', mn:"Хороо", en:"Subdistrict / neighborhood", rom:"Khoroo", img:"neighborhood" },
+      { id:'wb_ub8', mn:"Гэр хороолол", en:"Ger district", rom:"Ger khorolol", img:"gerdistrict" },
+      { id:'wb_ub9', mn:"Нийтийн тээвэр", en:"Public transport", rom:"Niitiin teevor", img:"publictransport" },
+      { id:'wb_ub10', mn:"Тролейбус", en:"Trolleybus", rom:"Trolleybus", img:"trolleybus" },
+    ]
+  }
 };
 
 // ─── Image SVG library ─────────────────────────────────────────────────────
@@ -1991,6 +2896,123 @@ function getWordImage(key) {
     salary:'💰', meeting:'🤝',
     // Adjectives that work as emoji
     big:'🔲', small:'🔹', good:'⭐', bad:'👎',
+
+    // Body Language
+    smile:'😊', cry:'😢', stare:'👀', nod:'✅', headshake:'❌',
+    wave:'👋', hug:'🤗', handshake:'🤝', stop2:'✋', signal:'🚦',
+    // Nomadic
+    herd:'🐑', pasture:'🌾', relocate:'🏕️', cart:'🛒', pot:'🫕',
+    argali:'🐏', fodder:'🌿', milk2:'🥛', mount:'🐎', camp:'⛺',
+    // Clothing2
+    socks2:'🧦', underwear:'👙', cap:'🧢', fancyhat:'👒', boots:'👢',
+    belt:'👔', necklace:'📿', ring:'💍', earring:'💎', purse:'👜',
+    // Verbs of Motion
+    go2:'🚶', come2:'🏃', run:'🏃', walk:'🚶', jump:'⬆️',
+    climb:'🧗', descend:'⬇️', turn:'↩️', enter:'🚪', exit2:'🚪',
+    passby:'➡️', halt:'🛑',
+    // Social Situations
+    sorry2:'🙏', alright:'✅', cantdo:'❌', noproblem:'😊',
+    thankyou2:'🙏', welcome:'😊', goodluck:'🍀', goodhealth:'💪',
+    congrats:'🎉', happiness:'😊', happybday:'🎂', takecare:'✌️',
+    // Abstract
+    power:'💪', right2:'⚖️', responsibility:'📋', freedom:'🕊️',
+    peace2:'☮️', war:'⚔️', law:'⚖️', justice:'⚖️', society:'👥',
+    nation:'🌍', environment:'🌿', fate:'🔮', religion:'🙏',
+    beauty:'🌺', truth:'✅',
+    // Personality
+    brave:'🦁', smart:'🧠', foolish:'😅', kind:'💚', cruel:'😤',
+    honest:'✅', liar:'🤥', courageous:'🦁', humble:'🙏',
+    patient2:'⏳', impatient:'😤', cute:'🥰', lazy2:'😴',
+    hardworking:'💪', sociable:'😊',
+    // Food3
+    boil:'🫕', fry:'🍳', steam:'💨', cut:'🔪', mix:'🥄',
+    taste:'👅', tasty:'😋', bitter:'😬', spicy:'🌶️', sweet:'🍬',
+    sour:'🍋', flour:'🌾', butter:'🧈', egg2:'🥚', carrot2:'🥕',
+    // City Life
+    trafficlight:'🚦', parking:'🅿️', mall:'🛍️', playground:'🛝',
+    streetlight:'💡', government:'🏛️', postoffice:'📮', police:'👮',
+    firestation:'🚒', hotel2:'🏨', museum:'🏛️', theatre:'🎭',
+    // Sports2
+    athlete:'🏅', coach:'🎯', team2:'👥', match:'⚽', goal2:'🥅',
+    win:'🥇', lose:'😞', draw:'🤝', train2:'🏋️', race:'🏁',
+    // Media
+    socialmedia:'📱', address:'📍', download:'⬇️', upload:'⬆️',
+    search:'🔍', screen:'📺', game:'🎮', movie:'🎬', song:'🎵',
+    series:'📺', news2:'📰', post:'📝',
+    // Travel
+    passport:'🛂', visa:'📄', ticket:'🎫', customs:'🛃',
+    airport2:'✈️', land:'🛬', takeoff:'🛫', trip:'✈️', tourist:'🗺️',
+    luggage:'🧳', guesthouse:'🏨', hotelroom:'🛏️',
+    // Finance
+    account:'🏦', transaction:'💸', interest:'📈', loan:'💰',
+    tax:'📋', total:'💰', save2:'💰', spend:'💸', exchange:'💱',
+    dollar:'💵',
+    // Communication
+    phonecall:'📞', sendemail:'📧', sendmsg:'💬', reply2:'↩️',
+    makecall:'📞', schedule:'📅', explain2:'💬', confirm:'✅',
+    cancel:'❌', suggest:'💡', agree:'✅', refuse2:'❌',
+    // Adjectives2
+    important:'❗', useless:'❌', easy:'✅', hard:'💪', dirty:'🧹',
+    clean:'✨', dangerous:'⚠️', safe:'✅', convenient:'👍',
+    inconvenient:'👎', interesting:'⭐', boring:'😑',
+    unexpected:'😲', clear:'✅', unclear:'❓',
+    // Questions
+    whyso:'❓', really:'😮', howsay:'💬', inmongolian:'🇲🇳',
+    understand2:'💡', again:'🔄', slowly:'🐢', writeplease:'✏️',
+    knowmongolian:'🇲🇳', learningmn:'📚', knowenglish:'🇬🇧',
+    translator:'🌐',
+    // Opinions
+    opinion:'💭', iagree:'✅', idisagree:'❌', youright:'✅',
+    youwrong:'❌', maybe:'🤔', dontknow:'🤷', dontunderstand:'😕',
+    dontmind:'😊', mightbe:'🤔', amazing:'🌟', unfortunately:'😔',
+    // Grammar Words
+    is:'✅', usually2:'📊', was:'⏮️', willbe:'⏭️', isnot:'❌',
+    even:'➕', possessive:'📌', toward:'➡️', on:'⬆️', under:'⬇️',
+    before:'⬅️', after:'➡️', inside2:'🔲', outside2:'🌐',
+    together:'🤝',
+    // Emergency
+    helpme:'🆘', fire2:'🔥', ambulance:'🚑', callpolice:'🚔',
+    wherehospital:'🏥', accident:'💥', hurt:'🤕', rescue:'🦺',
+    danger:'⚠️', calm:'😌',
+    // Calendar
+    tuesday:'2️⃣', wednesday:'3️⃣', thursday:'4️⃣', friday:'5️⃣',
+    january:'❄️', february:'💝', march:'🌸', april:'🌷',
+    may:'🌺', june:'☀️', august:'☀️', october:'🍂',
+    november:'🍁', december:'❄️', anniversary:'🎊',
+    // Mongolian Food4
+    soup:'🍲', dish:'🍽️', noodlesoup:'🍜', dairy:'🥛', meat2:'🥩',
+    boodog:'🍖', khorkhog:'🔥', uural:'🥛', arkhi:'🍶', hardcandy:'🍬',
+    // Prepositions
+    about:'💬', because2:'💭', with:'🤝', against:'⚔️', for:'🎯',
+    through:'➡️', between2:'↔️', about2:'📖', including:'➕',
+    despite:'🔄',
+
+    // Science
+    science2:'🔬', tech2:'💻', research:'🔍', experiment:'⚗️', progress:'📈',
+    ai:'🤖', robot:'🤖', digital:'💻', data:'📊', algorithm:'🔢',
+    // Feelings2
+    inlove:'❤️', jealous:'😤', emotional:'💗', calm2:'😌', dissatisfied:'😕',
+    amazed:'😮', regret:'😔', motivation:'⚡', suffering:'😢', elation:'🎉',
+    // Phenomena
+    earthquake:'🌍', flood:'🌊', blizzard:'❄️', dzud:'❄️', wildfire:'🔥',
+    drought:'☀️', rainbow:'🌈', moonlight:'🌙', sunset:'🌅', sunrise:'🌄',
+    // Relationships
+    friendship:'🤝', love2:'❤️', loyal:'🏅', trustworthy:'✅', traitor:'😤',
+    support:'🤝', carefor:'💚', forgive:'🕊️', argue:'⚡', reconcile:'🤝',
+    // Expressions
+    wellthen:'👍', actually:'💡', ohwell:'😅', wonderful:'🌟', exactly:'✅',
+    enough:'✋', whathappened:'❓', whatsup:'❓', noneed:'🚫',
+    amazing2:'🌟', notokay:'❌', exactly2:'✅',
+    // At School
+    classroom:'🏫', blackboard:'📋', desk:'🪑', classstart:'▶️', classend:'⏹️',
+    recess:'⏸️', homework2:'📚', scholarship:'🎓', enrollment:'📝', graduation:'🎓',
+    // Comparing
+    more2:'⬆️', less:'⬇️', most:'🏆', equal:'⚖️', different:'↔️',
+    better:'⬆️', worse:'⬇️', big2:'🔲', small3:'🔹', medium:'⬜',
+    // UB
+    square:'🏛️', chinggis:'🗿', bogdkhan:'⛰️', region:'📍', capital:'🏛️',
+    district:'📍', neighborhood:'🏘️', gerdistrict:'⛺', publictransport:'🚌',
+    trolleybus:'🚎',
     // Greetings (text handled above but keep emoji fallback)
     greeting:'👋', wave:'🤝', thanks:'🙏', sorry:'😔', yes:'✅', no:'❌', ok:'👍',
     mother:'👩', father:'👨', brother:'👦', sister:'👧', friends:'👫',
