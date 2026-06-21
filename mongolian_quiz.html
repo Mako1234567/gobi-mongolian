@@ -3353,10 +3353,35 @@ function getDisplay(ans, q) {
   return ans;
 }
 
+function getSmartDistractors(q, pool, count) {
+  // Step 1: same type first
+  const sameType = pool.filter(x => x.answer !== q.answer && x.type === q.type);
+  
+  // Step 2: for words/phrases, prefer similar-length answers (harder to guess)
+  const ansLen = (q.sound || q.answer || '').length;
+  const similar = sameType.filter(x => {
+    const xLen = (x.sound || x.answer || '').length;
+    return Math.abs(xLen - ansLen) <= 4;
+  });
+
+  // Pick from similar first, then same type, then whole pool
+  let candidates = similar.length >= count ? similar
+    : sameType.length >= count ? sameType
+    : pool.filter(x => x.answer !== q.answer);
+
+  return candidates.sort(() => Math.random() - 0.5).slice(0, count);
+}
+
 function loadMC(q) {
   const pool = buildPool();
-  const others = pool.filter(x => x.answer!==q.answer).sort(()=>Math.random()-0.5).slice(0,3);
-  const all = [q, ...others].sort(()=>Math.random()-0.5);
+  const others = getSmartDistractors(q, pool, 3);
+  // If not enough smart distractors, fill with random
+  while (others.length < 3) {
+    const fallback = pool.filter(x => x.answer !== q.answer && !others.includes(x));
+    if (!fallback.length) break;
+    others.push(fallback[Math.floor(Math.random() * fallback.length)]);
+  }
+  const all = [q, ...others].sort(() => Math.random() - 0.5);
   const grid = document.getElementById('answers-grid');
   grid.innerHTML = '';
   all.forEach(opt => {
@@ -3810,8 +3835,12 @@ function loadIQQuestion() {
   // Build answer choices
     // Build answer choices — all Mongolian script
   const groupWords = WORD_BANK[iqGroupKey].words;
-  const pool = Object.values(WORD_BANK).flatMap(g => g.words);
-  const others = pool.filter(w => w.mn !== q.letter).sort(() => Math.random()-0.5).slice(0,3);
+  const iqGroupWords = WORD_BANK[iqGroupKey] ? WORD_BANK[iqGroupKey].words : [];
+  const allWords = Object.values(WORD_BANK).flatMap(g => g.words);
+  const sameGroup = iqGroupWords.filter(w => w.mn !== q.letter);
+  const otherWords = allWords.filter(w => w.mn !== q.letter && !sameGroup.includes(w));
+  let distractorPool = sameGroup.length >= 3 ? sameGroup : [...sameGroup, ...otherWords];
+  const others = distractorPool.sort(() => Math.random()-0.5).slice(0,3);
   const choices = [{ mn: q.letter, en: q.sound }, ...others.map(w => ({ mn: w.mn, en: w.en }))].sort(() => Math.random()-0.5);
 
   const grid = document.getElementById('iq-answers');
