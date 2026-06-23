@@ -527,12 +527,24 @@
       <p style="font-size:20px;font-weight:600;color:#e8e8f0;margin-bottom:1.2rem;">Learn</p>
 
       <div class="learn-section">
+        <p class="learn-section-title">📚 Course</p>
+        <div class="learn-card" onclick="openCurriculum()" style="border-color:#7c6af7;">
+          <span class="learn-card-icon">🎓</span>
+          <div>
+            <div class="learn-card-title">Mongolian Course</div>
+            <div class="learn-card-sub">10 structured units — start here!</div>
+          </div>
+          <span class="learn-card-arrow" style="color:#7c6af7;">›</span>
+        </div>
+      </div>
+
+      <div class="learn-section">
         <p class="learn-section-title">Word Bank</p>
         <div id="wb-groups" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
 
       <div class="learn-section">
-        <p class="learn-section-title">Lessons</p>
+        <p class="learn-section-title">More Practice</p>
         <div class="learn-card" onclick="startSentenceMode()">
           <span class="learn-card-icon">💬</span>
           <div><div class="learn-card-title">Sentence Mode</div><div class="learn-card-sub">Read, listen, fill the blank</div></div>
@@ -7536,6 +7548,537 @@ function getWeekStr() {
 
 window.addEventListener('beforeunload', endSession);
 window.addEventListener('pagehide', endSession);
+
+// ─── Structured Curriculum ────────────────────────────────────────────────
+const CURRICULUM = [
+  {
+    id:"u1", title:"Greetings", emoji:"👋",
+    subtitle:"Say hello, goodbye and ask how someone is",
+    color:"#7c6af7",
+    vocab:["wb_g1","wb_g2","wb_g3","wb_g4","wb_g5","wb_ep3","wb_ep4","wb_g21","wb_g23"],
+    phrases:[
+      { mn:"Сайн уу", en:"Hello", rom:"Sain uu", note:"Used any time of day" },
+      { mn:"Сайн байна уу?", en:"How are you?", rom:"Sain baina uu?", note:"Literally: Are you well?" },
+      { mn:"Сайн байна, баярлалаа", en:"I am well, thank you", rom:"Sain baina, bayarlalaa", note:"Standard response" },
+      { mn:"Баярлалаа", en:"Thank you", rom:"Bayarlalaa", note:"Very common, learn this first" },
+      { mn:"Уучлаарай", en:"Sorry / excuse me", rom:"Uuchlaarai", note:"Also used to get attention" },
+      { mn:"Баяртай", en:"Goodbye", rom:"Bayartai", note:"Formal goodbye" },
+      { mn:"Дахиад уулзацгаая", en:"See you again", rom:"Dakhiad uulzatsagaaya", note:"Casual farewell" },
+    ],
+    dialogues:[{
+      title:"Meeting someone",
+      lines:[
+        { speaker:"A", mn:"Сайн уу!", en:"Hello!" },
+        { speaker:"B", mn:"Сайн уу! Сайн байна уу?", en:"Hello! How are you?" },
+        { speaker:"A", mn:"Сайн байна, баярлалаа. Та сайн уу?", en:"I am well, thank you. And you?" },
+        { speaker:"B", mn:"Сайн байна.", en:"I am well." },
+      ]
+    }],
+    quiz:[
+      { mn:"Сайн уу", en:"Hello", opts:["Hello","Goodbye","Thank you","Sorry"] },
+      { mn:"Баярлалаа", en:"Thank you", opts:["Sorry","How are you","Thank you","Goodbye"] },
+      { mn:"Баяртай", en:"Goodbye", opts:["Hello","Goodbye","See you","Thank you"] },
+      { mn:"Уучлаарай", en:"Sorry / excuse me", opts:["Thank you","Hello","Sorry / excuse me","Goodbye"] },
+    ]
+  },
+  {
+    id:"u2", title:"Introduce Yourself", emoji:"🙋",
+    subtitle:"Say your name, age and where you are from",
+    color:"#f97316",
+    vocab:["wb_ep1","wb_ep2","wb_ep6","wb_ep7","wb_ep8","wb_ep10","wb_p1","wb_p2"],
+    phrases:[
+      { mn:"Миний нэр Sawyer юм", en:"My name is Sawyer", rom:"Minii ner Sawyer yum", note:"Replace Sawyer with your name" },
+      { mn:"Таны нэр хэн бэ?", en:"What is your name?", rom:"Tany ner khen be?", note:"Хэн means who" },
+      { mn:"Би Америкаас ирсэн", en:"I am from America", rom:"Bi Amerikaas irsen", note:"-аас means from" },
+      { mn:"Та хаанаас ирсэн бэ?", en:"Where are you from?", rom:"Ta khaanaas irsen be?", note:"Хаанаас = from where" },
+      { mn:"Би арван долоон настай", en:"I am 17 years old", rom:"Bi arvan doloo nastai", note:"-настай means years old" },
+      { mn:"Та хэдэн настай вэ?", en:"How old are you?", rom:"Ta kheden nastai ve?", note:"Хэдэн = how many" },
+      { mn:"Уулзаж баяртай байна", en:"Nice to meet you", rom:"Uulzaj bayartai baina", note:"Say this after introductions" },
+    ],
+    dialogues:[{
+      title:"First introduction",
+      lines:[
+        { speaker:"A", mn:"Миний нэр Болд юм. Таны нэр хэн бэ?", en:"My name is Bold. What is your name?" },
+        { speaker:"B", mn:"Миний нэр Sawyer юм. Уулзаж баяртай байна.", en:"My name is Sawyer. Nice to meet you." },
+        { speaker:"A", mn:"Та хаанаас ирсэн бэ?", en:"Where are you from?" },
+        { speaker:"B", mn:"Би Америкаас ирсэн. Та хэдэн настай вэ?", en:"I am from America. How old are you?" },
+        { speaker:"A", mn:"Би хорин настай.", en:"I am twenty years old." },
+      ]
+    }],
+    quiz:[
+      { mn:"Миний нэр ... юм", en:"My name is ...", opts:["My name is ...","Your name is ...","What is your name?","Nice to meet you"] },
+      { mn:"Та хаанаас ирсэн бэ?", en:"Where are you from?", opts:["How old are you?","What is your name?","Where are you from?","Nice to meet you"] },
+      { mn:"Би ... настай", en:"I am ... years old", opts:["I am from ...","I am ... years old","My name is ...","How old are you?"] },
+      { mn:"Уулзаж баяртай байна", en:"Nice to meet you", opts:["Goodbye","Nice to meet you","Thank you","See you again"] },
+    ]
+  },
+  {
+    id:"u3", title:"Family & People", emoji:"👨‍👩‍👧",
+    subtitle:"Talk about your family",
+    color:"#4ade80",
+    vocab:["wb_p1","wb_p2","wb_p3","wb_p4","wb_p5","wb_p6","wb_so1","wb_so2","wb_so3","wb_so4","wb_so5","wb_so6","wb_so7"],
+    phrases:[
+      { mn:"Манай гэр бүлд ... хүн байдаг", en:"There are ... people in my family", rom:"Manai ger buuld ... khun baidag", note:"Гэр бүл = family" },
+      { mn:"Миний ээж ... юм", en:"My mother is ...", rom:"Minii eej ... yum", note:"Ээж = mom" },
+      { mn:"Миний аав ... юм", en:"My father is ...", rom:"Minii aav ... yum", note:"Аав = dad" },
+      { mn:"Надад ах байдаг", en:"I have an older brother", rom:"Nadad akh baidag", note:"Ах = older brother" },
+      { mn:"Надад дүү байдаг", en:"I have a younger sibling", rom:"Nadad duu baidag", note:"Дүү = younger sibling" },
+      { mn:"Надад ах дүү байхгүй", en:"I have no siblings", rom:"Nadad akh duu baikhgui", note:"-гүй negates possession" },
+    ],
+    dialogues:[{
+      title:"Talking about family",
+      lines:[
+        { speaker:"A", mn:"Манай гэр бүлд дөрвөн хүн байдаг.", en:"There are four people in my family." },
+        { speaker:"B", mn:"Танд ах дүү байдаг уу?", en:"Do you have siblings?" },
+        { speaker:"A", mn:"Тийм. Надад нэг дүү байдаг. Чамд байдаг уу?", en:"Yes. I have one younger sibling. Do you?" },
+        { speaker:"B", mn:"Үгүй, надад ах дүү байхгүй.", en:"No, I have no siblings." },
+      ]
+    }],
+    quiz:[
+      { mn:"Гэр бүл", en:"Family", opts:["Friend","Family","Sibling","Parent"] },
+      { mn:"Ээж", en:"Mother", opts:["Father","Sister","Mother","Grandmother"] },
+      { mn:"Аав", en:"Father", opts:["Father","Brother","Uncle","Grandfather"] },
+      { mn:"Ах", en:"Older brother", opts:["Younger sibling","Older brother","Father","Son"] },
+    ]
+  },
+  {
+    id:"u4", title:"Numbers & Time", emoji:"🔢",
+    subtitle:"Count, tell time and talk about days",
+    color:"#facc15",
+    vocab:["wb_nu1","wb_nu2","wb_nu3","wb_nu4","wb_nu5","wb_t1","wb_t2","wb_t3","wb_t6","wb_t7","wb_t8","wb_ca1","wb_ca2","wb_ca3","wb_ca4"],
+    phrases:[
+      { mn:"Нэг, хоёр, гурав, дөрөв, тав", en:"One, two, three, four, five", rom:"Neg, khoyor, gurav, dorov, tav", note:"Core numbers to memorize" },
+      { mn:"Өнөөдөр ямар өдөр вэ?", en:"What day is today?", rom:"Onoodor yamar odor ve?", note:"Ask about the day" },
+      { mn:"Хэдэн цагт?", en:"At what time?", rom:"Kheden tsagt?", note:"Asking about time" },
+      { mn:"Нэг цагт", en:"At one o'clock", rom:"Neg tsagt", note:"Number + цагт = at X o'clock" },
+      { mn:"Маргааш уулзацгаая", en:"Let's meet tomorrow", rom:"Margaash uulzatsagaaya", note:"Making plans" },
+      { mn:"Өнөөдөр Даваа гараг", en:"Today is Monday", rom:"Onoodor Davaa garag", note:"Гараг = day of the week" },
+    ],
+    dialogues:[{
+      title:"Making plans",
+      lines:[
+        { speaker:"A", mn:"Маргааш чөлөөтэй юу?", en:"Are you free tomorrow?" },
+        { speaker:"B", mn:"Тийм, чөлөөтэй. Хэдэн цагт?", en:"Yes I am free. At what time?" },
+        { speaker:"A", mn:"Гурван цагт уулзацгаая.", en:"Let's meet at three o'clock." },
+        { speaker:"B", mn:"За, болоо.", en:"Okay, sounds good." },
+      ]
+    }],
+    quiz:[
+      { mn:"Нэг", en:"One", opts:["Two","Three","One","Four"] },
+      { mn:"Өнөөдөр", en:"Today", opts:["Tomorrow","Yesterday","Today","Now"] },
+      { mn:"Маргааш", en:"Tomorrow", opts:["Today","Tomorrow","Yesterday","Later"] },
+      { mn:"Хэдэн цагт?", en:"At what time?", opts:["What day?","At what time?","How many?","When?"] },
+    ]
+  },
+  {
+    id:"u5", title:"Food & Eating", emoji:"🍽️",
+    subtitle:"Order food and talk about what you like",
+    color:"#f76a8a",
+    vocab:["wb_f1","wb_f2","wb_f3","wb_f4","wb_f5","wb_mf1","wb_mf2","wb_fo6","wb_fo7","wb_fo10","wb_fo8","wb_fo9"],
+    phrases:[
+      { mn:"Би ... идэхийг дуртай", en:"I like to eat ...", rom:"Bi ... idekiig durtai", note:"Дуртай = to like" },
+      { mn:"Маш амттай байна", en:"It is very delicious", rom:"Mash amttai baina", note:"Great compliment for food" },
+      { mn:"Цэс авчирна уу", en:"Please bring the menu", rom:"Tses avchirnaa uu", note:"At a restaurant" },
+      { mn:"Би ... захиалъя", en:"I will order ...", rom:"Bi ... zakhiaalya", note:"Ordering food" },
+      { mn:"Тооцоо хийнэ үү", en:"Please bring the bill", rom:"Totsoo hiinee uu", note:"Paying at restaurant" },
+      { mn:"Халуун цай өгнө үү", en:"Please give me hot tea", rom:"Khaluun tsai ognoo uu", note:"Mongolians drink tea constantly" },
+    ],
+    dialogues:[{
+      title:"At a Mongolian restaurant",
+      lines:[
+        { speaker:"A", mn:"Цэс авчирна уу.", en:"Please bring the menu." },
+        { speaker:"B", mn:"За. Юу уух вэ?", en:"Okay. What will you drink?" },
+        { speaker:"A", mn:"Халуун цай өгнө үү.", en:"Please give me hot tea." },
+        { speaker:"B", mn:"Хоолоос юу захиалах вэ?", en:"What food will you order?" },
+        { speaker:"A", mn:"Бууз захиалъя. Маш амттай байдаг.", en:"I will order buuz. They are very delicious." },
+      ]
+    }],
+    quiz:[
+      { mn:"Амттай", en:"Delicious", opts:["Bitter","Spicy","Delicious","Sour"] },
+      { mn:"Бууз", en:"Buuz (steamed dumplings)", opts:["Soup","Noodles","Buuz (steamed dumplings)","Rice"] },
+      { mn:"Цэс", en:"Menu", opts:["Bill","Menu","Food","Order"] },
+      { mn:"Халуун", en:"Hot", opts:["Cold","Warm","Hot","Spicy"] },
+    ]
+  },
+  {
+    id:"u6", title:"Getting Around", emoji:"🗺️",
+    subtitle:"Ask for directions and use transport",
+    color:"#60a5fa",
+    vocab:["wb_dr1","wb_dr2","wb_dr3","wb_dr4","wb_dr5","wb_dr6","wb_dr8","wb_dr10","wb_tr1","wb_tr3"],
+    phrases:[
+      { mn:"... хаана байдаг вэ?", en:"Where is ...?", rom:"... khaana baidag ve?", note:"Essential for navigating" },
+      { mn:"Зүүн тийш эргэнэ үү", en:"Please turn left", rom:"Zuun tiish ergene uu", note:"Зүүн = left" },
+      { mn:"Баруун тийш эргэнэ үү", en:"Please turn right", rom:"Baruun tiish ergene uu", note:"Баруун = right" },
+      { mn:"Шулуун яв", en:"Go straight", rom:"Shuluun yav", note:"Simple direction" },
+      { mn:"Алдсан", en:"I am lost", rom:"Aldsan", note:"Useful to know!" },
+      { mn:"Такси дуудна уу", en:"Please call a taxi", rom:"Taksi duudnaa uu", note:"Taxis are common in UB" },
+    ],
+    dialogues:[{
+      title:"Finding the hotel",
+      lines:[
+        { speaker:"A", mn:"Уучлаарай, буудал хаана байдаг вэ?", en:"Excuse me, where is the hotel?" },
+        { speaker:"B", mn:"Шулуун яваад баруун тийш эргэнэ үү.", en:"Go straight then turn right." },
+        { speaker:"A", mn:"Хол байна уу?", en:"Is it far?" },
+        { speaker:"B", mn:"Үгүй, ойрхон байна. Таван минут.", en:"No, it is close. Five minutes." },
+      ]
+    }],
+    quiz:[
+      { mn:"Зүүн", en:"Left / east", opts:["Right","Left / east","Straight","Back"] },
+      { mn:"Баруун", en:"Right / west", opts:["Left","Right / west","Forward","Turn"] },
+      { mn:"Алдсан", en:"I am lost", opts:["I am tired","I am lost","I am hungry","I am late"] },
+      { mn:"Шулуун", en:"Straight", opts:["Left","Right","Straight","Turn"] },
+    ]
+  },
+  {
+    id:"u7", title:"Shopping", emoji:"🛍️",
+    subtitle:"Buy things and negotiate prices",
+    color:"#a78bfa",
+    vocab:["wb_sh1","wb_sh2","wb_sh3","wb_sh7","wb_sh8","wb_m1","wb_m8","wb_m7","wb_m10"],
+    phrases:[
+      { mn:"Энэ хэдэн вэ?", en:"How much is this?", rom:"Ene kheden ve?", note:"Most useful shopping phrase" },
+      { mn:"Хэтэрхий үнэтэй", en:"Too expensive", rom:"Khetertkhii unetei", note:"Start negotiating" },
+      { mn:"Хямдруулна уу", en:"Please give a discount", rom:"Khyamdruulnaa uu", note:"Bargaining is normal in markets" },
+      { mn:"Авъя", en:"I will take it", rom:"Avya", note:"Short and simple" },
+      { mn:"Авахгүй", en:"I will not take it", rom:"Avakhgui", note:"Politely decline" },
+      { mn:"Бэлэн мөнгөөр төлье", en:"I will pay with cash", rom:"Belen mongoloor tolye", note:"Cash is still common in Mongolia" },
+    ],
+    dialogues:[{
+      title:"At the Narantuul market",
+      lines:[
+        { speaker:"A", mn:"Энэ хэдэн вэ?", en:"How much is this?" },
+        { speaker:"B", mn:"Арван мянган төгрөг.", en:"Ten thousand tugriks." },
+        { speaker:"A", mn:"Хэтэрхий үнэтэй. Хямдруулна уу.", en:"Too expensive. Please give a discount." },
+        { speaker:"B", mn:"За, найман мянга.", en:"Okay, eight thousand." },
+        { speaker:"A", mn:"Болоо. Авъя. Баярлалаа.", en:"Okay. I will take it. Thank you." },
+      ]
+    }],
+    quiz:[
+      { mn:"Энэ хэдэн вэ?", en:"How much is this?", opts:["Where is this?","How much is this?","What is this?","Is this cheap?"] },
+      { mn:"Үнэтэй", en:"Expensive", opts:["Cheap","Expensive","Free","Discount"] },
+      { mn:"Авъя", en:"I will take it", opts:["I will not take it","Too expensive","I will take it","How much?"] },
+      { mn:"Төгрөг", en:"Tugrik (currency)", opts:["Dollar","Tugrik (currency)","Money","Price"] },
+    ]
+  },
+  {
+    id:"u8", title:"Feelings & Health", emoji:"💊",
+    subtitle:"Describe how you feel and talk about health",
+    color:"#f87171",
+    vocab:["wb_st1","wb_st2","wb_st3","wb_st7","wb_st8","wb_he1","wb_he3","wb_he4","wb_fl4","wb_fl5"],
+    phrases:[
+      { mn:"Би сайн байна", en:"I am well", rom:"Bi sain baina", note:"Most common state" },
+      { mn:"Би өлссөн", en:"I am hungry", rom:"Bi olsson", note:"Өлссөн = hungry" },
+      { mn:"Би ядарсан", en:"I am tired", rom:"Bi yadarsan", note:"Very useful after a long day" },
+      { mn:"Би өвдөж байна", en:"I am sick / hurting", rom:"Bi ovdoj baina", note:"Өвдөх = to hurt or be sick" },
+      { mn:"Толгой маань өвдөж байна", en:"My head hurts", rom:"Tolgoi maan ovdoj baina", note:"Body part + маань + өвдөж байна" },
+      { mn:"Эмч рүү явах хэрэгтэй", en:"I need to go to the doctor", rom:"Emch ruu yavakh kheregdei", note:"Хэрэгтэй = need to" },
+    ],
+    dialogues:[{
+      title:"Not feeling well",
+      lines:[
+        { speaker:"A", mn:"Та яаж байна?", en:"How are you?" },
+        { speaker:"B", mn:"Тийм ч сайн биш. Өвдөж байна.", en:"Not so good. I am sick." },
+        { speaker:"A", mn:"Юу өвдөж байна?", en:"What hurts?" },
+        { speaker:"B", mn:"Толгой маань өвдөж байна.", en:"My head hurts." },
+        { speaker:"A", mn:"Эмч рүү яв. Эрүүл мэндийг хүсье!", en:"Go to the doctor. Get well soon!" },
+      ]
+    }],
+    quiz:[
+      { mn:"Би өлссөн", en:"I am hungry", opts:["I am tired","I am cold","I am hungry","I am sick"] },
+      { mn:"Өвдөх", en:"To hurt / be sick", opts:["To rest","To sleep","To hurt / be sick","To eat"] },
+      { mn:"Эмч", en:"Doctor", opts:["Nurse","Hospital","Doctor","Medicine"] },
+      { mn:"Тайван", en:"Calm / peaceful", opts:["Happy","Calm / peaceful","Sad","Angry"] },
+    ]
+  },
+  {
+    id:"u9", title:"Weather & Seasons", emoji:"🌤️",
+    subtitle:"Talk about Mongolia's wild weather",
+    color:"#38bdf8",
+    vocab:["wb_w1","wb_w2","wb_w3","wb_w4","wb_w5","wb_w6","wb_w7","wb_na1","wb_na2","wb_na3","wb_na4"],
+    phrases:[
+      { mn:"Өнөөдөр ямар цаг байна?", en:"What is the weather like today?", rom:"Onoodor yamar tsag baina?", note:"Common conversation starter" },
+      { mn:"Их халуун байна", en:"It is very hot", rom:"Ikh khaluun baina", note:"Mongolian summers are extreme" },
+      { mn:"Их хүйтэн байна", en:"It is very cold", rom:"Ikh khuiten baina", note:"Mongolian winters are brutal" },
+      { mn:"Бороо орж байна", en:"It is raining", rom:"Boroo orj baina", note:"-ж байна = currently happening" },
+      { mn:"Цас орж байна", en:"It is snowing", rom:"Tsas orj baina", note:"Same structure as raining" },
+      { mn:"Монголд өвөл маш хүйтэн байдаг", en:"In Mongolia winter is very cold", rom:"Mongolod ovol mash khuiten baidag", note:"Байдаг = habitual, always true" },
+    ],
+    dialogues:[{
+      title:"Talking about the weather",
+      lines:[
+        { speaker:"A", mn:"Өнөөдөр ямар цаг байна?", en:"What is the weather like today?" },
+        { speaker:"B", mn:"Их хүйтэн байна. Цас орж байна.", en:"It is very cold. It is snowing." },
+        { speaker:"A", mn:"Монголд өвөл үргэлж ийм хүйтэн байдаг уу?", en:"Is it always this cold in winter in Mongolia?" },
+        { speaker:"B", mn:"Тийм! Монголд өвөл маш хүйтэн байдаг.", en:"Yes! In Mongolia winter is very cold." },
+      ]
+    }],
+    quiz:[
+      { mn:"Халуун", en:"Hot", opts:["Cold","Warm","Hot","Windy"] },
+      { mn:"Бороо", en:"Rain", opts:["Snow","Wind","Rain","Cloud"] },
+      { mn:"Өвөл", en:"Winter", opts:["Summer","Spring","Autumn","Winter"] },
+      { mn:"Зун", en:"Summer", opts:["Winter","Summer","Spring","Autumn"] },
+    ]
+  },
+  {
+    id:"u10", title:"Mongolian Culture", emoji:"🏹",
+    subtitle:"Naadam, ger life and traditions",
+    color:"#fb923c",
+    vocab:["wb_cu1","wb_cu3","wb_cu4","wb_cu5","wb_cu6","wb_cu7","wb_cu9","wb_cu21","wb_cu22","wb_cu23","wb_cu24"],
+    phrases:[
+      { mn:"Монголчууд малчин байдаг", en:"Mongolians are herders", rom:"Mongolchuud malchin baidag", note:"30% of Mongolians are nomadic herders" },
+      { mn:"Гэрт амьдардаг", en:"They live in gers", rom:"Gert amidardaг", note:"Ger = traditional round tent" },
+      { mn:"Наадам долоодугаар сард болдог", en:"Naadam happens in July", rom:"Naadam doloоdugaar sard boldoг", note:"July 11-13 every year" },
+      { mn:"Айраг ууж байна уу?", en:"Are you drinking airag?", rom:"Airag uuj baina uu?", note:"Fermented mares milk, iconic Mongolian drink" },
+      { mn:"Цагаан сар бол хамгийн том баяр", en:"Tsagaan Sar is the biggest celebration", rom:"Tsagaan Sar bol khamgiin tom bayar", note:"Mongolian Lunar New Year" },
+      { mn:"Монгол хэл сурч байна", en:"I am learning Mongolian", rom:"Mongol khel surch baina", note:"Your Mongolian friends will love this!" },
+    ],
+    dialogues:[{
+      title:"Talking about Mongolia",
+      lines:[
+        { speaker:"A", mn:"Та хотод амьдардаг уу?", en:"Do you live in the city?" },
+        { speaker:"B", mn:"Үгүй, би хөдөөд амьдардаг. Бид малчид.", en:"No, I live in the countryside. We are herders." },
+        { speaker:"A", mn:"Гэрт амьдардаг уу?", en:"Do you live in a ger?" },
+        { speaker:"B", mn:"Тийм! Гэр маш дулаан байдаг.", en:"Yes! A ger is very warm." },
+        { speaker:"A", mn:"Би Монгол хэл сурч байна.", en:"I am learning Mongolian." },
+        { speaker:"B", mn:"Гайхамшигтай! Маш сайн хэлж байна.", en:"Amazing! You speak very well." },
+      ]
+    }],
+    quiz:[
+      { mn:"Гэр", en:"Ger (traditional tent)", opts:["House","Ger (traditional tent)","Hotel","Tent"] },
+      { mn:"Малчин", en:"Herder", opts:["Farmer","Teacher","Herder","Hunter"] },
+      { mn:"Наадам", en:"Naadam festival", opts:["Wedding","Naadam festival","New Year","Birthday"] },
+      { mn:"Айраг", en:"Airag (fermented mares milk)", opts:["Tea","Water","Airag (fermented mares milk)","Milk"] },
+    ]
+  },
+];
+
+let currentUnit = null;
+let unitQuizIdx = 0;
+let unitQuizScore = 0;
+let unitQuizAnswered = false;
+
+function openCurriculum() {
+  showScreen('screen-curriculum');
+  renderCurriculumList();
+}
+
+function renderCurriculumList() {
+  const el = document.getElementById('curriculum-list');
+  if (!el) return;
+  el.innerHTML = CURRICULUM.map((unit, i) => {
+    const progress = getCurriculumProgress(unit.id);
+    const done = progress.completed;
+    return `<div onclick="openUnit('${unit.id}')" style="background:#16161e;border:1.5px solid ${done?unit.color:'#2a2a38'};border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:${unit.color}22;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${unit.emoji}</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+          <span style="font-size:15px;font-weight:600;color:#e8e8f0;">Unit ${i+1}: ${unit.title}</span>
+          ${done?'<span style="font-size:11px;background:'+unit.color+'33;color:'+unit.color+';padding:2px 8px;border-radius:99px;font-weight:600;">✓ Done</span>':''}
+        </div>
+        <div style="font-size:12px;color:#555;">${unit.subtitle}</div>
+        <div style="height:3px;background:#2a2a38;border-radius:99px;margin-top:8px;overflow:hidden;">
+          <div style="height:100%;background:${unit.color};width:${progress.pct}%;border-radius:99px;transition:width 0.3s;"></div>
+        </div>
+      </div>
+      <span style="color:#555;font-size:18px;">›</span>
+    </div>`;
+  }).join('');
+}
+
+function getCurriculumProgress(unitId) {
+  try {
+    const p = JSON.parse(localStorage.getItem('mn_curriculum')||'{}');
+    const u = p[unitId] || {};
+    const unit = CURRICULUM.find(x=>x.id===unitId);
+    if (!unit) return {pct:0, completed:false};
+    const vocabDone = (u.vocab||false);
+    const phrasesDone = (u.phrases||false);
+    const quizDone = (u.quiz||false);
+    const steps = [vocabDone, phrasesDone, quizDone];
+    const donesteps = steps.filter(Boolean).length;
+    return {pct: Math.round(donesteps/3*100), completed: donesteps>=3, vocabDone, phrasesDone, quizDone};
+  } catch(e) { return {pct:0, completed:false}; }
+}
+
+function saveCurriculumProgress(unitId, step) {
+  try {
+    const p = JSON.parse(localStorage.getItem('mn_curriculum')||'{}');
+    if (!p[unitId]) p[unitId] = {};
+    p[unitId][step] = true;
+    localStorage.setItem('mn_curriculum', JSON.stringify(p));
+  } catch(e) {}
+}
+
+function openUnit(unitId) {
+  currentUnit = CURRICULUM.find(u=>u.id===unitId);
+  if (!currentUnit) return;
+  showScreen('screen-unit');
+  renderUnit();
+}
+
+function renderUnit() {
+  const u = currentUnit;
+  const progress = getCurriculumProgress(u.id);
+  const el = document.getElementById('unit-content');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.2rem;">
+      <button onclick="showScreen('screen-curriculum')" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Units</button>
+      <div style="flex:1;"><div style="font-size:17px;font-weight:600;color:#e8e8f0;">${u.emoji} ${u.title}</div><div style="font-size:12px;color:#555;">${u.subtitle}</div></div>
+    </div>
+
+    <!-- Progress -->
+    <div style="display:flex;gap:8px;margin-bottom:1.4rem;">
+      ${['vocab','phrases','quiz'].map(step => {
+        const done = progress[step+'Done'];
+        const labels = {vocab:'📖 Vocab', phrases:'💬 Phrases', quiz:'✅ Quiz'};
+        const bg = done ? u.color+'22' : '#16161e';
+        const border = done ? u.color : '#2a2a38';
+        const col = done ? u.color : '#555';
+        const label = labels[step] + (done?' ✓':'');
+        return '<div style="flex:1;padding:8px;background:'+bg+';border:1px solid '+border+';border-radius:10px;text-align:center;font-size:11px;color:'+col+';">'+label+'</div>';
+      }).join('')}
+    </div>
+
+    <!-- Step 1: Vocabulary -->
+    <div style="background:#16161e;border:1px solid #2a2a38;border-radius:14px;padding:1.2rem;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <p style="font-size:14px;font-weight:600;color:#e8e8f0;">📖 Step 1: Key Vocabulary</p>
+        ${progress.vocabDone?'<span style="color:#4ade80;font-size:12px;">✓ Done</span>':''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${u.vocab.map(wid => {
+          const w = Object.values(WORD_BANK).flatMap(g=>g.words).find(x=>x.id===wid);
+          if (!w) return '';
+          return `<div onclick="doTTS('${w.mn.replace(/'/g,"\\'")}');saveCurriculumProgress('${u.id}','vocab')" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0f0f14;border-radius:8px;cursor:pointer;">
+            <span style="font-size:16px;font-weight:600;color:${u.color};min-width:80px;">${w.mn}</span>
+            <span style="font-size:13px;color:#888;flex:1;">${w.en}</span>
+            <span style="font-size:11px;color:#444;">${w.rom}</span>
+            <span style="font-size:14px;">🔊</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Step 2: Key Phrases & Dialogue -->
+    <div style="background:#16161e;border:1px solid #2a2a38;border-radius:14px;padding:1.2rem;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <p style="font-size:14px;font-weight:600;color:#e8e8f0;">💬 Step 2: Key Phrases</p>
+        ${progress.phrasesDone?'<span style="color:#4ade80;font-size:12px;">✓ Done</span>':''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        ${u.phrases.map(p => `
+          <div onclick="doTTS('${p.mn.replace(/'/g,"\\'")}');saveCurriculumProgress('${u.id}','phrases')" style="padding:10px 12px;background:#0f0f14;border-radius:8px;cursor:pointer;border-left:3px solid ${u.color};">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:15px;font-weight:600;color:#e8e8f0;">${p.mn}</span>
+              <span style="font-size:14px;">🔊</span>
+            </div>
+            <div style="font-size:13px;color:#888;margin-top:2px;">${p.en}</div>
+            <div style="font-size:11px;color:#444;margin-top:2px;">${p.rom}</div>
+            ${p.note?`<div style="font-size:11px;color:${u.color};margin-top:4px;">💡 ${p.note}</div>`:''}
+          </div>`).join('')}
+      </div>
+
+      ${u.dialogues.map(d => `
+        <p style="font-size:12px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">🎭 ${d.title}</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${d.lines.map(line => `
+            <div style="display:flex;gap:10px;align-items:flex-start;" onclick="doTTS('${line.mn.replace(/'/g,"\\'")}')">
+              <span style="font-size:12px;font-weight:700;color:${line.speaker==='A'?u.color:'#888'};min-width:18px;margin-top:2px;">${line.speaker}</span>
+              <div style="flex:1;padding:8px 12px;background:${line.speaker==='A'?u.color+'11':'#0f0f14'};border-radius:8px;cursor:pointer;">
+                <div style="font-size:14px;color:#e8e8f0;">${line.mn}</div>
+                <div style="font-size:12px;color:#555;margin-top:2px;">${line.en}</div>
+              </div>
+            </div>`).join('')}
+        </div>`).join('')}
+    </div>
+
+    <!-- Step 3: Mini Quiz -->
+    <div style="background:#16161e;border:1px solid #2a2a38;border-radius:14px;padding:1.2rem;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <p style="font-size:14px;font-weight:600;color:#e8e8f0;">✅ Step 3: Mini Quiz</p>
+        ${progress.quizDone?'<span style="color:#4ade80;font-size:12px;">✓ Done</span>':''}
+      </div>
+      <button onclick="startUnitQuiz('${u.id}')" style="width:100%;padding:12px;background:${u.color};border:none;border-radius:10px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">
+        ${progress.quizDone?'Retake Quiz →':'Start Quiz →'}
+      </button>
+    </div>`;
+}
+
+function startUnitQuiz(unitId) {
+  currentUnit = CURRICULUM.find(u=>u.id===unitId);
+  unitQuizIdx = 0; unitQuizScore = 0; unitQuizAnswered = false;
+  showScreen('screen-unit-quiz');
+  loadUnitQuizQuestion();
+}
+
+function loadUnitQuizQuestion() {
+  const u = currentUnit;
+  const q = u.quiz[unitQuizIdx];
+  if (!q) { finishUnitQuiz(); return; }
+
+  unitQuizAnswered = false;
+  const el = document.getElementById('uq-content');
+  if (!el) return;
+
+  // Shuffle options
+  const shuffled = [...q.opts].map((opt,i)=>({opt,correct:opt===q.en})).sort(()=>Math.random()-0.5);
+
+  el.innerHTML = `
+    <div style="text-align:center;margin-bottom:1.4rem;">
+      <div style="font-size:12px;color:#555;margin-bottom:8px;">${unitQuizIdx+1} / ${u.quiz.length}</div>
+      <div style="font-size:28px;font-weight:700;color:#e8e8f0;padding:1rem;background:#16161e;border-radius:12px;cursor:pointer;" onclick="doTTS('${q.mn.replace(/'/g,"\\'")}')">
+        ${q.mn} 🔊
+      </div>
+      <div style="font-size:13px;color:#555;margin-top:8px;">What does this mean in English?</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      ${shuffled.map(({opt,correct}) => `
+        <button onclick="checkUnitQuiz(this,${correct},'${currentUnit.id}')" 
+          style="padding:12px 16px;background:#16161e;border:1.5px solid #2a2a38;border-radius:10px;font-size:14px;color:#e8e8f0;cursor:pointer;text-align:left;font-family:inherit;">
+          ${opt}
+        </button>`).join('')}
+    </div>`;
+}
+
+function checkUnitQuiz(btn, correct, unitId) {
+  if (unitQuizAnswered) return;
+  unitQuizAnswered = true;
+  const u = currentUnit;
+  const buttons = btn.closest('div').querySelectorAll('button');
+  buttons.forEach(b => {
+    b.disabled = true;
+    if (b === btn) b.style.cssText += `;border-color:${correct?'#4ade80':'#f87171'};background:${correct?'#0f2a1a':'#2a0f0f'};color:${correct?'#4ade80':'#f87171'};`;
+  });
+  if (correct) { unitQuizScore++; playCorrect(); } else { playWrong(); }
+
+  setTimeout(() => {
+    unitQuizIdx++;
+    if (unitQuizIdx >= u.quiz.length) finishUnitQuiz();
+    else loadUnitQuizQuestion();
+  }, 900);
+}
+
+function finishUnitQuiz() {
+  const u = currentUnit;
+  const perfect = unitQuizScore === u.quiz.length;
+  if (perfect) { saveCurriculumProgress(u.id, 'quiz'); playFinish(); }
+
+  const el = document.getElementById('uq-content');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="text-align:center;padding:2rem 0;">
+      <div style="font-size:48px;margin-bottom:1rem;">${perfect?'🎉':'📚'}</div>
+      <div style="font-size:22px;font-weight:700;color:#e8e8f0;margin-bottom:8px;">${unitQuizScore}/${u.quiz.length} correct</div>
+      <div style="font-size:14px;color:#555;margin-bottom:1.4rem;">${perfect?'Unit complete! Moving on...':'Review the phrases and try again'}</div>
+      <button onclick="openUnit('${u.id}')" style="width:100%;padding:12px;background:${u.color};border:none;border-radius:10px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;margin-bottom:8px;">
+        ${perfect?'Continue →':'Try Again'}
+      </button>
+      <button onclick="showScreen('screen-curriculum')" style="width:100%;padding:12px;background:#16161e;border:1px solid #2a2a38;border-radius:10px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;">
+        Back to Units
+      </button>
+    </div>`;
+}
 </script>
 
 <!-- CONVERSATION PRACTICE SCREEN -->
@@ -7950,6 +8493,30 @@ setInterval(() => { updateTimeToday(); }, 30000);
     <button onclick="prevReading()" style="flex:1;padding:11px;background:#16161e;border:1px solid #2a2a38;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit;">← Prev</button>
     <button onclick="nextReading()" style="flex:2;padding:11px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Next →</button>
   </div>
+</div>
+
+<!-- CURRICULUM SCREEN -->
+<div class="screen" id="screen-curriculum">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1.2rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Mongolian Course</h2>
+  </div>
+  <p style="font-size:13px;color:#555;margin-bottom:1rem;">10 units — vocabulary, phrases, dialogues and a quiz for each topic.</p>
+  <div id="curriculum-list"></div>
+</div>
+
+<!-- UNIT SCREEN -->
+<div class="screen" id="screen-unit" style="overflow-y:auto;">
+  <div id="unit-content"></div>
+</div>
+
+<!-- UNIT QUIZ SCREEN -->
+<div class="screen" id="screen-unit-quiz">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1.2rem;">
+    <button onclick="showScreen('screen-unit')" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Unit</button>
+    <h2 id="uq-title" style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Unit Quiz</h2>
+  </div>
+  <div id="uq-content"></div>
 </div>
 
 </body>
@@ -8396,6 +8963,30 @@ setInterval(() => { updateTimeToday(); }, 30000);
     <button onclick="prevReading()" style="flex:1;padding:11px;background:#16161e;border:1px solid #2a2a38;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit;">← Prev</button>
     <button onclick="nextReading()" style="flex:2;padding:11px;background:#7c6af7;border:none;border-radius:12px;font-size:14px;font-weight:700;color:white;cursor:pointer;font-family:inherit;">Next →</button>
   </div>
+</div>
+
+<!-- CURRICULUM SCREEN -->
+<div class="screen" id="screen-curriculum">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1.2rem;">
+    <button onclick="showScreen('screen-home');switchTab('learn');" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Learn</button>
+    <h2 style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Mongolian Course</h2>
+  </div>
+  <p style="font-size:13px;color:#555;margin-bottom:1rem;">10 units — vocabulary, phrases, dialogues and a quiz for each topic.</p>
+  <div id="curriculum-list"></div>
+</div>
+
+<!-- UNIT SCREEN -->
+<div class="screen" id="screen-unit" style="overflow-y:auto;">
+  <div id="unit-content"></div>
+</div>
+
+<!-- UNIT QUIZ SCREEN -->
+<div class="screen" id="screen-unit-quiz">
+  <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1.2rem;">
+    <button onclick="showScreen('screen-unit')" style="background:none;border:1px solid #2a2a38;border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-family:inherit;font-size:13px;">← Unit</button>
+    <h2 id="uq-title" style="font-size:17px;font-weight:500;color:#e8e8f0;flex:1;">Unit Quiz</h2>
+  </div>
+  <div id="uq-content"></div>
 </div>
 
 </body>
